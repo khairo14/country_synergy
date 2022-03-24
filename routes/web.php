@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\StocksController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::view('/scan', 'scan');
+Route::post('/checkStocks',[StocksController::class,'checkStocks']);
+Route::post('/check/pallete',[StocksController::class,'checkStocksPallete']);
+Route::post('/store/products',[StocksController::class,'storeProducts']);
