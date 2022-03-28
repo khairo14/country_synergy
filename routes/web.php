@@ -21,3 +21,4 @@ Route::view('/scan', 'scan');
 Route::post('/checkStocks',[StocksController::class,'checkStocks']);
 Route::post('/check/pallete',[StocksController::class,'checkStocksPallete']);
 Route::post('/store/products',[StocksController::class,'storeProducts']);
+Route::view('/login','login');
