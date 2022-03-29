@@ -41,6 +41,7 @@
             {{-- </div> --}}
           </div>
         </div>
+        <img src="data:image/png;base64,{{DNS1D::getBarcodePNG("14586325", 'C39+',1,33,array(0,0,0), true)}}" alt="barcode" />
     </body>
 
     {{-- scripts --}}
