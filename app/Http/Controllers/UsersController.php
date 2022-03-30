@@ -15,17 +15,11 @@ class UsersController extends Controller
             'password' => ['required'],
         ]);
 
-        // DD($request->email,$request->password);
-        // $credentials = $request->only('email','password');
-
         if(Auth::attempt($credentials)){
-            // $user = 'asd';
             $request->session()->regenerate();
 
             return redirect()->intended('home');
         }
-        // dd($user = Auth::user());
-
         return back();
     }
 
