@@ -2284,6 +2284,8 @@ $(document).on("click", ".complete_scan", function () {
     });
   }
 }); // end of scan page
+// App Blade Users
+// End of App Blade
 
 /***/ }),
 

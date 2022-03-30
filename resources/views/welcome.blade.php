@@ -1,34 +1,18 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-        <title>Laravel</title>
+@section('content')
+        {{-- Scan Page --}}
+        <div class="mx-auto h-full flex flex-col items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
-        <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        {{-- End Styles --}}
-        {{-- scripts --}}
-        <script src="{{ asset('js/app.js') }}"></script>
-        {{-- end scripts --}}
-    </head>
-    <body class="antialiased">
-        <div class="min-h-full flex items-center justify-center pt-12 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-md w-full space-y-8">
+            <div class="flex row-start-1 items-center space-y-8 justify-center">
               <div>
                 <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Warehouse System</h2>
                 <p class="mt-2 text-center text-sm text-gray-600">
               </div>
             </div>
-          </div>
 
-          <div class="min-h-full flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
-            {{-- <div class="max-w-md w-full space-y-8 bg-gray-300 items-center justify-center"> --}}
+            <div class="flex row-start-2 space-y-8 items-center justify-center">
                 <button type="button" class="scan inline-flex items-center border border-gray-300 rounded-md px-12 py-12 shadow-sm text-2xl font-medium text-gray-500 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Scan Items
                     <span class="inset-y-0 flex items-center pl-3">
@@ -38,14 +22,6 @@
                         </svg>
                     </span>
                 </button>
-            {{-- </div> --}}
-          </div>
+            </div>
         </div>
-    </body>
-
-    {{-- scripts --}}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    {{-- end scripts --}}
-</html>
-
-</div>
+@endsection
