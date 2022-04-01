@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StocksController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,5 @@ Route::post('/sign-in',[UsersController::class,'signIn']);
 Route::post('/sign-out',[UsersController::class,'signOut']);
 // Route::view('/home','dashboard')->name('home');
 Route::view('/home','dashboard')->name('home')->middleware('auth');
+
+Route::resource('customers', CustomerController::class);

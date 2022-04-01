@@ -15,6 +15,7 @@
         {{-- End Styles --}}
         {{-- scripts --}}
         <script src="{{ asset('js/app.js') }}"></script>
+        <script src="https://cdn.tailwindcss.com/?plugins=forms"></script>
         {{-- end scripts --}}
     </head>
 <body class="antialiased bg-gray-100">
