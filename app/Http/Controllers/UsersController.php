@@ -20,7 +20,7 @@ class UsersController extends Controller
 
             return redirect()->intended('home');
         }
-        return back();
+        return redirect('/');
     }
 
     public function signOut(Request $request){
@@ -28,7 +28,7 @@ class UsersController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('login');
+        return response('0');
     }
 
 }
