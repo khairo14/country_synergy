@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StocksController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,4 @@ Route::post('/sign-out',[UsersController::class,'signOut']);
 Route::view('/','login')->name('login')->middleware('guest');
 Route::view('/home','dashboard')->name('home')->middleware('auth');
 
+Route::resource('customers', CustomerController::class);
