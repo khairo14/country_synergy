@@ -16,19 +16,16 @@ use App\Http\Controllers\CustomerController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::view('/scan', 'scan');
 Route::post('/checkStocks',[StocksController::class,'checkStocks']);
 Route::post('/check/pallete',[StocksController::class,'checkStocksPallete']);
 Route::post('/store/products',[StocksController::class,'storeProducts']);
 
-Route::view('/login','login')->name('login');
+
 Route::post('/sign-in',[UsersController::class,'signIn']);
 Route::post('/sign-out',[UsersController::class,'signOut']);
-// Route::view('/home','dashboard')->name('home');
+
+Route::view('/','login')->name('login')->middleware('guest');
 Route::view('/home','dashboard')->name('home')->middleware('auth');
 
 Route::resource('customers', CustomerController::class);

@@ -245,5 +245,26 @@ $(document).on("click",".complete_scan",function(){
 });
 // end of scan page
 // App Blade Users
+$(document).ready(function(){
+    $(".logout").on("click",function(){
+        $.ajax({
+            url: "/sign-out",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            method: 'post',
+            // data: { "pl_label": pl_label},
+            success: function (result) {
+                if(result === '0'){
+                    window.location = '/';
+                }
+            },
+        });
+    });
+
+    $("#user-menu-button").on("click",function(){
+        $(".user-menu").toggle();
+    });
+
+
+});
 
 // End of App Blade
