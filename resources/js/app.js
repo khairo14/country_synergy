@@ -1,6 +1,7 @@
 const { message } = require('laravel-mix/src/Log');
 
 require('./bootstrap');
+require('./components')
 
 // start of scan page
 $(document).on("click",".scan",function(){
@@ -251,7 +252,6 @@ $(document).ready(function(){
             url: "/sign-out",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             method: 'post',
-            // data: { "pl_label": pl_label},
             success: function (result) {
                 if(result === '0'){
                     window.location = '/';
@@ -259,12 +259,6 @@ $(document).ready(function(){
             },
         });
     });
-
-    $("#user-menu-button").on("click",function(){
-        $(".user-menu").toggle();
-    });
-
-
 });
 
 // End of App Blade

@@ -2063,7 +2063,9 @@ module.exports = {
 var _require = __webpack_require__(/*! laravel-mix/src/Log */ "./node_modules/laravel-mix/src/Log.js"),
     message = _require.message;
 
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // start of scan page
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+__webpack_require__(/*! ./components */ "./resources/js/components.js"); // start of scan page
 
 
 $(document).on("click", ".scan", function () {
@@ -2294,16 +2296,12 @@ $(document).ready(function () {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       },
       method: 'post',
-      // data: { "pl_label": pl_label},
       success: function success(result) {
         if (result === '0') {
           window.location = '/';
         }
       }
     });
-  });
-  $("#user-menu-button").on("click", function () {
-    $(".user-menu").toggle();
   });
 }); // End of App Blade
 
@@ -2344,6 +2342,298 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components.js":
+/*!************************************!*\
+  !*** ./resources/js/components.js ***!
+  \************************************/
+/***/ (() => {
+
+function _defineEnumerableProperties(obj, descs) { for (var key in descs) { var desc = descs[key]; desc.configurable = desc.enumerable = true; if ("value" in desc) desc.writable = true; Object.defineProperty(obj, key, desc); } if (Object.getOwnPropertySymbols) { var objectSymbols = Object.getOwnPropertySymbols(descs); for (var i = 0; i < objectSymbols.length; i++) { var sym = objectSymbols[i]; var desc = descs[sym]; desc.configurable = desc.enumerable = true; if ("value" in desc) desc.writable = true; Object.defineProperty(obj, sym, desc); } } return obj; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+window.Components = {}, window.Components.listbox = function (e) {
+  var _ref, _objectSpread2, _mutatorMap;
+
+  return _objectSpread((_objectSpread2 = {
+    init: function init() {
+      var _this = this;
+
+      this.optionCount = this.$refs.listbox.children.length, this.$watch("activeIndex", function (e) {
+        _this.open && (null !== _this.activeIndex ? _this.activeDescendant = _this.$refs.listbox.children[_this.activeIndex].id : _this.activeDescendant = "");
+      });
+    },
+    activeDescendant: null,
+    optionCount: null,
+    open: !1,
+    activeIndex: null,
+    selectedIndex: 0,
+
+    get active() {
+      return this.items[this.activeIndex];
+    }
+
+  }, _ref = e.modelName || "selected", _mutatorMap = {}, _mutatorMap[_ref] = _mutatorMap[_ref] || {}, _mutatorMap[_ref].get = function () {
+    return this.items[this.selectedIndex];
+  }, _defineProperty(_objectSpread2, "choose", function choose(e) {
+    this.selectedIndex = e, this.open = !1;
+  }), _defineProperty(_objectSpread2, "onButtonClick", function onButtonClick() {
+    var _this2 = this;
+
+    this.open || (this.activeIndex = this.selectedIndex, this.open = !0, this.$nextTick(function () {
+      _this2.$refs.listbox.focus(), _this2.$refs.listbox.children[_this2.activeIndex].scrollIntoView({
+        block: "nearest"
+      });
+    }));
+  }), _defineProperty(_objectSpread2, "onOptionSelect", function onOptionSelect() {
+    null !== this.activeIndex && (this.selectedIndex = this.activeIndex), this.open = !1, this.$refs.button.focus();
+  }), _defineProperty(_objectSpread2, "onEscape", function onEscape() {
+    this.open = !1, this.$refs.button.focus();
+  }), _defineProperty(_objectSpread2, "onArrowUp", function onArrowUp() {
+    this.activeIndex = this.activeIndex - 1 < 0 ? this.optionCount - 1 : this.activeIndex - 1, this.$refs.listbox.children[this.activeIndex].scrollIntoView({
+      block: "nearest"
+    });
+  }), _defineProperty(_objectSpread2, "onArrowDown", function onArrowDown() {
+    this.activeIndex = this.activeIndex + 1 > this.optionCount - 1 ? 0 : this.activeIndex + 1, this.$refs.listbox.children[this.activeIndex].scrollIntoView({
+      block: "nearest"
+    });
+  }), _defineEnumerableProperties(_objectSpread2, _mutatorMap), _objectSpread2), e);
+}, window.Components.menu = function () {
+  var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+    open: !1
+  };
+  return {
+    init: function init() {
+      var _this3 = this;
+
+      this.items = Array.from(this.$el.querySelectorAll('[role="menuitem"]')), this.$watch("open", function () {
+        _this3.open && (_this3.activeIndex = -1);
+      });
+    },
+    activeDescendant: null,
+    activeIndex: null,
+    items: null,
+    open: e.open,
+    focusButton: function focusButton() {
+      this.$refs.button.focus();
+    },
+    onButtonClick: function onButtonClick() {
+      var _this4 = this;
+
+      this.open = !this.open, this.open && this.$nextTick(function () {
+        _this4.$refs["menu-items"].focus();
+      });
+    },
+    onButtonEnter: function onButtonEnter() {
+      var _this5 = this;
+
+      this.open = !this.open, this.open && (this.activeIndex = 0, this.activeDescendant = this.items[this.activeIndex].id, this.$nextTick(function () {
+        _this5.$refs["menu-items"].focus();
+      }));
+    },
+    onArrowUp: function onArrowUp() {
+      if (!this.open) return this.open = !0, this.activeIndex = this.items.length - 1, void (this.activeDescendant = this.items[this.activeIndex].id);
+      0 !== this.activeIndex && (this.activeIndex = -1 === this.activeIndex ? this.items.length - 1 : this.activeIndex - 1, this.activeDescendant = this.items[this.activeIndex].id);
+    },
+    onArrowDown: function onArrowDown() {
+      if (!this.open) return this.open = !0, this.activeIndex = 0, void (this.activeDescendant = this.items[this.activeIndex].id);
+      this.activeIndex !== this.items.length - 1 && (this.activeIndex = this.activeIndex + 1, this.activeDescendant = this.items[this.activeIndex].id);
+    },
+    onClickAway: function onClickAway(e) {
+      if (this.open) {
+        var t = ["[contentEditable=true]", "[tabindex]", "a[href]", "area[href]", "button:not([disabled])", "iframe", "input:not([disabled])", "select:not([disabled])", "textarea:not([disabled])"].map(function (e) {
+          return "".concat(e, ":not([tabindex='-1'])");
+        }).join(",");
+        this.open = !1, e.target.closest(t) || this.focusButton();
+      }
+    }
+  };
+}, window.Components.popoverGroup = function () {
+  return {
+    __type: "popoverGroup",
+    init: function init() {
+      var _this6 = this;
+
+      var e = function e(t) {
+        document.body.contains(_this6.$el) ? t.target instanceof Element && !_this6.$el.contains(t.target) && window.dispatchEvent(new CustomEvent("close-popover-group", {
+          detail: _this6.$el
+        })) : window.removeEventListener("focus", e, !0);
+      };
+
+      window.addEventListener("focus", e, !0);
+    }
+  };
+}, window.Components.popover = function () {
+  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref2$open = _ref2.open,
+      e = _ref2$open === void 0 ? !1 : _ref2$open,
+      _ref2$focus = _ref2.focus,
+      t = _ref2$focus === void 0 ? !1 : _ref2$focus;
+
+  var i = ["[contentEditable=true]", "[tabindex]", "a[href]", "area[href]", "button:not([disabled])", "iframe", "input:not([disabled])", "select:not([disabled])", "textarea:not([disabled])"].map(function (e) {
+    return "".concat(e, ":not([tabindex='-1'])");
+  }).join(",");
+  return {
+    __type: "popover",
+    open: e,
+    init: function init() {
+      var _this7 = this;
+
+      t && this.$watch("open", function (e) {
+        e && _this7.$nextTick(function () {
+          !function (e) {
+            var t = Array.from(e.querySelectorAll(i));
+            !function e(i) {
+              void 0 !== i && (i.focus({
+                preventScroll: !0
+              }), document.activeElement !== i && e(t[t.indexOf(i) + 1]));
+            }(t[0]);
+          }(_this7.$refs.panel);
+        });
+      });
+
+      var e = function e(i) {
+        if (!document.body.contains(_this7.$el)) return void window.removeEventListener("focus", e, !0);
+        var n = t ? _this7.$refs.panel : _this7.$el;
+
+        if (_this7.open && i.target instanceof Element && !n.contains(i.target)) {
+          var _e = _this7.$el;
+
+          for (; _e.parentNode;) {
+            if (_e = _e.parentNode, _e.__x instanceof _this7.constructor) {
+              if ("popoverGroup" === _e.__x.$data.__type) return;
+              if ("popover" === _e.__x.$data.__type) break;
+            }
+          }
+
+          _this7.open = !1;
+        }
+      };
+
+      window.addEventListener("focus", e, !0);
+    },
+    onEscape: function onEscape() {
+      this.open = !1, this.restoreEl && this.restoreEl.focus();
+    },
+    onClosePopoverGroup: function onClosePopoverGroup(e) {
+      e.detail.contains(this.$el) && (this.open = !1);
+    },
+    toggle: function toggle(e) {
+      this.open = !this.open, this.open ? this.restoreEl = e.currentTarget : this.restoreEl && this.restoreEl.focus();
+    }
+  };
+}, window.Components.radioGroup = function () {
+  var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref3$initialCheckedI = _ref3.initialCheckedIndex,
+      e = _ref3$initialCheckedI === void 0 ? 0 : _ref3$initialCheckedI;
+
+  return {
+    value: void 0,
+    active: void 0,
+    init: function init() {
+      var _t$e,
+          _this8 = this;
+
+      var t = Array.from(this.$el.querySelectorAll("input"));
+      this.value = (_t$e = t[e]) === null || _t$e === void 0 ? void 0 : _t$e.value;
+
+      var _loop = function _loop() {
+        var e = _t[_i];
+        e.addEventListener("change", function () {
+          _this8.active = e.value;
+        }), e.addEventListener("focus", function () {
+          _this8.active = e.value;
+        });
+      };
+
+      for (var _i = 0, _t = t; _i < _t.length; _i++) {
+        _loop();
+      }
+
+      window.addEventListener("focus", function () {
+        console.log("Focus change"), t.includes(document.activeElement) || (console.log("HIT"), _this8.active = void 0);
+      }, !0);
+    }
+  };
+}, window.Components.tabs = function () {
+  return {
+    selectedIndex: 0,
+    onTabClick: function onTabClick(e) {
+      if (!this.$el.contains(e.detail)) return;
+      var t = Array.from(this.$el.querySelectorAll('[x-data^="Components.tab("]')),
+          i = Array.from(this.$el.querySelectorAll('[x-data^="Components.tabPanel("]')),
+          n = t.indexOf(e.detail);
+      this.selectedIndex = n, window.dispatchEvent(new CustomEvent("tab-select", {
+        detail: {
+          tab: e.detail,
+          panel: i[n]
+        }
+      }));
+    },
+    onTabKeydown: function onTabKeydown(e) {
+      if (!this.$el.contains(e.detail.tab)) return;
+      var t = Array.from(this.$el.querySelectorAll('[x-data^="Components.tab("]')),
+          i = t.indexOf(e.detail.tab);
+      "ArrowLeft" === e.detail.key ? this.onTabClick({
+        detail: t[(i - 1 + t.length) % t.length]
+      }) : "ArrowRight" === e.detail.key ? this.onTabClick({
+        detail: t[(i + 1) % t.length]
+      }) : "Home" === e.detail.key || "PageUp" === e.detail.key ? this.onTabClick({
+        detail: t[0]
+      }) : "End" !== e.detail.key && "PageDown" !== e.detail.key || this.onTabClick({
+        detail: t[t.length - 1]
+      });
+    }
+  };
+}, window.Components.tab = function () {
+  var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+  return {
+    selected: !1,
+    init: function init() {
+      var _this9 = this;
+
+      var t = Array.from(this.$el.closest('[x-data^="Components.tabs("]').querySelectorAll('[x-data^="Components.tab("]'));
+      this.selected = t.indexOf(this.$el) === e, this.$watch("selected", function (e) {
+        e && _this9.$el.focus();
+      });
+    },
+    onClick: function onClick() {
+      window.dispatchEvent(new CustomEvent("tab-click", {
+        detail: this.$el
+      }));
+    },
+    onKeydown: function onKeydown(e) {
+      ["ArrowLeft", "ArrowRight", "Home", "PageUp", "End", "PageDown"].includes(e.key) && e.preventDefault(), window.dispatchEvent(new CustomEvent("tab-keydown", {
+        detail: {
+          tab: this.$el,
+          key: e.key
+        }
+      }));
+    },
+    onTabSelect: function onTabSelect(e) {
+      this.selected = e.detail.tab === this.$el;
+    }
+  };
+}, window.Components.tabPanel = function () {
+  var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+  return {
+    selected: !1,
+    init: function init() {
+      var t = Array.from(this.$el.closest('[x-data^="Components.tabs("]').querySelectorAll('[x-data^="Components.tabPanel("]'));
+      this.selected = t.indexOf(this.$el) === e;
+    },
+    onTabSelect: function onTabSelect(e) {
+      this.selected = e.detail.panel === this.$el;
+    }
+  };
+};
 
 /***/ }),
 
