@@ -6,6 +6,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\PDFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,5 +33,9 @@ Route::view('/home','dashboard')->name('home')->middleware('auth');
 
 Route::get('/products',[ProductsController::class,'viewProducts'])->middleware('auth');
 Route::get('/orders',[OrdersController::class,'viewOrders'])->middleware('auth');
+
+//Printing labels
+Route::get('/palletlabels', [PDFController::class,'palletlabels'])->middleware('auth');
+Route::get('/printlabels', [PDFController::class,'printlabels'])->middleware('auth');
 
 Route::resource('customers', CustomerController::class);
