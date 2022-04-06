@@ -2060,8 +2060,11 @@ module.exports = {
   \*****************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-var _require = __webpack_require__(/*! laravel-mix/src/Log */ "./node_modules/laravel-mix/src/Log.js"),
-    message = _require.message;
+var _require = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"),
+    data = _require.data;
+
+var _require2 = __webpack_require__(/*! laravel-mix/src/Log */ "./node_modules/laravel-mix/src/Log.js"),
+    message = _require2.message;
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
@@ -2306,9 +2309,19 @@ $(document).ready(function () {
 }); // End of App Blade
 
 $(document).on("click", ".up_prods", function () {
-  var a = $("#cm_prods").val();
-  alert(a);
+  var cm = $('#cm_prods').attr('data');
+
+  if (cm === '') {
+    $('.ul_warning').show();
+    $('.ul_form').hide();
+    $('.fl_ul').hide();
+  } else {
+    $('.fl_ul').show();
+    $('.ul_form').show();
+    $('.ul_warning').hide();
+  }
 });
+$(document).ready(function () {});
 
 /***/ }),
 

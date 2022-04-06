@@ -1,3 +1,4 @@
+const { data } = require('jquery');
 const { message } = require('laravel-mix/src/Log');
 
 require('./bootstrap');
@@ -263,7 +264,20 @@ $(document).ready(function(){
 
 // End of App Blade
 $(document).on("click",".up_prods",function(){
-    var a = $("#cm_prods").val();
+    var cm = $('#cm_prods').attr('data');
 
-    alert(a);
+    if(cm === ''){
+        $('.ul_warning').show();
+        $('.ul_form').hide();
+        $('.fl_ul').hide();
+    }else{
+        $('.fl_ul').show();
+        $('.ul_form').show();
+        $('.ul_warning').hide();
+
+    }
+});
+
+$(document).ready(function(){
+
 });

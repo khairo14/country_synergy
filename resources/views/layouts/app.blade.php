@@ -208,7 +208,7 @@
                     </svg>
                   </button>
                   <!-- Expandable link section, show/hide based on state. -->
-                  <div class="space-y-1" id="sub-menu-5" x-show="open">
+                  <div class="space-y-1" id="sub-menu-5-static" x-show="open">
                     <a href="{{url('/products')}}" class="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:text-gray-400 hover:bg-gray-500"> Overview </a>
 
                     <a href="#" class="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:text-gray-400 hover:bg-gray-500"> Members </a>
