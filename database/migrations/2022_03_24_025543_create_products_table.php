@@ -15,12 +15,12 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('product_code');
-            $table->string('brand');
+            $table->string('product_code'); //PLU
+            $table->string('brand'); //to be remove
             $table->string('gtin');
-            $table->string('description');
+            $table->string('description'); //change to product name
             $table->string('company_id');
-            $table->string('fix_price');
+            $table->string('fix_price'); //to be remove
             $table->timestamps();
         });
     }

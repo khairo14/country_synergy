@@ -1,7 +1,7 @@
 const { message } = require('laravel-mix/src/Log');
 
 require('./bootstrap');
-require('./components')
+require('./components');
 
 // start of scan page
 $(document).on("click",".scan",function(){
@@ -262,3 +262,8 @@ $(document).ready(function(){
 });
 
 // End of App Blade
+$(document).on("click",".up_prods",function(){
+    var a = $("#cm_prods").val();
+
+    alert(a);
+});

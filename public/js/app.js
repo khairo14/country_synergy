@@ -2305,6 +2305,11 @@ $(document).ready(function () {
   });
 }); // End of App Blade
 
+$(document).on("click", ".up_prods", function () {
+  var a = $("#cm_prods").val();
+  alert(a);
+});
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":

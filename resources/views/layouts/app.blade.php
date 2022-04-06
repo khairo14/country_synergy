@@ -12,10 +12,10 @@
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        {{-- <link rel="stylesheet" href="{{asset('css/jquery.multiselect.css')}}"> --}}
         {{-- End Styles --}}
         {{-- scripts --}}
         <script src="{{ asset('js/app.js') }}"></script>
-        {{-- <script src="{{ asset('js/components.js') }}"></script> --}}
         <script defer src="https://unpkg.com/alpinejs@3.9.5/dist/cdn.min.js"></script>
         {{-- <script src="https://cdn.tailwindcss.com/?plugins=forms"></script> --}}
         {{-- end scripts --}}
@@ -287,5 +287,6 @@
 
 {{-- scripts --}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src=""></script>
 {{-- end scripts --}}
 </html>
