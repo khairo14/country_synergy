@@ -14,7 +14,7 @@ class PDFController extends Controller
     public function printlabels() {
         $data = [
             'title' => 'Country Synergy',
-            'date' => date('m/d/Y')
+            'date' => date('d/m/Y')
         ];
         
         $customPaper = array(0,0,289.13,425.19);
