@@ -12,10 +12,10 @@
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        {{-- <link rel="stylesheet" href="{{asset('css/jquery.multiselect.css')}}"> --}}
         {{-- End Styles --}}
         {{-- scripts --}}
         <script src="{{ asset('js/app.js') }}"></script>
-        {{-- <script src="{{ asset('js/components.js') }}"></script> --}}
         <script defer src="https://unpkg.com/alpinejs@3.9.5/dist/cdn.min.js"></script>
         {{-- <script src="https://cdn.tailwindcss.com/?plugins=forms"></script> --}}
         {{-- end scripts --}}
@@ -208,7 +208,7 @@
                     </svg>
                   </button>
                   <!-- Expandable link section, show/hide based on state. -->
-                  <div class="space-y-1" id="sub-menu-5" x-show="open">
+                  <div class="space-y-1" id="sub-menu-5-static" x-show="open">
                     <a href="{{url('/products')}}" class="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:text-gray-400 hover:bg-gray-500"> Overview </a>
 
                     <a href="#" class="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:text-gray-400 hover:bg-gray-500"> Members </a>
@@ -287,5 +287,6 @@
 
 {{-- scripts --}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src=""></script>
 {{-- end scripts --}}
 </html>
