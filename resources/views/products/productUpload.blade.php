@@ -9,7 +9,7 @@
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
       <div x-show="modal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-description="Modal panel, show/hide based on modal state."
-        class="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        class="ul_modal_body relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
 
             <div class="ul_warning sm:flex sm:items-start">
                 <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -24,7 +24,9 @@
             </div>
 
         <div class="ul_form">
-            <form class="space-y-8 divide-y divide-gray-200">
+            {{-- <form method="POST" action="{{url('/file-import')}}" enctype="multipart/form-data" class="space-y-8 divide-y divide-gray-200"> --}}
+                @csrf
+                <input type="hidden" name='cm_id' id="cm_id">
                 <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label for="upload-products" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> Upload Products </label>
                     <div class="mt-1 sm:mt-0 sm:col-span-2">
@@ -45,12 +47,48 @@
                       </div>
                     </div>
                 </div>
-            </form>
+
         </div>
 
         <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
           <button type="button" class="fl_ul w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm">Upload</button>
+        {{-- </form> --}}
           <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm" @click="modal=false">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{-- Success alert --}}
+  <div class="alert_suc fixed h-24 w-1/2 inset-x-0 inset-y-1 left-64 rounded-md bg-green-200 ml-1 p-4 z-20" hidden>
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <!-- Heroicon name: solid/check-circle -->
+        <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="alert_suc_body ml-3">
+        <h3 class="text-sm font-medium text-green-800">Title</h3>
+        <div class="mt-2 text-sm text-green-700">
+          <p>Message</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{-- Error alert --}}
+  <div class="alert_err fixed h-24 w-1/2 inset-x-0 inset-y-1 left-64 rounded-md bg-red-100 p-4 z-20" hidden>
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <!-- Heroicon name: solid/x-circle -->
+        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="alert_err_body ml-3">
+        <h3 class="text-sm font-medium text-red-800">Title</h3>
+        <div class="mt-2 text-sm text-red-700">
+            <p>Message</p>
         </div>
       </div>
     </div>

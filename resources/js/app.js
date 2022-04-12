@@ -263,6 +263,8 @@ $(document).ready(function(){
 });
 
 // End of App Blade
+
+// Products Page
 $(document).on("click",".up_prods",function(){
     var cm = $('#cm_prods').attr('data');
 
@@ -273,11 +275,75 @@ $(document).on("click",".up_prods",function(){
     }else{
         $('.fl_ul').show();
         $('.ul_form').show();
+        $('#cm_id').val(cm);
         $('.ul_warning').hide();
 
     }
 });
 
-$(document).ready(function(){
+$(document).on("click",".fl_ul",function(){
+    var cm_id = $("#cm_id").val();
+    var files = $("#file-upload").val();
 
+    if(files.length > 0){
+        var fdata = new FormData();
+        fdata.append('file', $("#file-upload")[0].files[0]);
+        fdata.append('cm_id',cm_id);
+        $.ajax({
+            url: "/file-import",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            method: 'post',
+            data: fdata,
+            dataType:'json',
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                // alert(JSON.stringify(result));
+                if(result.status == 0){
+                    $('.ul_modal').hide();
+                    $('.ul_modal_body').hide();
+                    $('.alert_err').show();
+                    $('.alert_err_body p').text(result.message);
+                    $('.alert_err_body h3').text("Prducts Upload");
+                    setTimeout(function(){
+                        $('.alert_err').css("display","none");
+                        $("#pr_table").load(location.href +" #pr_table");
+                    },2000);
+                }else{
+                    $('.ul_modal').hide();
+                    $('.ul_modal_body').hide();
+                    $('.alert_suc').show();
+                    $('.alert_suc_body p').text(result.message);
+                    $('.alert_suc_body h3').text("Prducts Upload");
+
+                    setTimeout(function(){
+                        $('.alert_suc').css("display","none");
+                        $("#pr_table").load(location.href +" #pr_table");
+                    },2000);
+                }
+            },
+
+        });
+    }else{
+        $('.ul_modal').hide();
+        $('.ul_modal_body').hide();
+        $('.alert_err').show();
+        $('.alert_err_body p').text("no file uploaded");
+        $('.alert_err_body h3').text("Prducts Upload");
+        setTimeout(function(){
+            $('.alert_err').css("display","none");
+            $("#pr_table").load(location.href +" #pr_table");
+        },2000);
+    }
+
+
+
+});
+
+$(document).ready(function(){
+    var cm = $('#cm_prods').attr('data');
+
+       $("#cm_prods").on("change",function(){
+        alert(cm);
+       });
 });

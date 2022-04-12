@@ -14,5 +14,8 @@ class Products extends Model
         'gtin',
         'product_name',
         'company_id',
+        'brand',
+        'size',
+        'description',
     ];
 }
