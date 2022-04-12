@@ -38,4 +38,8 @@ Route::get('/orders',[OrdersController::class,'viewOrders'])->middleware('auth')
 Route::get('/palletlabels', [PDFController::class,'palletlabels'])->middleware('auth');
 Route::get('/printlabels', [PDFController::class,'printlabels'])->middleware('auth');
 
+// import products
+Route::get('/file-import-export',[ProductsController::class,'fileImportExport']);
+Route::post('/file-import',[ProductsController::class,'fileImport'])->name('file-import');
+// customers
 Route::resource('customers', CustomerController::class);
