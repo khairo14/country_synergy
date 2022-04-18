@@ -347,3 +347,143 @@ $(document).ready(function(){
         alert(cm);
        });
 });
+
+// Orders Page
+$(document).ready(function(){
+    $('.products').select2();
+
+    $(".or_next").on("click",function(){
+        $(".or_p1").toggle();
+        $(".or_p2").toggle();
+
+        var cm_id = $("#company option:selected").val();
+
+        $.ajax({
+            url: "/get-productList",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            method: 'post',
+            data: {"cm_id":cm_id},
+            success: function (result) {
+                if(result.status == 1){
+                    $.each(result.products, function(index,val){
+                        var pr_id = val.id;
+                        var pr_code = val.product_code;
+                        var pr_name = val.product_name;
+
+                        $("#products").append(
+                            "<option value="+ pr_id +">"+pr_code+"-"+pr_name+"</option>"
+                        );
+                    });
+                }
+
+            },
+        });
+    });
+
+    $(".or_back").on("click",function(){
+        $(".or_p1").toggle();
+        $(".or_p2").toggle();
+    });
+
+    $(".add_pr").on("click",function(){
+        var pr_id = $("#products option:selected").val();
+        var pr_qty =$("#pr_qty").val();
+        if(pr_id != null){
+            if(pr_qty != "")
+                $.ajax({
+                    url: "/get-product",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    method: 'post',
+                    data: {"pr_id":pr_id},
+                    success: function (result) {
+                        if(result.status == 1){
+                            var pr = result.product;
+                            // alert(JSON.stringify(pr[0].product_code));
+                            $(".pr_tbl_body").append(
+                                "<tr>"+
+                                "<td class='whitespace-nowrap py-4 pl-4 text-sm text-gray-500'>"+pr[0].product_code+"</td>"+
+                                "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>"+pr[0].product_name+"</td>"+
+                                "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>"+pr_qty+"</td>"+
+                                "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>"+
+                                "<button type='button' class='rm_pr'>"+
+                                    "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"+
+                                        "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"+
+                                    "</svg>"+
+                                "</button>"+
+                                "</td>"+
+                                "</tr>"
+                            );
+                        }
+
+                    },
+                });
+            else{
+                alert("Please Enter Quantity");
+            }
+        }else{
+            alert("invalid Product");
+        }
+    });
+
+    $(".or_next2").on("click",function(){
+        var cm_id = $("#company option:selected").val();
+        var or_typ = $("#OrderType option:selected").val();
+
+        var prdata = [];
+        $(".pr_tbl_body tr").each(function () {
+            var rows = $(this);
+
+            var a = rows.find("td:eq(0)").text();
+            var b = rows.find("td:eq(1)").text();
+            var c = rows.find("td:eq(2)").text();
+
+            var obj = {};
+            obj.col1 = a;
+            obj.col2 = b;
+            obj.col3 = c;
+
+            prdata.push(obj);
+        });
+        // alert(JSON.stringify(prdata));
+        if(prdata.length > 0){
+            $.ajax({
+                url: "/save-order",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: {"cm_id":cm_id,"or_typ":or_typ,"pr_data":prdata},
+                success: function (result) {
+                    console.log(result);
+                    if(result.status == 0){
+                        $('.alert_err').show();
+                        $('.alert_err_body p').text(result.message);
+                        $('.alert_err_body h3').text("Orders");
+                        setTimeout(function(){
+                            $('.alert_err').css("display","none");
+                            window.location.href = "/orders";
+                        },2000);
+                    }else{
+                        $('.alert_suc').show();
+                        $('.alert_suc_body p').text(result.message);
+                        $('.alert_suc_body h3').text("Prducts Upload");
+                        setTimeout(function(){
+                            $('.alert_suc').css("display","none");
+                            window.location.href = "/orders";
+                        },2000);
+                    }
+                }
+                // ,error: function (request, status, error) {
+                //     alert(request.responseText);
+                // }
+            });
+        }else{
+            alert('add products first');
+        }
+
+    });
+});
+
+$(document).on("click",".rm_pr",function(){
+    $(this).closest("tr").remove();
+});
+
+// End of Orders Page

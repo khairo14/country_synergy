@@ -52,9 +52,9 @@
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">GTIN</th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Brand</th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Desc</th>
-                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                  {{-- <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                     <span class="sr-only">Edit</span>
-                  </th>
+                  </th> --}}
                 </tr>
               </thead>
               <tbody class="bg-white">

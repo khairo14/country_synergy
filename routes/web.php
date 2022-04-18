@@ -43,3 +43,8 @@ Route::get('/file-import-export',[ProductsController::class,'fileImportExport'])
 Route::post('/file-import',[ProductsController::class,'fileImport'])->name('file-import');
 // customers
 Route::resource('customers', CustomerController::class);
+
+// orders
+Route::post('/get-productList',[OrdersController::class,'productList'])->middleware('auth');
+Route::post('/get-product',[OrdersController::class,'getProduct'])->middleware('auth');
+Route::post('/save-order',[OrdersController::class,'addOrderIn'])->middleware('auth');
