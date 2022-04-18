@@ -12,10 +12,20 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::latest()->get();
+        //$customers = Customer::latest()->get();
 
+        $customers = Customer::where([
+            ['name', '!=', Null],
+            [function ($query) use ($request) {
+                if(($term = $request->term)) {
+                    $query->orWhere('name', 'LIKE', '%'. $term . '%')->get();
+                }
+            }]
+        ])
+            ->orderBy('id','desc')
+            ->paginate(10);
         return view('customers.index',compact('customers'))->with('i',(request()->input('page', 1) - 1) * 5);
     }
 

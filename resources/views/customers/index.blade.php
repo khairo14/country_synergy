@@ -2,8 +2,49 @@
 
 @section('content')
 
-    <div class="max-w-4xl mx-auto mt-8">
+        <div class="max-w-4xl mx-auto mt-8">
+            
+        <div class="flex justify-end mt-10">
+            <div class="mx-auto pull-right">
+                <div class="">
+                    <form action="{{ route('customers.index') }}" method="GET" role="search">
 
+                       
+                       
+                            <label for="search" class="block text-sm font-medium text-gray-700">Quick search</label>
+                            <div class="mt-1 relative flex items-center">
+                            <a href="{{ route('customers.index') }}" class=" mt-1">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-danger" type="button" title="Refresh page">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                    </button>
+                                </span>
+                            </a>
+                            <input type="text" class="form-control mr-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md" name="term" placeholder="Search customers" id="term">
+                            <!-- <input type="text" name="search" id="search" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md"> -->
+                            <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
+                            <div class="input-group">
+                            <span class="input-group-btn mr-5 mt-1">
+                                <button class="btn btn-info" type="submit" title="Search projects">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </button>
+                            </span>
+                            <div>
+                            </div>
+                            </div>
+                            </div>
+
+                            
+                           
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
         <div class="flex justify-end mt-10">
