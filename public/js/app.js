@@ -2075,6 +2075,38 @@ $(document).on("click", ".scan", function () {
   window.location.href = '/scan';
 });
 $(document).ready(function () {
+  $(".order_id").change(function () {
+    // alert('asd');
+    var or_id = $(".order_id").val();
+    $.ajax({
+      url: "/scan/order",
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      method: 'post',
+      data: {
+        "or_id": or_id
+      },
+      success: function success(result) {
+        if (result.status == 0) {
+          alert(JSON.stringify(result.message));
+        } else {
+          // console.log(result);
+          $.each(result.products, function (index, val) {
+            var pr_code = val.products[0].product_code;
+            var pr_qty = val.qty;
+            var pr_name = val.products[0].product_name;
+            $(".order_tbl").append("<tr class='table-row'>" + "<td class='table-cell text-center text-sm border border-slate-600 w-auto'>" + pr_code + "</td>" + "<td class='table-cell text-center text-sm border border-slate-600 w-auto'>" + pr_name + "</td>" + "<td class='table-cell text-center text-sm border border-slate-600 w-auto'>" + pr_qty + "</td>" + "</tr>");
+          });
+        }
+      },
+      error: function error(request, status, _error) {
+        alert(request.responseText);
+      }
+    });
+  });
+});
+$(document).ready(function () {
   $('.scan_products').change(function () {
     var pr_label = $('.scan_products').val();
     var pr_count = $(".product_tbl tr").length;
@@ -2207,6 +2239,14 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function () {
+  $('.next0_scan').on("click", function (e) {
+    e.preventDefault(); // alert('asd');
+
+    $(".order_card").hide();
+    $(".product_card").show();
+    $(".scan_product").focus();
+    $(".scan_product").attr("placeholder", "Scan pallete code");
+  });
   $('.next_scan').on("click", function (e) {
     e.preventDefault();
     $(".product_card").hide();

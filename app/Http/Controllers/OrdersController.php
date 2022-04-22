@@ -14,7 +14,25 @@ class OrdersController extends Controller
     //
     public function viewOrders(){
         $company = Customer::OrderBy('name')->get();
-        return view('orders.orderView')->with(['company'=>$company]);
+        $orders= Orders::all();
+
+        foreach($orders as $order){
+            $or_id = $order->id;
+            $or_typ = $order->order_type;
+            $or_dd = $order->dispatch;
+            $prs = Rel_order_products::where('order_id',$or_id)->with('products')->get();
+
+            $or_pr[] = ['order_id'=>$or_id,'or_typ'=>$or_typ,'dispatch'=>$or_dd,$prs];
+        }
+
+        // dd($or_pr);
+
+        return view('orders.orderView')->with(['company'=>$company,'orders'=>$or_pr]);
+    }
+
+    public function getCustomer(){
+        $company = Customer::OrderBy('name')->get();
+        return view('orders.orderCreate')->with(['company'=>$company]);
     }
 
     public function productList(Request $request){

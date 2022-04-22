@@ -14,4 +14,8 @@ class Orders extends Model
         'order_type',
         'dispatch',
     ];
+
+    public function products(){
+        return $this->hasMany('App\Models\Rel_order_products','order_id');
+    }
 }

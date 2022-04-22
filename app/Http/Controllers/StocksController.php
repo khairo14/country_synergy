@@ -3,11 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stocks;
+use App\Models\Orders;
+use App\Models\Products;
+use App\Models\Rel_order_products;
 use Illuminate\Http\Request;
 
 
 class StocksController extends Controller
 {
+    public function checkOrders(Request $request){
+        $or_id = $request->or_id;
+
+        if($or_id != ""){
+            $orders = Orders::where('id',$or_id)->get();
+
+            if(isset($orders)){
+                $or_pr = Rel_order_products::where('order_id',$or_id)->get();
+                $products = [];
+                foreach($or_pr as $pr){
+                    $products[] = ['products'=>Products::where('id',$pr->id)->get(),"qty"=>$pr->qty];
+                }
+                return response()->json(['status'=>'1',"products"=>$products]);
+            }else{
+                return response()->json(['status'=>'0','message'=>'Order number not found',"products"=>""]);
+            }
+        }else{
+            return response()->json(['status'=>'0','message'=>'Please Enter Order Number',"products"=>""]);
+        }
+
+
+    }
+
     public function checkStocks(Request $request)
     {
         $stock = $request->pr_label;

@@ -16,10 +16,10 @@ class Rel_order_products extends Model
     ];
 
     public function orders(){
-        return $this->belongsTo('App\Models\Orders');
+        return $this->belongsTo('App\Models\Orders','order_id');
     }
     public function products(){
-        return $this->belongsTo('App\Models\Products');
+        return $this->belongsTo('App\Models\Products','product_id');
     }
 
 }
