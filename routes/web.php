@@ -49,3 +49,4 @@ Route::get('/createOrder',[OrdersController::class,'getCustomer'])->middleware('
 Route::post('/get-productList',[OrdersController::class,'productList'])->middleware('auth');
 Route::post('/get-product',[OrdersController::class,'getProduct'])->middleware('auth');
 Route::post('/save-order',[OrdersController::class,'addOrderIn'])->middleware('auth');
+Route::post('/get-company-order',[OrdersController::class,'viewCompOrder']);

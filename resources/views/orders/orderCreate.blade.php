@@ -60,7 +60,7 @@
                         </svg>
                       </button>
                 </div>
-                <table class="ml-4 divide-y divide-gray-500 pr_tbl min-w-1/2">
+                <table class="ml-4 divide-y divide-gray-500 or_tbl min-w-1/2">
                     <thead class="bg-gray-50">
                       <tr>
                         <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Product_code</th>
@@ -68,10 +68,10 @@
                         <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Qty</th>
                         <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                             <span class="sr-only">Edit</span>
-                          </th>
+                        </th>
                       </tr>
                     </thead>
-                    <tbody class="items-center bg-white divide-y divide-gray-500 pr_tbl_body">
+                    <tbody class="items-center bg-white divide-y divide-gray-500 or_tbl_body">
                       {{-- <tr>
                         <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">01</td>
                         <td class="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">Whole Bird</td>

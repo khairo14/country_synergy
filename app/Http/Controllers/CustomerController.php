@@ -88,9 +88,9 @@ class CustomerController extends Controller
             'state' => 'required',
             'phone' => 'required',
         ]);
-      
+
         $customer->update($request->all());
-      
+
         return redirect()->route('customers.index')
                         ->with('success','Customer updated successfully');
     }
@@ -104,7 +104,7 @@ class CustomerController extends Controller
     public function destroy(Customer $customer)
     {
         $customer->delete();
-       
+
         return redirect()->route('customers.index')
                         ->with('success','Customer deleted successfully');
     }

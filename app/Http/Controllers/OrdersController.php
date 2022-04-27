@@ -11,23 +11,47 @@ use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
-    //
     public function viewOrders(){
         $company = Customer::OrderBy('name')->get();
-        $orders= Orders::all();
+        // $orders= Orders::all();
 
-        foreach($orders as $order){
-            $or_id = $order->id;
-            $or_typ = $order->order_type;
-            $or_dd = $order->dispatch;
-            $prs = Rel_order_products::where('order_id',$or_id)->with('products')->get();
+        // foreach($orders as $order){
+        //     $or_id = $order->id;
+        //     $or_typ = $order->order_type;
+        //     $or_dd = $order->dispatch;
+        //     $or_dd = date('d-m-Y',strtotime($or_dd));
+        //     $prs = Rel_order_products::where('order_id',$or_id)->with('products')->get();
 
-            $or_pr[] = ['order_id'=>$or_id,'or_typ'=>$or_typ,'dispatch'=>$or_dd,$prs];
+        //     $or_pr[] = ['order_id'=>$or_id,'or_typ'=>$or_typ,'dispatch'=>$or_dd,$prs];
+        // }
+
+        return view('orders.orderView')->with(['company'=>$company]);
+    }
+
+    public function viewCompOrder(Request $request){
+        $company = $request->comp_id;
+
+        if($company != 0){
+            $orders = Orders::where('customer_id',$company)->get();
+        }else{
+            $orders = Orders::all();
         }
 
-        // dd($or_pr);
+        if($orders->isNotEmpty()){
+            foreach($orders as $order){
+                $or_id = $order->id;
+                $or_typ = $order->order_type;
+                $or_dd = $order->dispatch;
+                $or_dd = date('d-m-Y',strtotime($or_dd));
+                $prs = Rel_order_products::where('order_id',$or_id)->with('products')->get();
 
-        return view('orders.orderView')->with(['company'=>$company,'orders'=>$or_pr]);
+                $or_pr[] = ['order_id'=>$or_id,'or_typ'=>$or_typ,'dispatch'=>$or_dd,'products'=>$prs];
+            }
+            return response()->json(['status'=>'1','message'=>$or_pr]);
+        }else{
+            return response()->json(['status'=>'0','message'=>'no order to show']);
+        }
+
     }
 
     public function getCustomer(){
