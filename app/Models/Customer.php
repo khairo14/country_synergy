@@ -10,6 +10,13 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name','street','city','state','phone','contact_person',
+        'name',
+        'street',
+        'city',
+        'state',
+        'phone',
+        'contact_person',
+        'gtin_start',
+        'gtin_end',
     ];
 }

@@ -23,6 +23,8 @@ class CustomerSeeder extends Seeder
             'city'=> 'Aus',
             'state' =>'Aus',
             'phone'=>'0000',
+            'gtin_start'=>2,
+            'gtin_end'=>14,
         ]);
         DB::table('customers')->insert([
             'name' => 'Country Synergy',
@@ -31,6 +33,8 @@ class CustomerSeeder extends Seeder
             'city'=> 'ph',
             'state' =>'ph',
             'phone'=>'0001',
+            'gtin_start'=>2,
+            'gtin_end'=>14,
         ]);
 
     }

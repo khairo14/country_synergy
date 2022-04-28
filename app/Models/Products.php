@@ -18,4 +18,8 @@ class Products extends Model
         'size',
         'description',
     ];
+
+    public function products(){
+        return $this->belongsTo('App\Models\Rel_order_products','product_id');
+    }
 }

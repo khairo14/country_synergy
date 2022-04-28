@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBinsTable extends Migration
+class EditCustomers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateBinsTable extends Migration
      */
     public function up()
     {
-        Schema::create('bins', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
+        //
+        Schema::table('customers', function (Blueprint $table) {
+            $table->string('gtin_start')->nullable();
+            $table->string('gtin_end')->nullable();
         });
     }
 
@@ -27,6 +27,6 @@ class CreateBinsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bins');
+        //
     }
 }
