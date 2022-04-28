@@ -14,4 +14,12 @@ class Rel_order_stocks extends Model
         'stock_id',
         'customer_id',
     ];
+
+    public function order(){
+        return $this->belongsTo('App\Models\Orders');
+    }
+
+    public function stock(){
+        return $this->belongsTo('App\Models\Stocks');
+    }
 }

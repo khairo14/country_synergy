@@ -18,4 +18,8 @@ class Orders extends Model
     public function products(){
         return $this->hasMany('App\Models\Rel_order_products','order_id');
     }
+
+    public function stocks(){
+        return $this->hasMany('App\Modesl\Rel_order_stocks','order_id');
+    }
 }

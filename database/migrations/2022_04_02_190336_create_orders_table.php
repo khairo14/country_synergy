@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('customer_id');
             $table->string('order_type');
             $table->date('dispatch');
+            $table->string('status')->default('0');
             $table->timestamps();
         });
     }

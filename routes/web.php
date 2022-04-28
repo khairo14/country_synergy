@@ -21,9 +21,13 @@ use App\Http\Controllers\PDFController;
 
 Route::view('/scan', 'scan');
 Route::post('/checkStocks',[StocksController::class,'checkStocks']);
-Route::post('/check/pallete',[StocksController::class,'checkStocksPallete']);
-Route::post('/store/products',[StocksController::class,'storeProducts']);
 Route::post('/scan/order',[StocksController::class,'checkOrders']);
+Route::post('/checkBin',[StocksController::class,'checkBins']);
+// Route::post('/check/pallete',[StocksController::class,'checkStocksPallete']);
+// Route::post('/store/products',[StocksController::class,'storeProducts']);
+Route::get('/getStocks/{id}',[StocksController::class,'getStocks']);
+Route::get('/getBin/{id}',[StocksController::class,'getBin']);
+Route::get('/orderType/{id}',[StocksController::class,'getOrderType']);
 
 Route::post('/sign-in',[UsersController::class,'signIn']);
 Route::post('/sign-out',[UsersController::class,'signOut']);

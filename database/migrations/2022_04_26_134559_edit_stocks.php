@@ -17,10 +17,6 @@ class EditStocks extends Migration
         Schema::table('stocks', function (Blueprint $table) {
             $table->dropColumn('pallete_label');
             $table->dropColumn('bin_loc');
-            $table->unsignedBigInteger('product_id');
-            $table->string('stock_type');
-
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 

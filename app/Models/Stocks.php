@@ -11,7 +11,9 @@ class Stocks extends Model
 
     protected $fillable = [
         'product_label',
-        'pallete_label',
-        'bin_loc',
     ];
+
+    public function stocks(){
+        return $this->hasMany('App\Models\Rel_order_stocks','stock_id');
+    }
 }

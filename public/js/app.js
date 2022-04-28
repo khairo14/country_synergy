@@ -2076,7 +2076,6 @@ $(document).ready(function () {
   $(".order_id").change(function () {
     var or_id = $(".order_id").val();
     $("#tbl_cont").load(location.href + " #order_tbl");
-    $("#tbl_cont2").load(location.href + " #order_tbl2");
     setTimeout(function () {
       $.ajax({
         url: "/scan/order",
@@ -2098,9 +2097,6 @@ $(document).ready(function () {
               var pr_qty = val.qty;
               var pr_name = val.products[0].product_name;
               var orders = "<tr>" + "<td class='py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6'>" + pr_code + "</td>" + "<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>" + pr_name + "</td>" + "<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>" + pr_qty + "</td>" + "</tr>";
-              setTimeout(function () {
-                $(".order_tbl2").append(orders);
-              }, 1000);
               $(".order_tbl").append(orders);
             });
             $(".next0_scan").addClass('inline-flex');
@@ -2115,8 +2111,8 @@ $(document).ready(function () {
 });
 $(document).ready(function () {
   $('.scan_products').change(function () {
+    $("#tbl_cont2").load(location.href + " #product_tbl");
     var pr_label = $('.scan_products').val();
-    var pr_count = $(".product_tbl tr").length;
     var or = $(".order_id").val();
     var row_data1 = [];
     $(".product_tbl tr").each(function () {
@@ -2126,16 +2122,6 @@ $(document).ready(function () {
 
     if (pr_label == " ") {
       $(".message1").text("Please Scan again");
-      $(".message1").addClass("bg-red-500");
-      $(".scan_products").val("");
-      $(".scan_products").focus();
-      $(".scan_products").attr("placeholder", "Scan code");
-      setTimeout(function () {
-        $(".message1").text("");
-        $(".message1").removeClass("bg-red-500");
-      }, 3000);
-    } else if (pr_count >= 21) {
-      $(".message1").text("Pallete limit already exceed");
       $(".message1").addClass("bg-red-500");
       $(".scan_products").val("");
       $(".scan_products").focus();
@@ -2166,25 +2152,23 @@ $(document).ready(function () {
           "or_id": or
         },
         success: function success(result) {
-          console.log(result); // if(result.status == 0){
-          //     $(".message1").text(result.message);
-          // }else{
-          //     var pr = result.message.products;
-          //     var scan =
-          //         "<tr>"
-          //         +"<td class='py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6'>"+pr_count+"</td>"
-          //         +"<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'><p class='truncate hover:text-clip w-32'>"+pr_label+"</p></td>"
-          //         +"<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>"+pr[0].product_code+'-'+pr[0].product_name+"</td>"
-          //         +"<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>"
-          //         +"<button type='button' class='rm_scan'>"
-          //         +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
-          //             +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
-          //         +"</svg>"
-          //         +"</button>"
-          //         +"</td>"
-          //         +"</tr>"
-          //     $(".product_tbl").append(scan);
-          // }
+          console.log(result);
+
+          if (result.status == 0) {
+            $(".message1").text(JSON.stringify(result.message.message));
+            $(".message1").addClass("bg-red-500");
+            getStocks(or);
+            setTimeout(function () {
+              $(".message1").text("");
+              $(".message1").removeClass("bg-red-500");
+            }, 3000);
+          } else {
+            var pr = result.message;
+            $.each(pr, function (i, val) {
+              var scan = "<tr>" + "<td class='py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6'>" + val.plu + "</td>" + "<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>" + val.PRname + "</td>" + "<td class='px-3 py-3 text-sm font-bold tracking-wide text-center text-gray-500 uppercase'>" + val.PKcount + "</td>" + "<td class='px-3 py-3 text-sm font-bold tracking-wide text-center text-gray-500 uppercase'>" + val.OrCount + "</td>" + "<td class='px-3 py-3 text-sm font-bold bg-green-300 tracking-wide text-center text-black uppercase'>" + val.remaining + "</td>" + "</tr>";
+              $(".product_tbl").append(scan);
+            });
+          }
         },
         error: function error(request, status, _error2) {
           alert(request.responseText);
@@ -2197,57 +2181,9 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function () {
-  $('.scan_pallete').change(function () {
-    var pl_label = $('.scan_pallete').val();
-    var pl_count = $(".pallete_tbl tr").length;
-    var row_data2 = [];
-    $(".pallete_tbl tr").each(function () {
-      var data2 = $(this).find('td').eq(0).text();
-      row_data2.push(data2);
-    });
-
-    if (pl_label == " ") {
-      $(".message2").text("Please Scan Again");
-      $(".scan_pallete").val("");
-      $(".scan_pallete").focus();
-      $(".scan_pallete").attr("placeholder", "Scan pallete code");
-    } else if (pl_count >= 2) {
-      $(".message2").text("1 Pallete at a time");
-      $(".scan_pallete").val("");
-      $(".scan_pallete").focus();
-      $(".scan_pallete").attr("placeholder", "Scan pallete code");
-    } else if ($.inArray(pl_label, row_data2) != -1) {
-      $(".message2").text("Pallete already Scanned");
-      $(".scan_pallete").val("");
-      $(".scan_pallete").focus();
-      $(".scan_pallete").attr("placeholder", "Scan pallete code");
-    } else {
-      $.ajax({
-        url: "/check/pallete",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'post',
-        data: {
-          "pl_label": pl_label
-        },
-        success: function success(result) {
-          if (result === 'false') {
-            $(".message2").text("'Pallete already stored in Bin'");
-          } else {
-            $(".pallete_tbl").append("<tr class='table-row'>" + "<td class='table-cell text-center text-sm border border-slate-600 w-auto'>" + pl_label + "</td>" + "</tr>");
-          }
-        }
-      });
-      $(".scan_pallete").val("");
-      $(".scan_pallete").focus();
-      $(".scan_pallete").attr("placeholder", "Scan pallete code");
-    }
-  });
-});
-$(document).ready(function () {
   $('.scan_bin').change(function () {
     var bin_label = $('.scan_bin').val();
+    var or_id = $(".order_id").val();
     var bin_count = $(".bin_tbl tr").length;
     var row_data3 = [];
     $(".bin_tbl tr").each(function () {
@@ -2257,133 +2193,211 @@ $(document).ready(function () {
 
     if (bin_label == " ") {
       $(".message3").text("Please Scan Again");
+      $(".message3").addClass("bg-red-500");
       $(".scan_bin").val("");
       $(".scan_bin").focus();
-      $(".scan_bin").attr("placeholder", "Scan Bin Code");
+      $(".scan_bin").attr("placeholder", "Enter location");
+      setTimeout(function () {
+        $(".message3").text("");
+        $(".message3").removeClass("bg-red-500");
+      }, 3000);
     } else if (bin_count >= 2) {
-      $(".message3").text("1 Bin Location at a time");
+      $(".message3").text("1 Location at a time");
+      $(".message3").addClass("bg-red-500");
       $(".scan_bin").val("");
       $(".scan_bin").focus();
-      $(".scan_bin").attr("placeholder", "Scan Bin Code");
+      $(".scan_bin").attr("placeholder", "Enter Location");
+      setTimeout(function () {
+        $(".message3").text("");
+        $(".message3").removeClass("bg-red-500");
+      }, 3000);
     } else if ($.inArray(bin_label, row_data3) != -1) {
-      $(".message3").text("Bin already Scanned");
+      $(".message3").text("Location already Set");
+      $(".message3").addClass("bg-red-500");
       $(".scan_bin").val("");
       $(".scan_bin").focus();
-      $(".scan_bin").attr("placeholder", "Scan Bin Code");
+      $(".scan_bin").attr("placeholder", "Enter Location");
+      setTimeout(function () {
+        $(".message3").text("");
+        $(".message3").removeClass("bg-red-500");
+      }, 3000);
     } else {
-      $(".bin_tbl").append("<tr class='table-row'>" + "<td class='table-cell text-center text-sm border border-slate-600 w-auto'>" + bin_label + "</td>" + "</tr>");
+      $.ajax({
+        url: "/checkBin",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "bin_label": bin_label,
+          'or_id': or_id
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            getBin(or_id);
+          } else {
+            $(".message3").text(result.message);
+            $(".message3").addClass("bg-red-500");
+            setTimeout(function () {
+              $(".message3").text("");
+              $(".message3").removeClass("bg-red-500");
+            }, 3000);
+          }
+        },
+        error: function error(request, status, _error3) {
+          alert(request.responseText);
+        }
+      });
       $(".scan_bin").val("");
       $(".scan_bin").focus();
       $(".scan_bin").attr("placeholder", "Scan Bin Code");
     }
   });
 });
+
+function getStocks(or_id) {
+  $.ajax({
+    url: "/getStocks/" + or_id,
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    method: 'get',
+    data: {
+      'or_id': or_id
+    },
+    success: function success(result) {
+      if (result != "") {
+        var pr = result;
+        $.each(pr, function (i, val) {
+          var intRem = parseInt(val.remaining);
+          var scan = "<tr>" + "<td class='py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6'>" + val.plu + "</td>" + "<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>" + val.PRname + "</td>" + "<td class='px-3 py-3 text-sm font-bold tracking-wide text-center text-gray-500 uppercase'>" + val.PKcount + "</td>" + "<td class='px-3 py-3 text-sm font-bold tracking-wide text-center text-gray-500 uppercase'>" + val.OrCount + "</td>";
+
+          if (intRem <= 0) {
+            scan += "<td class='px-3 py-3 text-sm font-bold bg-red-300 tracking-wide text-center text-black uppercase'>0</td>";
+          } else {
+            scan += "<td class='px-3 py-3 text-sm font-bold bg-green-300 tracking-wide text-center text-black uppercase'>" + val.remaining + "</td>";
+          }
+
+          scan += "</tr>";
+          $(".product_tbl").append(scan);
+        });
+      }
+    },
+    error: function error(request, status, _error4) {
+      alert(request.responseText);
+    }
+  });
+}
+
+function getBin(or_id) {
+  $.ajax({
+    url: "/getBin/" + or_id,
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    method: 'get',
+    data: {
+      "or_id": or_id
+    },
+    success: function success(result) {
+      if (result.bin_id != 0) {
+        var bin = "<tr>" + "<td class='py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6'>" + result.location + "</td>" + "<td class='px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>" + "<button type='button' class='inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'" + "id=" + result.bin_id + ">Change Location" + "</button>" + "</td></tr>";
+        $(".bin_tbl_body").append(bin);
+      }
+    },
+    error: function error(request, status, _error5) {
+      alert(request.responseText);
+    }
+  });
+}
+
+function getType(or_id) {
+  $.ajax({
+    url: "/orderType/" + or_id,
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    method: 'get',
+    data: {
+      "or_id": or_id
+    },
+    success: function success(result) {
+      console.log(result);
+
+      if (result === "In") {
+        $(".next1_scan").addClass('inline-flex');
+        $(".complete_scan").removeClass('inline-flex');
+      } else if (result === "Out") {
+        $(".next1_scan").removeClass('inline-flex');
+        $(".complete_scan").addClass('inline-flex');
+      } else {
+        $(".message1").text("Error");
+        $(".message1").addClass("bg-red-500");
+        $(".scan_products").val("");
+        $(".scan_products").focus();
+        $(".scan_products").attr("placeholder", "Scan code");
+      }
+    },
+    error: function error(request, status, _error6) {
+      alert(request.responseText);
+    }
+  });
+}
+
 $(document).ready(function () {
   $('.next0_scan').on("click", function (e) {
     e.preventDefault();
+    $("#tbl_cont2").load(location.href + " #product_tbl");
     var or_id = $(".order_id").val();
-    var tbl_length = $(".order_tbl tr").length;
 
     if (or_id != "") {
       $(".order_card").hide();
       $(".product_card").show();
       $(".scan_products").focus();
       $(".scan_products").attr("placeholder", "Scan code");
-    } else {
-      var message = "Please Input order number";
-      var items = "<tr class='table-row'>" + "<td colspan='3' class='table-cell bg-red-200 text-center text-sm border border-slate-600 w-auto'>" + message + "</td>" + "</tr>";
-      $(".order_tbl").append(items);
-      setTimeout(function () {
-        $("#tbl_cont").load(location.href + " #order_tbl");
-      }, 2000);
+      getStocks(or_id);
+      getType(or_id);
     }
   });
-  $('.next_scan').on("click", function (e) {
+  $('.next1_scan').on("click", function (e) {
     e.preventDefault();
+    $("#tbl_cont3").load(location.href + " #bin_tbl");
+    var or_id = $(".order_id").val();
     $(".product_card").hide();
-    $(".pallete_card").show();
-    $(".scan_pallete").val("");
-    $(".scan_pallete").focus();
-    $(".scan_pallete").attr("placeholder", "Scan pallete code");
-  });
-  $(document).on("click", ".rm_scan", function () {
-    $(this).closest("tr").remove();
-    $(".scan_products").focus();
-    $(".scan_products").attr("placeholder", "Scan code");
-  });
-  $('.next2_scan').on("click", function (e) {
-    e.preventDefault();
-    $(".product_card").hide();
-    $(".pallete_card").hide();
     $(".bin_card").show();
     $(".scan_bin").val("");
     $(".scan_bin").focus();
     $(".scan_bin").attr("placeholder", "Scan Bin Code");
+    setTimeout(function () {
+      getBin(or_id);
+    }, 500);
   });
   $(".prev_scan").on("click", function (e) {
     e.preventDefault();
-    $(".pallete_card").hide();
-    $(".bin_card").hide();
+    $(".product_card").hide();
+    $(".order_card").show();
+    $("#order_id").focus();
+    $("#order_id").attr("placeholder", "Enter Order Number");
+  });
+  $(".prev1_scan").on("click", function (e) {
+    e.preventDefault();
+    $("#tbl_cont2").load(location.href + " #product_tbl");
+    setTimeout(function () {
+      var or_id = $(".order_id").val();
+      getStocks(or_id);
+    }, 1000);
     $(".product_card").show();
+    $(".bin_card").hide();
     $(".scan_products").val("");
     $(".scan_products").focus();
     $(".scan_products").attr("placeholder", "Scan code");
   });
-  $(".prev2_scan").on("click", function (e) {
-    e.preventDefault();
-    $(".pallete_card").show();
-    $(".product_card").hide();
-    $(".bin_card").hide();
-    $(".scan_pallete").val("");
-    $(".scan_pallete").focus();
-    $(".scan_pallete").attr("placeholder", "Scan pallete code");
+  $(".complete_scan").on("click", function () {
+    window.location.reload();
   });
-});
-$(document).on("click", ".complete_scan", function () {
-  pr_data = [];
-  pl_data = [];
-  bin_data = [];
-  $(".product_tbl_body tr").each(function () {
-    var rows = $(this);
-    var a = rows.find("td:eq(1)").text();
-    pr_data.push(a);
+  $(".complete_scan").on("click", function () {
+    window.location.reload();
   });
-  $(".pallete_tbl_body tr").each(function () {
-    var rows = $(this);
-    var b = rows.find("td:eq(0)").text();
-    pl_data.push(b);
-  });
-  $(".bin_tbl_body tr").each(function () {
-    var rows = $(this);
-    var c = rows.find("td:eq(0)").text();
-    bin_data.push(c);
-  });
-
-  if (pr_data == "" || pl_data == "" || bin_data == "") {
-    $(".message3").text("Please check Products/Pallete/Bin tables");
-    $(".scan_bin").val("");
-    $(".scan_bin").focus();
-    $(".scan_bin").attr("placeholder", "Scan Bin Code");
-  } else {
-    $.ajax({
-      url: "/store/products",
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      },
-      method: 'post',
-      data: {
-        "pr_data": pr_data,
-        "pl_data": pl_data,
-        "bin_data": bin_data
-      },
-      dataType: 'JSON',
-      success: function success(result) {
-        // alert(JSON.stringify(result));
-        // console.log(result.message);
-        window.location.reload();
-      }
-    });
-  }
 }); // end of scan page
 // App Blade Users
 
@@ -2506,7 +2520,7 @@ $(document).ready(function () {
           });
         }
       },
-      error: function error(request, status, _error3) {
+      error: function error(request, status, _error7) {
         alert(request.responseText);
       }
     });
@@ -2653,7 +2667,7 @@ $(document).ready(function () {
           }, 500);
         }
       },
-      error: function error(request, status, _error4) {
+      error: function error(request, status, _error8) {
         alert(request.responseText);
       }
     });

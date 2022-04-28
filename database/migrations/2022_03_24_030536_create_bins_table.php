@@ -16,7 +16,6 @@ class CreateBinsTable extends Migration
         Schema::create('bins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('bin_label');
             $table->timestamps();
         });
     }

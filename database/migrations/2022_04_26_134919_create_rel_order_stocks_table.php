@@ -17,12 +17,16 @@ class CreateRelOrderStocksTable extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('stock_id');
-            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->string('stock_type');
+            $table->unsignedBigInteger('bin_location')->nullable();
 
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('stock_id')->references('id')->on('stocks')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+
         });
     }
 
