@@ -2322,8 +2322,6 @@ function getType(or_id) {
       "or_id": or_id
     },
     success: function success(result) {
-      console.log(result);
-
       if (result === "In") {
         $(".next1_scan").addClass('inline-flex');
         $(".complete_scan").removeClass('inline-flex');
@@ -2395,7 +2393,7 @@ $(document).ready(function () {
   $(".complete_scan").on("click", function () {
     window.location.reload();
   });
-  $(".complete_scan").on("click", function () {
+  $(".complete1_scan").on("click", function () {
     window.location.reload();
   });
 }); // end of scan page

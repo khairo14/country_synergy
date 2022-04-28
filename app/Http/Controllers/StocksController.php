@@ -155,7 +155,7 @@ class StocksController extends Controller
             if($pr->isNotEmpty()){
                 foreach($pr as $id){
                     $product = Products::where('id',$id)->get();
-                    $count = Rel_order_stocks::where(['order_id'=>$or_id,'product_id'=>$id])->get()->count();
+                    $count = Rel_order_stocks::where(['order_id'=>$or_id,'stock_id'=>$id])->get()->count();
                     $orQty = Rel_order_products::where(['order_id'=>$or_id,'product_id'=>$id])->pluck('qty');
                     if($orQty->isNotEmpty()){
                         foreach($orQty as $orCount){
@@ -176,12 +176,12 @@ class StocksController extends Controller
                 $scannedItems = [];
             }
         }else{
-            $pr = Rel_order_products::where('order_id',$or_id)->pluck('product_id');
+            $pr = Rel_order_stocks::where('stock_type',$orType[0]->order_type)->get();
             if($pr->isNotEmpty()){
                 foreach($pr as $id){
-                    $product = Products::where('id',$id)->get();
-                    $count = Rel_order_stocks::where(['product_id'=>$id,'stock_type'=>$orType[0]->order_type])->get()->count();
-                    $orQty = Rel_order_products::where(['order_id'=>$or_id,'product_id'=>$id])->pluck('qty');
+                    $product = Products::where('id',$id->product_id)->get();
+                    $count = Rel_order_stocks::where(['product_id'=>$id->product_id,'stock_type'=>$orType[0]->order_type])->get()->count();
+                    $orQty = Rel_order_products::where(['order_id'=>$or_id,'product_id'=>$id->product_id])->pluck('qty');
                     if($orQty->isNotEmpty()){
                         foreach($orQty as $orCount){
                             $orCount = $orCount;

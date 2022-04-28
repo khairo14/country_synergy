@@ -269,7 +269,6 @@ function getType(or_id){
         method: 'get',
         data: { "or_id": or_id},
         success: function (result) {
-            console.log(result);
             if(result === "In"){
                 $(".next1_scan").addClass('inline-flex');
                 $(".complete_scan").removeClass('inline-flex');
@@ -353,7 +352,7 @@ $(document).ready(function(){
     $(".complete_scan").on("click",function(){
         window.location.reload();
     });
-    $(".complete_scan").on("click",function(){
+    $(".complete1_scan").on("click",function(){
         window.location.reload();
     });
 });
