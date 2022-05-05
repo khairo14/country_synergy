@@ -54,3 +54,5 @@ Route::post('/get-productList',[OrdersController::class,'productList'])->middlew
 Route::post('/get-product',[OrdersController::class,'getProduct'])->middleware('auth');
 Route::post('/save-order',[OrdersController::class,'addOrderIn'])->middleware('auth');
 Route::post('/get-company-order',[OrdersController::class,'viewCompOrder']);
+// stocks
+Route::get('/stocks',[StocksController::class,'stocksView']);

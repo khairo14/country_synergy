@@ -9,8 +9,9 @@ use App\Models\Products;
 use App\Models\Rel_order_products;
 use App\Models\Rel_order_stocks;
 use App\Models\Bins;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class StocksController extends Controller
 {
@@ -234,25 +235,35 @@ class StocksController extends Controller
         }
         return $type;
     }
-    // public function storeProducts(Request $request){
-    //     $pr_data = $request->pr_data;
-    //     $pl_data = $request->pl_data;
-    //     $bin_data = $request->bin_data;
+
+    public function stocksView(){
+        $company = Customer::OrderBy('name')->get();
+
+        // $allStocks = Rel_order_stocks::where('stock_type','In')->get();
+
+        // foreach($allStocks as $items){
+        //     $count = Rel_order_stocks::where('product_id',$items->product_id)->count();
+        //     $plu = Products::where('id',$items->product_id)->get();
+        //     $s = Stocks::where('id',$items->stock_id)->get();
+        //     $location = Bins::where('id',$items->bin_location)->get();
+        //     // if(strlen($s) > 24){
+        //     $date = substr($s[0]->product_label,18,6);
+        //     // }else{}
+        //     $y = substr($date,0,2) + 2;
+        //     $m = substr($date,2,2);
+        //     $d = substr($date,4,2);
+
+        //     $y = DateTime::createFromFormat('y',$y);
+        //     $y = $y->format('Y');
 
 
-    //     if($pr_data != "" || $pl_data != "" || $bin_data != ""){
-    //         foreach($pr_data as $pr){
-    //           $store[] = ['product_label'=>$pr,'pallete_label'=>$pl_data[0],'bin_loc'=>$bin_data[0]];
-    //         }
-    //         Stocks::insert($store);
-    //         $message = "Complete";
-    //     }else{
-    //         $message = "Error Storing";
-    //     }
+        //     $data[] =['count'=>$count,'plu'=>$plu[0]->product_code,'pname'=>$plu[0]->product_name,'location'=>$location[0]->name,'date'=>$y];
+        // }
 
-    //     // return response(['pr'=>$pr_data,'pl'=>$pl_data,'bin'=>$bin_data]);
-    //     return response(['message'=>$message]);
-    // }
+        // dd($allStocks);
 
+        return view('stocks.stocksView')->with(['company'=>$company]);
+
+    }
 
 }

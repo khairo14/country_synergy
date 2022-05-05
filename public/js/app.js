@@ -2671,6 +2671,15 @@ $(document).ready(function () {
     });
   }
 }); // End of Orders Page
+// stocks page
+
+$("stcks_tbl").ready(function () {// $.ajax({
+  // });
+});
+
+function allStocks() {}
+
+; // end of stocks page
 
 /***/ }),
 

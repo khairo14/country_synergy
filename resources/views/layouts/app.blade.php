@@ -95,6 +95,27 @@
                     </div>
                 </div>
 
+                <div x-data="{open:false}" class="space-y-1">
+                    <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-controls="sub-menu-5" aria-expanded="false"
+                      x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-5" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                      <svg class="flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: outline/chart-bar" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                      </svg>
+                      <span class="flex-1">
+                        Stocks
+                      </span>
+                      <svg class="flex-shrink-0 w-5 h-5 ml-3 text-gray-400 transition-colors duration-150 ease-in-out transform rotate-90 group-hover:text-gray-400" viewBox="0 0 20 20" x-state:on="Expanded" x-state:off="Collapsed" aria-hidden="true" :class="{ 'text-gray-400 rotate-90': open, 'text-gray-300': !(open) }">
+                        <path d="M6 6L14 10L6 14V6Z" fill="currentColor"></path>
+                      </svg>
+                    </button>
+                    <!-- Expandable link section, show/hide based on state. -->
+                    <div class="space-y-1" id="sub-menu-5" x-show="open">
+                      <a href="/stocks" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-white rounded-md group pl-11 hover:text-gray-400 hover:bg-gray-500"> View Stocks </a>
+
+                      {{-- <a href="/createOrder" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-white rounded-md group pl-11 hover:text-gray-400 hover:bg-gray-500"> Create Order </a> --}}
+                    </div>
+                </div>
+
                 <div>
                     <a href="/customers" class="flex items-center px-2 py-2 text-sm font-medium text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 hover:text-white group" x-state:on="Current" x-state:off="Default">
                         <!--
@@ -207,6 +228,27 @@
                       <a href="/createOrder" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-white rounded-md group pl-11 hover:text-gray-400 hover:bg-gray-500"> Create Order </a>
                     </div>
                 </div>
+                <div x-data="{open:false}" class="space-y-1">
+                    <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-controls="sub-menu-5" aria-expanded="false"
+                      x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-5" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                      <svg class="flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: outline/chart-bar" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                      </svg>
+                      <span class="flex-1">
+                        Stocks
+                      </span>
+                      <svg class="flex-shrink-0 w-5 h-5 ml-3 text-gray-400 transition-colors duration-150 ease-in-out transform rotate-90 group-hover:text-gray-400" viewBox="0 0 20 20" x-state:on="Expanded" x-state:off="Collapsed" aria-hidden="true" :class="{ 'text-gray-400 rotate-90': open, 'text-gray-300': !(open) }">
+                        <path d="M6 6L14 10L6 14V6Z" fill="currentColor"></path>
+                      </svg>
+                    </button>
+                    <!-- Expandable link section, show/hide based on state. -->
+                    <div class="space-y-1" id="sub-menu-5" x-show="open">
+                      <a href="/stocks" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-white rounded-md group pl-11 hover:text-gray-400 hover:bg-gray-500"> View Stocks </a>
+
+                      {{-- <a href="/createOrder" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-white rounded-md group pl-11 hover:text-gray-400 hover:bg-gray-500"> Create Order </a> --}}
+                    </div>
+                </div>
+
                 <div>
                     <a href="/customers" class="flex items-center px-2 py-2 text-sm font-medium text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 hover:text-white group" x-state:on="Current" x-state:off="Default">
                         <!--
