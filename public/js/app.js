@@ -2196,7 +2196,8 @@ $(document).ready(function () {
       });
     } else {}
   });
-}); // $(document).ready(function(){
+}); // end locations
+// $(document).ready(function(){
 //     $(".order_id").change(function(){
 //         var or_id = $(".order_id").val();
 //         $("#tbl_cont").load(location.href +" #order_tbl");

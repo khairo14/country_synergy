@@ -128,6 +128,7 @@ $(document).ready(function(){
         }
     });
 });
+// end locations
 
 // $(document).ready(function(){
 //     $(".order_id").change(function(){
