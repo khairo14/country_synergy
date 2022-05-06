@@ -1,33 +1,23 @@
 @extends('layouts.app')
 {{-- @extends('layouts.sidebar') --}}
-
 @section('content')
 {{-- Scan Page --}}
-<div class="flex flex-col items-center justify-center min-h-full px-4 py-6 mx-auto sm:px-6 lg:px-8" >
-
-    <div class="flex items-center justify-center row-start-1 space-y-8">
-      <div>
-        <img class="w-auto h-12 mx-auto" src="{{asset('img/country_synergy_logo.png')}}" alt="Workflow">
-        <h2 class="mt-6 text-3xl font-extrabold text-center text-gray-900">Warehouse System</h2>
-        <p class="mt-2 text-sm text-center text-gray-600">
-      </div>
-    </div>
-
-    <div class="flex items-center justify-center min-w-full row-start-2">
-        <div class="px-4">
-            <button type="button" class="inline-flex items-center px-12 py-12 text-2xl font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm scan hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span class="flex items-center mx-5">
-                    Scan
+<div class="flex flex-col items-center justify-center min-h-full px-2 py-4 mx-auto sm:px-2 lg:px-8" >
+    <div class="grid items-center justify-center min-w-full grid-rows-1 space-y-6">
+        <div class="grid-rows-2 px-4">
+            <button type="button" class="inline-flex items-center px-10 py-10 text-2xl font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md stockIn hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span class="items-center mx-5">
+                    &nbsp;Stocks In &nbsp;
                 </span>
             </button>
         </div>
-        {{-- <div class="px-4">
-            <button type="button" class="inline-flex items-center px-12 py-12 text-2xl font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm scan hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span class="flex items-center mx-5">
-                    Scan out
+        <div class="px-4">
+            <button type="button" class="inline-flex items-center px-10 py-10 text-2xl font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md stockOut hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span class="items-center mx-5">
+                    Stocks Out
                 </span>
             </button>
-        </div> --}}
+        </div>
     </div>
 </div>
 @endsection

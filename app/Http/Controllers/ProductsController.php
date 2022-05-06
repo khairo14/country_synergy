@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Customer;
 use App\Models\Products;
 use App\Imports\ProductsImport;
-use SebastianBergmann\Environment\Console;
 
 class ProductsController extends Controller
 {

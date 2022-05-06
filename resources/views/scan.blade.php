@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex items-center justify-center min-h-full px-4 py-1 sm:px-6 lg:px-8 overflow-auto">
+    <div class="flex items-center justify-center min-h-full px-4 py-1 overflow-auto sm:px-6 lg:px-8">
         <div class="w-full max-w-xl px-5 py-5 bg-gray-200 order_card">
             <div>
                 <label for="items" class="text-lg font-medium text-gray-700 flex-inline">Scan Order</label>
@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="flex items-center justify-center mt-2" id="tbl_cont">
-                <table class="w-full order_tbl divide-y divide-gray-500" id="order_tbl">
+                <table class="w-full divide-y divide-gray-500 order_tbl" id="order_tbl">
                     <thead class="items-center px-1 bg-gray-50">
                         <tr>
                             <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6">Product Code</th>
@@ -19,7 +19,7 @@
                             <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase">Qty</th>
                         </tr>
                     </thead>
-                    <tbody class="order_tbl_body items-center bg-white divide-y divide-gray-500">
+                    <tbody class="items-center bg-white divide-y divide-gray-500 order_tbl_body">
 
                     </tbody>
                 </table>
@@ -38,18 +38,18 @@
         </div>
     </div>
 
-    <div class="flex items-center justify-center min-h-full px-4 py-1 sm:px-6 lg:px-8 overflow-auto">
+    <div class="flex items-center justify-center min-h-full px-4 py-1 overflow-auto sm:px-6 lg:px-8">
         <div class="w-full max-w-xl px-5 py-5 bg-gray-200 product_card" hidden>
                 <div>
                     <label for="items" class="text-lg font-medium text-gray-700 flex-inline">Scan Items</label>
-                    <span class="px-2 ml-12 text-center message1 text-white"></span>
+                    <span class="px-2 ml-12 text-center text-white message1"></span>
                     <div class="relative mt-1 rounded-md shadow-sm">
                         <input type="text" name="products" id="products" class="block w-full pr-12 border-gray-300 rounded-sm scan_products focus:ring-indigo-500 focus:border-indigo-500 pl-7 sm:text-md" placeholder="Scan code" autofocus>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-center mt-2" id="tbl_cont2">
-                    <table class="w-full product_tbl divide-y divide-gray-500" id="product_tbl">
+                    <table class="w-full divide-y divide-gray-500 product_tbl" id="product_tbl">
                         <thead class="items-center px-1 bg-gray-50">
                             <tr>
                                 <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6">plu</th>
@@ -59,7 +59,7 @@
                                 <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase">Remaining</th>
                             </tr>
                         </thead>
-                        <tbody class="product_tbl_body items-center bg-white divide-y divide-gray-500">
+                        <tbody class="items-center bg-white divide-y divide-gray-500 product_tbl_body">
 
                         </tbody>
                     </table>
@@ -101,20 +101,20 @@
         <div class="w-full max-w-xl px-5 py-5 bg-gray-200 bin_card" hidden>
             <div>
                 <label for="items" class="text-lg font-medium text-gray-700 flex-inline">Pallet Location</label>
-                <span class="px-2 ml-12 message3 text-white"></span>
+                <span class="px-2 ml-12 text-white message3"></span>
                 <div class="relative mt-1 rounded-md shadow-sm">
                     <input type="text" name="bin_loc" id="bin_loc" class="block w-full pr-12 border-gray-300 rounded-sm scan_bin focus:ring-indigo-500 focus:border-indigo-500 pl-7 sm:text-md" placeholder="Scan code" autofocus>
                 </div>
             </div>
             <div class="flex items-center justify-center mt-2" id="tbl_cont3">
-                <table class="w-full bin_tbl divide-y divide-gray-500" id="bin_tbl">
+                <table class="w-full divide-y divide-gray-500 bin_tbl" id="bin_tbl">
                     <thead class="items-center px-1 bg-gray-50">
                         <tr>
                             <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase sm:pl-6">Pallet Location</th>
                             <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-700 uppercase">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="bin_tbl_body items-center bg-white divide-y divide-gray-500">
+                    <tbody class="items-center bg-white divide-y divide-gray-500 bin_tbl_body">
 
                     </tbody>
                 </table>
