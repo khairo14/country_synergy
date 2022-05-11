@@ -30,7 +30,7 @@
             {{-- Top layout --}}
             @include('layouts.topbar')
             {{-- Main Layout --}}
-            <main class="flex-1">
+            <main class="flex-1 overflow-x-hidden">
                 <div class="p-2">
                     @yield('content')
                 </div>

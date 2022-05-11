@@ -2,268 +2,166 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Stocks;
-use App\Models\Orders;
+use App\Models\Customers;
+use App\Models\Locations;
+use App\Models\PalletHistory;
+use App\Models\Pallets;
+use App\Models\ProductHistory;
 use App\Models\Products;
-use App\Models\Rel_order_products;
-use App\Models\Rel_order_stocks;
-use App\Models\Bins;
+use App\Models\ScanProducts;
+use App\Models\Stocks;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
 
 class StocksController extends Controller
 {
-    public function checkOrders(Request $request){
-        $or_id = $request->or_id;
+    public function scanProducts(){
+        $customers = Customers::orderBy('name')->get();
 
-        if($or_id != ""){
-            $orders = Orders::where('id',$or_id)->get();
-
-            if($orders->isNotEmpty()){
-                $or_pr = Rel_order_products::where('order_id',$or_id)->get();
-                $products = [];
-                foreach($or_pr as $pr){
-                    $products[] = ['products'=>Products::where('id',$pr->product_id)->get(),"qty"=>$pr->qty];
-                }
-                return response()->json(['status'=>'1',"products"=>$products]);
-            }else{
-                return response()->json(['status'=>'0','message'=>'Order number not found',"products"=>""]);
-            }
-        }else{
-            return response()->json(['status'=>'0','message'=>'Please Enter Order Number',"products"=>""]);
-        }
+        return view('scan.scanProduct')->with(['customers'=>$customers]);
     }
 
-    public function checkStocks(Request $request){
-        $stock = $request->pr_label;
-        $or_id = $request->or_id;
+    public function checkProduct(Request $request){
+        $label = $request->label;
+        $cust = $request->cust;
 
-        $cm_id = Orders::where('id',$or_id)->get();
-        $cust = Customer::where('id',$cm_id[0]->customer_id)->get();
+        $customer = Customers::where('id',$cust)->get();
 
-        if($cust->isNotEmpty()){
-            $gtin = substr($stock,$cust[0]->gtin_start,$cust[0]->gtin_end);
+        if($customer->isNotEmpty()){
+            $gtin = substr($label,$customer[0]->gtin_start,$customer[0]->gtin_end);
         }
 
-        if($cm_id[0]->order_type === 'In'){
-            $check = Stocks::where(['product_label'=>$stock])->pluck('product_label');
-            if($check->isEmpty()){
-                $addStocks = new Stocks();
-                $addStocks->product_label = $stock;
-                $addStocks->save();
+        $existInStock = ScanProducts::where('label',$label)->get();
 
-                if(isset($addStocks->id)){
-                    $stock_id = $addStocks->id;
-                    $products = Products::where('gtin',$gtin)->get();
-                    if($products->isNotEmpty()){
-                        $rel_os = new Rel_order_stocks();
-                        $rel_os->order_id = $cm_id[0]->id;
-                        $rel_os->stock_id = $stock_id;
-                        $rel_os->product_id = $products[0]->id;
-                        $rel_os->stock_type = $cm_id[0]->order_type;
-                        $rel_os->save();
-                    }else{
-                        $rel_os = new Rel_order_stocks();
-                        $rel_os->order_id = $cm_id[0]->id;
-                        $rel_os->stock_id = $stock_id;
-                        $rel_os->product_id = Null;
-                        $rel_os->stock_type = $cm_id[0]->order_type;
-                        $rel_os->save();
-                    }
+        if($existInStock->isNotEmpty()){
+            $status = 0;
+            $message = 'Product Already Stored - Use Product Tracking';
+        }else{
+            $exist = Products::where('gtin',$gtin)->get();
+            if($exist->isEmpty()){
+                $status = 2;
+                $message = 'Product not Exist Want To Add now?';
+            }else{
+                $status = 1;
+                $message = $exist;
+            }
+        }
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
 
-                    if(isset($rel_os->id)){
-                        $scannedItems = $this->getStocks($or_id);
-                    }
+    public function addProducts(Request $request){
+        $old_pallet = $request->old_pallet;
+        $cust = $request->customer;
+        $products = $request->products;
 
-                    $status = 1;
-                    $message = $scannedItems;
-                }else{
-                    $status = 0;
-                    $message = ['message'=>"Error Please Scan Again"];
+        $chkPallet = Pallets::where('name',$old_pallet)->get();
+        if($chkPallet->isNotEmpty()){
+            $old_pallet_id = $chkPallet->id;
+        }else{
+            $old_pallet_id = null;
+        }
+
+        if($products != ""){
+            foreach($products as $product){
+                $label = $product['label'];
+                $gtin = $product['gtin'];
+
+                $scanProd = new ScanProducts();
+                $scanProd->label = $label;
+                $scanProd->gtin = $gtin;
+                $scanProd->save();
+                if(isset($scanProd->id)){
+                    $scnprod_id[] = $scanProd->id;
                 }
+            }
+
+            $qty = count($products);
+            // $prod_details = Products::where('gtin',$gtin)->get();
+            $now = Carbon::now()->format('ymd');
+
+            $newPallet = $gtin.$qty.$now;
+            $createPallet = new Pallets();
+            $createPallet->name = $newPallet;
+            $createPallet->save();
+
+            if(isset($createPallet->id)){
+                foreach($scnprod_id as $scnId){
+                    $prod_history = new ProductHistory();
+                    $prod_history->scanned_id = $scnId;
+                    $prod_history->gtin = $gtin;
+                    $prod_history->old_pallet_id = $old_pallet_id;
+                    $prod_history->new_pallet_id = $createPallet->id;
+                    $prod_history->actions = 'Stock-In';
+                    $prod_history->save();
+                }
+                $status = 1;
+                $message = ['pallet_id'=>$createPallet->id,'pallet_name'=>$newPallet,'qty'=>$qty,'date'=>$now,'gtin'=>$gtin];
             }else{
                 $status = 0;
-                $message = ['message'=>"Product Already Scanned"];
+                $message="Error Scanning Products";
             }
         }else{
-            $check = Stocks::where(['product_label'=>$stock])->get();
-            if($check->isNotEmpty()){
-                    $stck = Rel_order_stocks::where('stock_id',$check[0]->id)->get();
-                    if($stck->isNotEmpty()){
-                        Rel_order_stocks::where('stock_id',$stck[0]->id)->update(['stock_type'=>"Out"]);
-                        $status = 1;
-                        $scannedItems = $this->getStocks($or_id);
-                        $message = $scannedItems;
-                    }
-            }else{
-                $status = 0;
-                $message = ['message'=>"Item doesn't exist in Stocks"];
-            }
+            $status = 0;
+            $message="No Products Added";
         }
-
 
         return response()->json(['status'=>$status,'message'=>$message]);
     }
 
-    public function checkBins(Request $request){
-        $loc = $request->bin_label;
-        $or_id =$request->or_id;
-        $bin = Bins::where('name',$loc)->get();
-        $chkStock = Rel_order_stocks::where('order_id',$or_id)->whereNotNull('stock_id')->get();
+    public function assignLocation(Request $request){
+        $location = $request->location;
+        $old_pallet = $request->old_pallet;
+        $new_pallet_id = $request->new_pallet_id;
+        $gtin = $request->gtin;
+        $qty = $request->qty;
 
-        if($bin->isEmpty()){
-            if($chkStock->isNotEmpty()){
-                $addBin = new Bins();
-                $addBin->name = $loc;
-                $addBin->save();
+        if($old_pallet != null){
+            $old_pallet_id = Pallets::where('name',$old_pallet)->get();
+        }else{
+            $old_pallet_id = null;
+        }
 
-                if(isset($addBin->id)){
-                    $bin_id = $addBin->id;
-                    Rel_order_stocks::where('order_id',$or_id)->update(['bin_location'=>$bin_id]);
+        if($location != ""){
+            $exist_loc = Locations::where('name',$location)->get();
+            if($exist_loc->isNotEmpty()){
+                $loc_id = $exist_loc[0]->id;
+            }else{
+                $new_loc = new Locations();
+                $new_loc->name = $location;
+                $new_loc->save();
 
-                    $status = 1;
-                    $bin_location = $this->getBin($or_id);
-                }else{
-                    $status = 0;
-                    $bin_location = 'Error Adding Location';
+                if(isset($new_loc->id)){
+                    $loc_id = $new_loc->id;
                 }
-            }else{
-                    $status = 0;
-                    $bin_location = 'Add Products First';
+            }
+
+            $pallet_history = new PalletHistory();
+            $pallet_history->old_pallet_id = $old_pallet_id;
+            $pallet_history->new_pallet_id = $new_pallet_id;
+            $pallet_history->item_quantity = $qty;
+            $pallet_history->actions = 'Stock-In';
+            $pallet_history->new_location_id = $loc_id;
+            $pallet_history->save();
+
+            if(isset($pallet_history->id)){
+                $stocks = new Stocks();
+                $stocks->gtin = $gtin;
+                $stocks->qty = $qty;
+                $stocks->location_id = $loc_id;
+                $stocks->status = null;
+                $stocks->save();
+            }
+
+            if(isset($stocks->id)){
+                $status =1;
+                $message ="Pallet Stored";
             }
         }else{
-            if($chkStock->isNotEmpty()){
-                $bin_id = $bin[0]->id;
-                Rel_order_stocks::where('order_id',$or_id)->update(['bin_location'=>$bin_id]);
-                $status = 1;
-                $bin_location = $this->getBin($or_id);
-            }else{
-                $status = 0;
-                $bin_location = 'Add Products First';
-            }
-
+            $status =0;
+            $message ="Please Scan Location";
         }
 
-        return response()->json(['status'=>$status,'message'=>$bin_location]);
-    }
-
-    public function getStocks($or_id){
-        $orType = Orders::where('id',$or_id)->get();
-        if($orType[0]->order_type === 'In'){
-            $pr = Rel_order_stocks::where('order_id',$or_id)->groupBy('product_id')->pluck('product_id');
-            if($pr->isNotEmpty()){
-                foreach($pr as $id){
-                    $product = Products::where('id',$id)->get();
-                    $count = Rel_order_stocks::where(['order_id'=>$or_id,'stock_id'=>$id])->get()->count();
-                    $orQty = Rel_order_products::where(['order_id'=>$or_id,'product_id'=>$id])->pluck('qty');
-                    if($orQty->isNotEmpty()){
-                        foreach($orQty as $orCount){
-                            $orCount = $orCount;
-                        }
-                    }else{
-                        $orCount = 0;
-                    }
-
-                    if($product->isEmpty()){
-                        $scannedItems[] = ['plu'=>'0','PRname'=>'Product Not recognized','PKcount'=>$count,'OrCount'=>'0','remaining'=>'0'];
-                    }else{
-                        $remaining = (int)$orCount - $count;
-                        $scannedItems[] = ['plu'=>$product[0]->product_code,'PRname'=>$product[0]->product_name,'PKcount'=>$count,'OrCount'=>$orCount,'remaining'=> $remaining];
-                    }
-                }
-            }else{
-                $scannedItems = [];
-            }
-        }else{
-            $pr = Rel_order_stocks::where('stock_type',$orType[0]->order_type)->get();
-            if($pr->isNotEmpty()){
-                foreach($pr as $id){
-                    $product = Products::where('id',$id->product_id)->get();
-                    $count = Rel_order_stocks::where(['product_id'=>$id->product_id,'stock_type'=>$orType[0]->order_type])->get()->count();
-                    $orQty = Rel_order_products::where(['order_id'=>$or_id,'product_id'=>$id->product_id])->pluck('qty');
-                    if($orQty->isNotEmpty()){
-                        foreach($orQty as $orCount){
-                            $orCount = $orCount;
-                        }
-                    }else{
-                        $orCount = 0;
-                    }
-
-                    if($product->isEmpty()){
-                        $scannedItems[] = ['plu'=>'0','PRname'=>'Product Not recognized','PKcount'=>$count,'OrCount'=>'0','remaining'=>'0'];
-                    }else{
-                        $remaining = Rel_order_stocks::where(['product_id'=>$id,'stock_type'=>'In'])->get()->count();
-                        // $remaining = (int)$orCount - $count;
-                        $scannedItems[] = ['plu'=>$product[0]->product_code,'PRname'=>$product[0]->product_name,'PKcount'=>$count,'OrCount'=>$orCount,'remaining'=> $remaining];
-                    }
-                }
-            }else{
-                $scannedItems = [];
-            }
-        }
-
-
-
-        return $scannedItems;
-    }
-
-    public function getBin($or_id){
-        $bin = Rel_order_stocks::where(['order_id'=>$or_id])->groupBy('bin_location')->pluck('bin_location');
-
-        if($bin->isEmpty()){
-            $location = ['bin_id'=>0,'location'=>''];
-        }else{
-            $bin_loc = Bins::where('id',$bin)->get();
-            if($bin_loc->isNotEmpty()){
-                $location = ['bin_id'=>$bin_loc[0]->id,'location'=>$bin_loc[0]->name];
-            }else{
-                $location = ['bin_id'=>0,'location'=>''];
-            }
-        }
-
-        return $location;
-    }
-
-    public function getOrderType($or_id){
-        $or = Orders::where('id',$or_id)->get();
-        if($or->isNotEmpty()){
-            $type = $or[0]->order_type;
-        }else{
-            $type = "";
-        }
-        return $type;
-    }
-
-    public function stocksView(){
-        $company = Customer::OrderBy('name')->get();
-
-        // $allStocks = Rel_order_stocks::where('stock_type','In')->get();
-
-        // foreach($allStocks as $items){
-        //     $count = Rel_order_stocks::where('product_id',$items->product_id)->count();
-        //     $plu = Products::where('id',$items->product_id)->get();
-        //     $s = Stocks::where('id',$items->stock_id)->get();
-        //     $location = Bins::where('id',$items->bin_location)->get();
-        //     // if(strlen($s) > 24){
-        //     $date = substr($s[0]->product_label,18,6);
-        //     // }else{}
-        //     $y = substr($date,0,2) + 2;
-        //     $m = substr($date,2,2);
-        //     $d = substr($date,4,2);
-
-        //     $y = DateTime::createFromFormat('y',$y);
-        //     $y = $y->format('Y');
-
-
-        //     $data[] =['count'=>$count,'plu'=>$plu[0]->product_code,'pname'=>$plu[0]->product_name,'location'=>$location[0]->name,'date'=>$y];
-        // }
-
-        // dd($allStocks);
-
-        return view('stocks.stocksView')->with(['company'=>$company]);
-
+        return response()->json(['status'=>$status,'$message'=>$message]);
     }
 
 }

@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\LocationsImport;
 use Illuminate\Http\Request;
 
-class LocationController extends Controller
+class LocationsController extends Controller
 {
     //
     public function fLocation(){

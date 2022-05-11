@@ -76,4 +76,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $("#loc_name").select2();
+    });
+</script>
 @endsection

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
+use App\Models\Customers;
 use Illuminate\Http\Request;
 
-class CustomerController extends Controller
+class CustomersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::latest()->get();
+        $customers = Customers::latest()->get();
 
         return view('customers.index',compact('customers'))->with('i',(request()->input('page', 1) - 1) * 5);
     }
@@ -45,7 +45,7 @@ class CustomerController extends Controller
             'phone' => 'required',
         ]);
 
-        Customer::create($request->all());
+        Customers::create($request->all());
 
         return redirect()->route('customers.index')->with('success','Customer created successfully');
     }
@@ -56,7 +56,7 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function show(Customer $customer)
+    public function show(Customers $customer)
     {
         return view('customers.show',compact('customer'));
     }
@@ -67,7 +67,7 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Customer $customer)
+    public function edit(Customers $customer)
     {
         return view('customers.edit',compact('customer'));
     }
@@ -79,7 +79,7 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Customers $customer)
     {
         $request->validate([
             'name' => 'required',
@@ -101,7 +101,7 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Customer $customer)
+    public function destroy(Customers $customer)
     {
         $customer->delete();
 
