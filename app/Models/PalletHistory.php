@@ -5,18 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class PalletHistory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'street',
-        'city',
-        'state',
-        'phone',
-        'contact_person',
-        'gtin_start',
-        'gtin_end',
+        'old_pallet_id',
+        'new_pallet_id',
+        'item_quantity',
+        'actions',
+        'old_locations',
+        'new_locations',
     ];
 }

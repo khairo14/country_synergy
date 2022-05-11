@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EditUsers extends Migration
+class CreatePalletsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class EditUsers extends Migration
      */
     public function up()
     {
-        //
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('role_id')->default(2);
-            $table->foreign('role_id')->references('id')->on('roles');
+        Schema::create('pallets', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +27,6 @@ class EditUsers extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('pallets');
     }
 }

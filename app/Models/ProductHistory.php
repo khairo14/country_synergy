@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Stocks extends Model
+class ProductHistory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'scanned_id',
         'gtin',
-        'qty',
-        'status',
-        'location_id',
+        'old_pallet_id',
+        'new_pallet_id',
+        'actions',
     ];
 }

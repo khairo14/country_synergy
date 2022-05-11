@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EditProducts2 extends Migration
+class CreateScanProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class EditProducts2 extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('description');
-            $table->string('brand');
-            $table->string('size');
+        Schema::create('scan_products', function (Blueprint $table) {
+            $table->id();
+            $table->string('label');
+            $table->string('gtin');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +28,6 @@ class EditProducts2 extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('scan_products');
     }
 }

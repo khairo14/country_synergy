@@ -5,14 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Stocks extends Model
+class Customers extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'gtin',
-        'qty',
-        'status',
-        'location_id',
+        'name',
+        'street',
+        'city',
+        'state',
+        'phone',
+        'contact_person',
+        'gtin_start',
+        'gtin_end',
     ];
 }

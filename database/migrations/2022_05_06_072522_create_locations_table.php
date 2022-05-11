@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EditProducts extends Migration
+class CreateLocationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class EditProducts extends Migration
      */
     public function up()
     {
-        //
-        Schema::table('products', function (Blueprint $table) {
-            $table->renameColumn('description','product_name');
-            $table->dropColumn('brand');
-            $table->dropColumn('fix_price');
+        Schema::create('locations', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +27,6 @@ class EditProducts extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('locations');
     }
 }

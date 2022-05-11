@@ -15,12 +15,14 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('product_code'); //PLU
-            $table->string('brand'); //to be remove
+            $table->string('product_code');
+            $table->string('product_name');
             $table->string('gtin');
-            $table->string('description'); //change to product name
-            $table->string('company_id');
-            $table->string('fix_price'); //to be remove
+            $table->string('brand');
+            $table->string('description')->nullable();
+            $table->string('company_id')->nullable();
+            $table->string('size')->nullable();
+            $table->string('fix_price')->nullable();
             $table->timestamps();
         });
     }

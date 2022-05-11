@@ -11,15 +11,11 @@ class Products extends Model
 
     protected $fillable = [
         'product_code',
-        'gtin',
         'product_name',
-        'company_id',
+        'gtin',
         'brand',
         'size',
         'description',
+        'company_id',
     ];
-
-    public function products(){
-        return $this->belongsTo('App\Models\Rel_order_products','product_id');
-    }
 }

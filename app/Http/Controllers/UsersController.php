@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class UsersController extends Controller
 {
     //
     public function signIn(Request $request){
         $credentials = $request->validate([
-            'email' => ['required'],
+            'username' => ['required'],
             'password' => ['required'],
         ]);
 
@@ -27,8 +26,7 @@ class UsersController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return response('0');
+        return redirect('/');
     }
 
 }
