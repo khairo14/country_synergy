@@ -2228,14 +2228,19 @@ $(document).ready(function () {
           'gtin': gtin
         },
         success: function success(result) {
-          console.log(result);
-
+          // console.log(result);
           if (result.status == 1) {
-            $(".scan_location_message").text('Please Scan Product');
+            $(".scan_location_message").text(result.message);
             setTimeout(function () {
               $("#scan_location").focus();
               $(".scan_location_message").text('');
               window.location.href = "/home/scan";
+            }, 2000);
+          } else {
+            $(".scan_location_message").text(result.message);
+            setTimeout(function () {
+              $("#scan_location").focus();
+              $(".scan_location_message").text(''); // window.location.href="/home/scan";
             }, 2000);
           }
         },

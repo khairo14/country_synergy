@@ -178,13 +178,20 @@ $(document).ready(function(){
                 method: 'post',
                 data: { "old_pallet": old_pallet, 'new_pallet_id':pallet_id, 'qty':qty, 'location':loc,'gtin':gtin},
                 success: function (result) {
-                    console.log(result);
+                    // console.log(result);
                     if(result.status ==1){
-                        $(".scan_location_message").text('Please Scan Product');
+                        $(".scan_location_message").text(result.message);
                         setTimeout(function(){
                             $("#scan_location").focus();
                             $(".scan_location_message").text('');
                             window.location.href="/home/scan";
+                        },2000);
+                    }else{
+                        $(".scan_location_message").text(result.message);
+                        setTimeout(function(){
+                            $("#scan_location").focus();
+                            $(".scan_location_message").text('');
+                            // window.location.href="/home/scan";
                         },2000);
                     }
                 }, error: function (request, status, error) {
