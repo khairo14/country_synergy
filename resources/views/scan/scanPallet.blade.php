@@ -1,0 +1,231 @@
+@extends('layouts.app')
+
+@section('content')
+<div x-data="{cx:true,qstion:false,yes:false,loc:false,no:false}">
+{{-- @include('printlabels') --}}
+<div x-show="cx" class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
+    <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+        <div class="mt-2 flex justify-center">
+            <div>
+            <label for="exist_cust1" class="block text-xs font-medium text-gray-700">Select Customer</label>
+            <select id="exist_cust1" name="exist_cust1" class="block w-64 py-2 pl-3 pr-10 mt-1 text-xs border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs">
+                @if($customers->isNotEmpty())
+                    @foreach ($customers as $cust)
+                        <option value="{{$cust->id}}">{{$cust->name}}</option>
+                    @endforeach
+                @else
+                    <option selected value="0">No Customer Available</option>
+                @endif
+            </select>
+            </div>
+        </div>
+
+        <div class="flex justify-center mt-2">
+            <button @click="qstion=!qstion,cx=!cx" type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span class="items-center mx-2">
+                    &nbsp; next &nbsp;
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div x-show="qstion" class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg" style="display: none">
+    <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+        <div class="py-5 text-center bg-white rounded-lg flex-inline">
+            <span class="p-4 text-lg font-medium">Pallet Label Exist?</span>
+            <div>
+                <button @click="yes=!yes,qstion=!qstion" type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="items-center mx-2">
+                        &nbsp; Yes &nbsp;
+                    </span>
+                </button>
+
+                <button @click="no=!no,qstion=!qstion" type="button" class="option_no inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="items-center mx-2">
+                        &nbsp; No &nbsp;
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- yes option --}}
+<div x-show="yes" style="display:none" id="pallet_card_yes">
+    <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+            <div class="_scnpallet">
+                <label for="scnpallet" class="sr-only">Pallet</label>
+                <input type="text" name="scnpallet" id="scnpallet" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Pallet" autofocus />
+            </div>
+
+            <div class="_box_qty mt-2" style="display:none">
+                <label for="box_qty" class="sr-only">Quantity</label>
+                <input type="number" name="box_qty" id="box_qty" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Enter Quantity" min="1" step="1">
+            </div>
+
+            <div class="_loc mt-2" style="display:none">
+                <label for="loc" class="sr-only">Scan Location</label>
+                <input type="text" name="loc" id="loc" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm whitespace-nowrap border-gray-300 rounded-md" placeholder="Scan Location" autofocus>
+            </div>
+
+            <div class="mt-2 text-center bg-red-300 rounded-md">
+                <span class="scan_pallet_message"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+            <div class="flex flex-col mt-2">
+                <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
+                    <div class="mt-1 px-0 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
+                    <div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300 scnpallet_tbl">
+                        <thead class="bg-gray-50">
+                            <tr>
+                            <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Label</th>
+                            <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Quantity</th>
+                            <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6">
+                                <span class="sr-only">Edit</span>
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="scnpallet_tbl_body">
+                            <tr>
+                                <td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>
+                                    <p class='w-36 sm:w-64 truncate overflow-clip'></p>
+                                </td>
+                                <td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>
+                                <td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>
+                                    <a href='#' onclick='event.preventDefault()' class='rm_pallet text-indigo-600 hover:text-indigo-900'>
+                                        <svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                                            <path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-2 flex rounded-md shadow-sm">
+                        <label for="company-website" class="block text-sm font-medium text-gray-700 sr-only"> Location </label>
+                        <span class="inline-flex items-center py-3 px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"> Selected Location </span>
+                        <input type="text" name="location" id="location" data="" class="flex-1 min-w-0 block w-full border border-gray-300 px-3 text-black py-1 rounded-none rounded-r-md bg-white sm:text-sm" placeholder="Location" disabled>
+                    </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-4">
+                <button @click="yes=!yes,qstion=!qstion" type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="items-center mx-2">
+                        &nbsp; Back &nbsp;
+                    </span>
+                </button>
+                <button type="button" class="save-pallet inline-flex items-center px-1 py-2 font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <span class="items-center mx-2">
+                        &nbsp; Complete &nbsp;
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- no option --}}
+<div x-show="no" style="display:none" id="pallet_card_no">
+    <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+            <div class="_box_qty2 mt-2">
+                <label for="box_qty2" class="sr-only">Quantity</label>
+                <input type="number" name="box_qty2" id="box_qty2" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Enter Quantity" min="1" step="1">
+            </div>
+
+            <div class="_loc2 mt-2" style="display:none">
+                <label for="loc2" class="sr-only">Scan Location</label>
+                <input type="text" name="loc2" id="loc2" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm whitespace-nowrap border-gray-300 rounded-md" placeholder="Scan Location" autofocus>
+            </div>
+
+            <div class="mt-2 text-center bg-red-300 rounded-md">
+                <span class="scan_pallet_message2"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+            <div class="flex flex-col mt-2">
+                <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
+                    <div class="mt-1 px-0 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
+                    <div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300 scnpallet_tbl2">
+                        <thead class="bg-gray-50">
+                            <tr>
+                            <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Label</th>
+                            <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Quantity</th>
+                            <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6">
+                                <span class="sr-only">Edit</span>
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="scnpallet_tbl_body2">
+                            <tr>
+                                <td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>
+                                    <p class='w-36 sm:w-64 truncate overflow-clip'></p>
+                                </td>
+                                <td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>
+                                <td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>
+                                    <a href='#' onclick='event.preventDefault()' class='rm_pallet2 text-indigo-600 hover:text-indigo-900'>
+                                        <svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                                            <path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-2 flex rounded-md shadow-sm">
+                        <label for="company-website" class="block text-sm font-medium text-gray-700 sr-only"> Location </label>
+                        <span class="inline-flex items-center py-3 px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"> Selected Location </span>
+                        <input type="text" name="location2" id="location2" data="" class="flex-1 min-w-0 block w-full border border-gray-300 px-3 text-black py-1 rounded-none rounded-r-md bg-white sm:text-sm" placeholder="Location" disabled>
+                    </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-4">
+                <button @click="no=!no,qstion=!qstion" type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="items-center mx-2">
+                        &nbsp; Back &nbsp;
+                    </span>
+                </button>
+                <button type="button" class="save-pallet2 inline-flex items-center px-1 py-2 font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <span class="items-center mx-2">
+                        &nbsp; Complete &nbsp;
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- printer --}}
+<div class="print_card mt-1 sm:mx-auto sm:w-full sm:max-w-lg" style="display:none">
+    <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5" id="print_label">
+
+    </div>
+</div>
+
+</div>
+<script>
+    $(document).ready(function(){
+        $("#exist_cust1").select2();
+    });
+</script>
+@endsection

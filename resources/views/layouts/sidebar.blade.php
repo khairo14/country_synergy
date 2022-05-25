@@ -43,6 +43,14 @@
             Customers
           </a>
 
+          <a href="{{url('/stocks')}}" :class="{'bg-gray-900 text-white': active ==='stocks'}"class="flex items-center px-2 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group">
+            <!-- Heroicon name: outline/users -->
+            <svg :class="{'text-gray-300': active ==='stocks'}" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            Stocks
+          </a>
+
         </nav>
       </div>
 

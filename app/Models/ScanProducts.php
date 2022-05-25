@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ScanProducts extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'label',
+        'gtin',
+    ];
 }
