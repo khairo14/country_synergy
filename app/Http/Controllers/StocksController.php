@@ -39,8 +39,8 @@ class StocksController extends Controller
         }else{
             $exist = Products::where('gtin',$gtin)->get();
             if($exist->isEmpty()){
-                $status = 2;
-                $message = 'Product not Exist Want To Add now?';
+                $status = 0;
+                $message = 'Product not registered - please add later';
             }else{
                 $status = 1;
                 $message = $exist;
@@ -50,16 +50,7 @@ class StocksController extends Controller
     }
 
     public function addProducts(Request $request){
-        $old_pallet = $request->old_pallet;
-        $cust = $request->customer;
         $products = $request->products;
-
-        $chkPallet = Pallets::where('name',$old_pallet)->get();
-        if($chkPallet->isNotEmpty()){
-            $old_pallet_id = $chkPallet->id;
-        }else{
-            $old_pallet_id = null;
-        }
 
         if($products != ""){
             foreach($products as $product){
@@ -70,36 +61,10 @@ class StocksController extends Controller
                 $scanProd->label = $label;
                 $scanProd->gtin = $gtin;
                 $scanProd->save();
-                if(isset($scanProd->id)){
-                    $scnprod_id[] = $scanProd->id;
-                }
             }
 
-            $qty = count($products);
-            // $prod_details = Products::where('gtin',$gtin)->get();
-            $now = Carbon::now()->format('ymd');
-
-            $newPallet = $gtin.$qty.$now;
-            $createPallet = new Pallets();
-            $createPallet->name = $newPallet;
-            $createPallet->save();
-
-            if(isset($createPallet->id)){
-                foreach($scnprod_id as $scnId){
-                    $prod_history = new ProductHistory();
-                    $prod_history->scanned_id = $scnId;
-                    $prod_history->gtin = $gtin;
-                    $prod_history->old_pallet_id = $old_pallet_id;
-                    $prod_history->new_pallet_id = $createPallet->id;
-                    $prod_history->actions = 'Stock-In';
-                    $prod_history->save();
-                }
-                $status = 1;
-                $message = ['pallet_id'=>$createPallet->id,'pallet_name'=>$newPallet,'qty'=>$qty,'date'=>$now,'gtin'=>$gtin];
-            }else{
-                $status = 0;
-                $message="Error Scanning Products";
-            }
+            $status = 1;
+            $message = count($products);
         }else{
             $status = 0;
             $message="No Products Added";
@@ -164,4 +129,119 @@ class StocksController extends Controller
         return response()->json(['status'=>$status,'$message'=>$message]);
     }
 
+    public function scanPallets(){
+        $customers = Customers::orderBy('name')->get();
+
+        return view('scan.scanPallet')->with(['customers'=>$customers]);
+    }
+
+    public function checkPallet(Request $request){
+        $p_label = $request->p_label;
+
+        if($p_label == ""){
+            $status = 0;
+            $message = "Scan Pallet";
+        }else{
+            $pallet = Pallets::where('name',$p_label)->get();
+
+            if($pallet->isNotEmpty()){
+                $status = 0;
+                $message = "Pallet already Stored - Use Product Tracking";
+            }else{
+                $status = 1;
+                $message = "";
+            }
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function checkLocation(Request $request){
+        $loc = $request->loc;
+
+        $location = Locations::where('name',$loc)->get();
+        if($location->isNotEmpty()){
+            $status = 0;
+            $message = $location;
+        }else{
+            $status = 1;
+            $message = "Location not found - will be added if continue";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function addPallet(Request $request){
+        $label = $request->plabel;
+        $qty = $request->qty;
+        $loc = $request->loc;
+        $cx_id = $request->cx;
+
+        if($cx_id != "" || $label != "" || $qty != ""){
+            $addPallet = new Pallets();
+            $addPallet->name = $label;
+            $addPallet->save();
+
+            if(isset($addPallet->id)){
+                $chckLoc = Locations::where('name',$loc)->get();
+                if($chckLoc->isNotEmpty()){
+                    $loc_id = $chckLoc[0]->id;
+                }else{
+                    $newLoc = new Locations();
+                    $newLoc->name = $loc;
+                    $newLoc->save();
+
+                    if(isset($newLoc->id)){
+                        $loc_id = $newLoc->id;
+                    }
+                }
+                $addStock = new Stocks();
+                $addStock->customer_id = $cx_id;
+                $addStock->pallet_id = $addPallet->id;
+                $addStock->location_id = $loc_id;
+                $addStock->qty = $qty;
+                $addStock->status = "In";
+                $addStock->save();
+            }
+
+            if(isset($addStock->id)){
+                $date = $addStock->created_at;
+                $date = $date->format('d-m-Y');
+            }
+            $cust = Customers::where('id',$cx_id)->get();
+        }else{
+
+        }
+
+        return view('scan.printLabel')->with(['cust'=>$cust,'label'=>$label,'qty'=>$qty,'date'=>$date]);
+    }
+
+    public function viewStocks(){
+        $customers = Customers::orderBy('name')->get();
+
+        return view('stocks.stocksView')->with(['customers'=>$customers]);
+    }
+
+    public function searchStocks(Request $request){
+        $cx = $request->cx;
+        $date = $request->date;
+        $date = Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+
+        $stocks = Stocks::where('customer_id',$cx)->where('created_at','LIKE',"%{$date}%")->get();
+
+
+        if($stocks->isNotEmpty()){
+            foreach($stocks as $stock){
+                $pallets = Pallets::where('id',$stock->pallet_id)->get();
+                $locations = Locations::where('id',$stock->location_id)->get();
+
+                $stck_item[] = ['pallet'=>$pallets[0]->name,'location'=>$locations[0]->name,'qty'=>$stock->qty,'date'=>$request->date];
+            }
+            $status = 1;
+        }else{
+            $status = 0;
+            $stck_item = "No Stocks Found";
+        }
+        return response()->json(['stocks'=>$stck_item,'status'=>$status]);
+    }
 }

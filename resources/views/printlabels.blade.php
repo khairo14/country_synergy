@@ -12,11 +12,11 @@
     </style>
 </head>
 <body>
-    <h1>{{$title}}</h1>
+    {{-- <h1>{{$title}}</h1> --}}
     <table>
         <tr>
             <td>Dispatch Date:</td>
-            <td>{{$date}}</td>
+            {{-- <td>{{$date}}</td> --}}
         </tr>
         <tr>
             <td colspan="2">Deliver To:</td>
@@ -32,7 +32,7 @@
             <td>Weight</td>
             <td>400 KGs</td>
         </tr>
-        <tr>    
+        <tr>
             <td colspan="2"><img src="data:image/png;base64,{{DNS1D::getBarcodePNG("93358655", 'C39',1,100,array(0,0,0), true)}}" alt="barcode" /></td>
         </tr>
         <tr>

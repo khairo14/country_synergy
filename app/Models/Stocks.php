@@ -10,7 +10,8 @@ class Stocks extends Model
     use HasFactory;
 
     protected $fillable = [
-        'gtin',
+        'customer_id',
+        'pallet_id',
         'qty',
         'status',
         'location_id',

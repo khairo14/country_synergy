@@ -15,11 +15,11 @@ class CreateStocksTable extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->string('gtin');
+            $table->string('customer_id');
+            $table->string('pallet_id');
+            $table->string('location_id')->nullable();
             $table->string('qty');
             $table->string('status')->nullable();
-            $table->string('location_id');
-            // $table->dateTime('best_before');
             $table->timestamps();
         });
     }
