@@ -19,6 +19,7 @@ class CreateStocksTable extends Migration
             $table->string('pallet_id');
             $table->string('location_id')->nullable();
             $table->string('qty');
+            $table->date('best_before');
             $table->string('status')->nullable();
             $table->timestamps();
         });

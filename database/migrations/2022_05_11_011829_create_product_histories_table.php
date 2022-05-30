@@ -16,7 +16,6 @@ class CreateProductHistoriesTable extends Migration
         Schema::create('product_histories', function (Blueprint $table) {
             $table->id();
             $table->string('scanned_id');
-            $table->string('gtin');
             $table->string('old_pallet_id')->nullable();
             $table->string('new_pallet_id');
             $table->string('actions');

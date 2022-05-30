@@ -8,8 +8,6 @@ use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\PDFController;
-use App\Models\Locations;
-use App\Models\Stocks;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,14 +27,22 @@ Route::view('/home','dashboard')->name('home')->middleware('auth')->name('home')
 
 // dashboard
 Route::view('/home/scan','/scan/scanIn')->middleware('auth');
+Route::view('/home/scan-out','/scan/scanOut')->middleware('auth');
+// scanIn products
 Route::get('/home/scan/products',[StocksController::class,'scanProducts'])->middleware('auth');
 Route::post('/home/scan/check-product',[StocksController::class,'checkProduct'])->middleware('auth');
 Route::post('/home/scan/scan-products',[StocksController::class,'addProducts'])->middleware('auth');
-Route::post('/home/scan/assign-location',[StocksController::class,'assignLocation'])->middleware('auth');
+// scanIn pallets
 Route::get('/home/scan/pallets',[StocksController::class,'scanPallets'])->middleware('auth');
 Route::post('/home/scan/check-pallet',[StocksController::class,'checkPallet'])->middleware('auth');
 Route::post('/home/scan/add-pallet',[StocksController::class,'addPallet'])->middleware('auth');
 Route::post('/home/scan/check-location',[StocksController::class,'checkLocation'])->middleware('auth');
+// scanIn AddtoPallet
+Route::get('/home/scan/addtopallet',[StocksController::class,'viewAdd2pallet'])->middleware('auth');
+
+// scanOut
+Route::get('/home/scan-out/pallets',[StocksController::class,'viewPalletOut'])->middleware('auth');
+Route::post('/home/scan-out/getPallet',[StocksController::class,'getPallet'])->middleware('auth');
 
 // freezer locations
 Route::get('/location',[LocationsController::class,'fLocation'])->name('location');
@@ -55,6 +61,7 @@ Route::post('/products/edit',[ProductsController::class,'editProduct'])->middlew
 // stocks
 Route::get('/stocks',[StocksController::class,'viewStocks']);
 Route::post('/stocks/search-stocks',[StocksController::class,'searchStocks'])->middleware('auth');
+Route::post('/stocks/print-stock',[StocksController::class,'printStock'])->middleware('auth');
 
 // Route::view('/scan', 'scan');
 // Route::post('/checkStocks',[StocksController::class,'checkStocks']);

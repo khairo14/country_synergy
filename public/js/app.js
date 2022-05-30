@@ -2068,6 +2068,9 @@ __webpack_require__(/*! ./components */ "./resources/js/components.js"); // scan
 $(document).on("click", ".stockIn", function () {
   window.location.href = '/home/scan';
 });
+$(document).on("click", ".stockOut", function () {
+  window.location.href = '/home/scan-out';
+});
 $(document).ready(function () {
   $("#scan_pcode").change(function () {
     var pcode = $(this).val().trim();
@@ -2144,44 +2147,18 @@ $(document).ready(function () {
         $(".scan_pcode_message").text('');
       }, 2000);
     } else {
-      // var cx = $("#exist_cust1 option:selected").val();
-      var prod_data = [];
-      $("#scnproducts_body tr").each(function () {
-        var data1 = $(this).find('td p').eq(0).text();
-        var data2 = $(this).find('td').eq(1).text();
-        var item = {};
-        item.label = data1;
-        item.gtin = data2;
-        prod_data.push(item);
-      });
-      $.ajax({
-        url: "/home/scan/scan-products",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'post',
-        data: {
-          'products': prod_data
-        },
-        success: function success(result) {
-          if (result.status == 1) {
-            var min = 10000000;
-            var max = 99999900;
-            var random = Math.floor(Math.random() * (max - min + 1)) + min;
-            var cx = $("#exist_cust1 option:selected").val();
-            var label = cx.toString().padStart(2, '0') + random;
-            $("#pallet_card_no").show();
-            $("#labelModal").hide();
-            $("#scnproducts").hide();
-            $("#prod_loc").focus();
-            $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text(label);
-            $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(result.message);
-          } else {}
-        },
-        error: function error(request, status, _error) {
-          alert(request.responseText);
-        }
-      });
+      var min = 10000000;
+      var max = 99999900;
+      var random = Math.floor(Math.random() * (max - min + 1)) + min;
+      var cx = $("#exist_cust1 option:selected").val();
+      var label = cx.toString().padStart(2, '0') + random;
+      var qty = $("#scnproducts_body tr").length;
+      $("#pallet_card_no").show();
+      $("#labelModal").hide();
+      $("#scnproducts").hide();
+      $("#prod_loc").focus();
+      $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text(label);
+      $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(qty);
     }
   });
 });
@@ -2220,6 +2197,85 @@ $(document).ready(function () {
               $(".scan_loc_message2").text('');
             }, 2000);
           }
+        }
+      });
+    }
+  });
+});
+$(document).ready(function () {
+  $("#bst_before3").val($.datepicker.formatDate('dd/mm/yy', new Date()));
+  var cur_date = new Date();
+  $("#bst_before3").datepicker({
+    language: 'en',
+    startDate: cur_date,
+    setDate: cur_date,
+    dateFormat: "dd/mm/yy",
+    autoClose: true,
+    changeMonth: true,
+    changeYear: true
+  });
+});
+$(document).ready(function () {
+  $("#bst_before3").on("change", function () {
+    $bst_date = $(this).val();
+    $("#bbefore3").val($bst_date);
+    $("._bst_before3").toggle();
+    $("._prod_loc").toggle();
+    $("#prod_loc").focus();
+  });
+});
+$(document).ready(function () {
+  $(".save-pallet3").on("click", function () {
+    var prod_data = [];
+    $("#scnproducts_body tr").each(function () {
+      var data1 = $(this).find('td p').eq(0).text();
+      var data2 = $(this).find('td').eq(1).text();
+      var item = {};
+      item.label = data1;
+      item.gtin = data2;
+      prod_data.push(item);
+    });
+    var label = $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text();
+    var qty = $("#scnpallet_tbl_body2 tr").find('td').eq(1).text();
+    var bst_date = $("#bbefore3").val();
+    var loc = $("#location2").val().trim();
+    var cx = $("#exist_cust1 option:selected").val();
+
+    if (bst_date == "") {
+      $(".scan_loc_message2").text('Please Select Date');
+      $("#bst_before3").focus();
+      setTimeout(function () {
+        $(".scan_pallet_message").text('');
+      }, 2000);
+    } else if (loc == "" || loc == " ") {
+      $(".scan_loc_message2").text('Please Scan Location');
+      $("#location2").focus();
+      setTimeout(function () {
+        $(".scan_pallet_message").text('');
+      }, 2000);
+    } else {
+      $.ajax({
+        url: "/home/scan/scan-products",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          'cx': cx,
+          'products': prod_data,
+          'label': label,
+          'qty': qty,
+          'loc': loc,
+          'best_date': bst_date
+        },
+        success: function success(result) {
+          console.log(result);
+          $(".print_card").show();
+          $("#pallet_card_no").hide();
+          $("#print_label").append(result);
+        },
+        error: function error(request, status, _error) {
+          alert(request.responseText);
         }
       });
     }
@@ -2282,9 +2338,31 @@ $(document).ready(function () {
     } else {
       $("#scnpallet_tbl_body tr").find('td').eq(1).text(qty);
       $("._box_qty").toggle();
-      $("._loc").toggle();
-      $("#loc").focus();
+      $("._bst_before").toggle();
+      $("#bst_before").focus();
     }
+  });
+});
+$(document).ready(function () {
+  $("#bst_before").val($.datepicker.formatDate('dd/mm/yy', new Date()));
+  var cur_date = new Date();
+  $("#bst_before").datepicker({
+    language: 'en',
+    startDate: cur_date,
+    setDate: cur_date,
+    dateFormat: "dd/mm/yy",
+    autoClose: true,
+    changeMonth: true,
+    changeYear: true
+  });
+});
+$(document).ready(function () {
+  $("#bst_before").on("change", function () {
+    $bst_date = $(this).val();
+    $("#bbefore").val($bst_date);
+    $("._bst_before").toggle();
+    $("._loc").toggle();
+    $("#loc").focus();
   });
 });
 $(document).ready(function () {
@@ -2331,6 +2409,7 @@ $(document).ready(function () {
   $(".save-pallet").on("click", function () {
     var td_qty = $("#scnpallet_tbl_body tr").find('td').eq(1).text();
     var td_lbl = $("#scnpallet_tbl_body tr").find('td p').eq(0).text();
+    var bst_date = $("#bbefore").val();
     var loc = $("#location").val();
     var cx = $("#exist_cust1 option:selected").val();
 
@@ -2363,7 +2442,8 @@ $(document).ready(function () {
           "cx": cx,
           'plabel': td_lbl,
           'qty': td_qty,
-          'loc': loc
+          'loc': loc,
+          'best_date': bst_date
         },
         success: function success(result) {
           $(".print_card").show();
@@ -2422,6 +2502,19 @@ $(document).on("click", ".option_no", function () {
   });
 });
 $(document).ready(function () {
+  $("#bst_before2").val($.datepicker.formatDate('dd/mm/yy', new Date()));
+  var cur_date = new Date();
+  $("#bst_before2").datepicker({
+    language: 'en',
+    startDate: cur_date,
+    setDate: cur_date,
+    dateFormat: "dd/mm/yy",
+    autoClose: true,
+    changeMonth: true,
+    changeYear: true
+  });
+});
+$(document).ready(function () {
   $("#loc2").on("change", function () {
     var loc = $("#loc2").val().trim();
 
@@ -2473,9 +2566,18 @@ $(document).ready(function () {
     } else {
       $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(qty);
       $("._box_qty2").toggle();
-      $("._loc2").toggle();
-      $("#loc2").focus();
+      $("._bst_before2").toggle();
+      $("#bst_before2").focus();
     }
+  });
+});
+$(document).ready(function () {
+  $("#bst_before2").on("change", function () {
+    var bst_date = $(this).val();
+    $("#_bbefore").val(bst_date);
+    $("._bst_before2").toggle();
+    $("._loc2").toggle();
+    $("#loc2").focus();
   });
 });
 $(document).on("click", ".print", function () {
@@ -2493,6 +2595,7 @@ $(document).ready(function () {
     var td_qty = $("#scnpallet_tbl_body2 tr").find('td').eq(1).text();
     var td_lbl = $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text();
     var loc = $("#location2").val();
+    var bst_before = $("#_bbefore").val();
     var cx = $("#exist_cust1 option:selected").val();
 
     if (td_qty == "") {
@@ -2518,7 +2621,8 @@ $(document).ready(function () {
           "cx": cx,
           'plabel': td_lbl,
           'qty': td_qty,
-          'loc': loc
+          'loc': loc,
+          'best_date': bst_before
         },
         success: function success(result) {
           $(".print_card").show();
@@ -2534,6 +2638,54 @@ $(document).ready(function () {
 });
 $(document).on("click", ".scan_page", function () {
   window.location.reload();
+}); // Pallet out
+
+$(document).ready(function () {
+  $("#scnpalletout").on("change", function () {
+    var pout_name = $(this).val().trim();
+
+    if (pout_name == "" || pout_name == " ") {
+      $(".scan_pallet_message").text('Please Scan Pallet');
+      setTimeout(function () {
+        $(".scan_pallet_message").text("");
+      }, 2000);
+    } else {
+      $.ajax({
+        url: "/home/scan-out/getPallet",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "label": pout_name
+        },
+        success: function success(result) {
+          console.log(result);
+
+          if (result.status == 1) {
+            var qty = result.message.qty;
+            var loc = result.message.location;
+            var label = result.message.pallet;
+            $("#scnpalletout").val("");
+            $("#scnpalletout").focus();
+            $("#scnpalletout_tbl_body tr").find('td p').eq(0).text(label[0].name);
+            $("#scnpalletout_tbl_body tr").find('td').eq(1).text(qty);
+            $("#scnpalletout_tbl_body tr").find('td').eq(2).text(loc[0].name);
+          } else {
+            $("#scnpalletout").val("");
+            $("#scnpalletout").focus();
+            $(".scan_pallet_message").text(result.message);
+            setTimeout(function () {
+              $(".scan_pallet_message").text("");
+            }, 2000);
+          }
+        },
+        error: function error(request, status, _error6) {
+          alert(request.responseText);
+        }
+      });
+    }
+  });
 }); // end scan pallet
 // locations
 
@@ -2569,7 +2721,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error6) {
+      error: function error(request, status, _error7) {
         alert(request.responseText);
       }
     });
@@ -2615,7 +2767,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error7) {
+      error: function error(request, status, _error8) {
         alert(request.responseText);
       }
     });
@@ -2657,7 +2809,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error8) {
+        error: function error(request, status, _error9) {
           alert(request.responseText);
         }
       });
@@ -2704,7 +2856,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error9) {
+        error: function error(request, status, _error10) {
           alert(request.responseText);
         }
       });
@@ -2915,6 +3067,37 @@ $(document).on("click", ".srch_stcks", function () {
     searchStocks(cx, date);
   }
 });
+$(document).on("click", ".stock_print", function () {
+  var stock_id = $(this).attr('id');
+  $(".print_table").empty();
+  $.ajax({
+    url: "/stocks/print-stock",
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    method: 'post',
+    data: {
+      'stock_id': stock_id
+    },
+    success: function success(result) {
+      $("#printModal").show();
+      $("#printModalBody").show();
+      $(".print_table").append(result);
+      $(".scan_page").hide();
+    },
+    error: function error(request, status, _error11) {
+      alert(request.responseText);
+    }
+  });
+});
+$(document).ready(function () {
+  $("#srch_date").on("change", function () {
+    alert('asd');
+  });
+});
+$(document).on("click", "._print", function () {
+  alert('a');
+});
 
 function searchStocks(cx, date) {
   $.ajax({
@@ -2931,7 +3114,7 @@ function searchStocks(cx, date) {
       if (result.status == 1) {
         var stocks = result.stocks;
         stocks.forEach(function (stock) {
-          var data = "<tr>" + "<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>" + "<p class='w-24 sm:w-24 truncate overflow-clip'>" + stock.pallet + "</p>" + "</td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + "<a href='#' class='hover:text-red-800 text-red-500'>" + stock.location + "</a></td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + stock.qty + "</td>" + "<td class='whitespace-nowrap px-3 py-4 visible sm:invisible text-sm text-gray-500'>" + stock.date + "</td>" + "<td class='relative whitespace-nowrap visible sm:invisible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' class='text-indigo-600 hover:text-indigo-900'>Edit<span class='sr-only'></span></a>" + "</td>" + "</tr>";
+          var data = "<tr>" + "<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>" + "<p class='w-24 sm:w-24 truncate overflow-clip'>" + stock.pallet + "</p>" + "</td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + "<a href='#' class='hover:text-red-800 text-red-500'>" + stock.location + "</a></td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + stock.qty + "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.date + "</td>" + "<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' class='_print text-indigo-600 hover:text-indigo-900'>Print</a>" + "</td>" + "</tr>";
           $("#stcks_tbl_body").append(data);
         });
       } else {
@@ -2941,7 +3124,7 @@ function searchStocks(cx, date) {
         }, 2000);
       }
     },
-    error: function error(request, status, _error10) {
+    error: function error(request, status, _error12) {
       alert(request.responseText);
     }
   });

@@ -22,7 +22,7 @@
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
                 </div>
-                <input datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" type="text" id="srch_date" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select Date">
+                <input type="text" id="srch_date" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1" placeholder="Select Date">
             </div>
         </div>
         <div class="mt-1 text-center bg-red-300 rounded-md col-span-full">
@@ -46,34 +46,48 @@
                   <th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 sm:pl-6">Pallets</th>
                   <th scope="col" class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">Location</th>
                   <th scope="col" class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">Qty</th>
-                  <th scope="col" class="px-3 py-3 text-left text-xs visible sm:invisible font-medium uppercase tracking-wide text-gray-500">Date Stored</th>
-                  <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6 visible sm:invisible">
+                  <th scope="col" class="px-3 py-3 text-left text-xs invisible sm:visible font-medium uppercase tracking-wide text-gray-500">Best Before</th>
+                  <th scope="col" class="px-3 py-3 text-left text-xs invisible sm:visible font-medium uppercase tracking-wide text-gray-500">Received Date</th>
+                  <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6 invisible sm:visible">
                     <span class="sr-only">Edit</span>
                   </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white" id="stcks_tbl_body">
-                {{-- <tr>
-                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    <p class='w-24 sm:w-24 truncate overflow-clip'>123213321321313211</p>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><a href="#" class="hover:text-red-800 text-red-500">1351</a></td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">10</td>
-                  <td class="whitespace-nowrap px-3 py-4 visible sm:invisible text-sm text-gray-500">05/15/2022</td>
-                  <td class="relative whitespace-nowrap visible sm:invisible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
-                    <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span class="sr-only">, Lindsay Walton</span></a>
-                  </td>
-                </tr> --}}
+                  @foreach ($stocks as $stock)
+                    <tr>
+                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                        <p class='w-24 sm:w-24 truncate overflow-clip'>{{$stock['pallet']}}</p>
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-4+ text-sm text-gray-500"><a href="#" class="hover:text-red-800 text-red-500">{{$stock['location']}}</a></td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{$stock['qty']}}</td>
+                        <td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>{{$stock['best_before']}}</td>
+                        <td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>{{$stock['stored']}}</td>
+                        <td class="relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
+                            <a href="#" onlclick="event" id="{{$stock['stockid']}}" class="stock_print text-indigo-600 hover:text-indigo-900">Print</a>
+                        </td>
+                    </tr>
+                  @endforeach
               </tbody>
             </table>
           </div>
     </div>
 </div>
-
-<script src="https://unpkg.com/flowbite@1.4.7/dist/datepicker.js"></script>
+@include('stocks.stockPrint')
 <script>
     $(document).ready(function(){
         $("#exist_cust1").select2();
+        var a = new Date();
+        $("#srch_date").val($.datepicker.formatDate('d/m/yy', new Date())),
+        $( "#srch_date" ).datepicker({
+            language: 'en',
+            startDate: a,
+            setDate: a,
+            dateFormat: "d/m/yy",
+            autoClose: true,
+            changeMonth: true,
+            changeYear: true,
+            });
     });
 </script>
 @endsection

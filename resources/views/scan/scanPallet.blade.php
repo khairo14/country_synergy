@@ -65,6 +65,16 @@
                 <input type="number" name="box_qty" id="box_qty" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Enter Quantity" min="1" step="1">
             </div>
 
+            <div class="_bst_before mt-2" style="display:none">
+                <label for="bst_before" class="block text-xs font-medium text-gray-700">Best Before Date</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <input type="text" id="bst_before" class="text-center bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1" placeholder="Select Date">
+                </div>
+            </div>
+
             <div class="_loc mt-2" style="display:none">
                 <label for="loc" class="sr-only">Scan Location</label>
                 <input type="text" name="loc" id="loc" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm whitespace-nowrap border-gray-300 rounded-md" placeholder="Scan Location" autofocus>
@@ -80,7 +90,7 @@
         <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
             <div class="flex flex-col mt-2">
                 <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
-                    <div class="mt-1 px-0 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
+                    <div class="mt-1 px-1 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
                     <div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-300 scnpallet_tbl">
                         <thead class="bg-gray-50">
@@ -115,6 +125,11 @@
                         <span class="inline-flex items-center py-3 px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"> Selected Location </span>
                         <input type="text" name="location" id="location" data="" class="flex-1 min-w-0 block w-full border border-gray-300 px-3 text-black py-1 rounded-none rounded-r-md bg-white sm:text-sm" placeholder="Location" disabled>
                     </div>
+                    <div class="mt-2 flex rounded-md shadow-sm">
+                        <label for="bst_before" class="block text-sm font-medium text-gray-700 sr-only"> Best Before </label>
+                        <span class="inline-flex items-center py-3 px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"> Best Before </span>
+                        <input type="text" name="bbefore" id="bbefore" data="" class="flex-1 min-w-0 block w-full border border-gray-300 px-3 text-black py-1 rounded-none rounded-r-md bg-white sm:text-sm" placeholder="Select Date" disabled>
+                    </div>
                     </div>
 
                 </div>
@@ -145,6 +160,16 @@
                 <input type="number" name="box_qty2" id="box_qty2" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Enter Quantity" min="1" step="1">
             </div>
 
+            <div class="_bst_before2 mt-2" style="display:none">
+                <label for="bst_before2" class="block text-xs font-medium text-gray-700">Best Before Date</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <input type="text" id="bst_before2" class="text-center bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1" placeholder="Select Date">
+                </div>
+            </div>
+
             <div class="_loc2 mt-2" style="display:none">
                 <label for="loc2" class="sr-only">Scan Location</label>
                 <input type="text" name="loc2" id="loc2" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm whitespace-nowrap border-gray-300 rounded-md" placeholder="Scan Location" autofocus>
@@ -160,7 +185,7 @@
         <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
             <div class="flex flex-col mt-2">
                 <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
-                    <div class="mt-1 px-0 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
+                    <div class="mt-1 px-1 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
                     <div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-300 scnpallet_tbl2">
                         <thead class="bg-gray-50">
@@ -191,9 +216,14 @@
                     </div>
 
                     <div class="mt-2 flex rounded-md shadow-sm">
-                        <label for="company-website" class="block text-sm font-medium text-gray-700 sr-only"> Location </label>
+                        <label for="location2" class="block text-sm font-medium text-gray-700 sr-only"> Location </label>
                         <span class="inline-flex items-center py-3 px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"> Selected Location </span>
-                        <input type="text" name="location2" id="location2" data="" class="flex-1 min-w-0 block w-full border border-gray-300 px-3 text-black py-1 rounded-none rounded-r-md bg-white sm:text-sm" placeholder="Location" disabled>
+                        <input type="text" name="location2" id="location2" data="" class="flex-1 min-w-0 block w-full border border-gray-300 px-3 text-black py-1 rounded-none rounded-r-md bg-white sm:text-sm" placeholder="Select Location" disabled>
+                    </div>
+                    <div class="mt-2 flex rounded-md shadow-sm">
+                        <label for="bst_before2" class="block text-sm font-medium text-gray-700 sr-only"> Best Before </label>
+                        <span class="inline-flex items-center py-3 px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"> Best Before </span>
+                        <input type="text" name="_bbefore" id="_bbefore" data="" class="flex-1 min-w-0 block w-full border border-gray-300 px-3 text-black py-1 rounded-none rounded-r-md bg-white sm:text-sm" placeholder="Select Date" disabled>
                     </div>
                     </div>
 
