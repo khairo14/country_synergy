@@ -219,6 +219,7 @@ $(document).ready(function(){
                 $(".scan_pallet_message").text('');
             },2000);
         }else{
+            // alert(bst_date);
             $.ajax({
                 url: "/home/scan/scan-products",
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

@@ -12,5 +12,6 @@ class ScanProducts extends Model
     protected $fillable = [
         'label',
         'gtin',
+        'best_before',
     ];
 }
