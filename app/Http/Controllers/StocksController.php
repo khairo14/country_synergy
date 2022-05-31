@@ -56,6 +56,7 @@ class StocksController extends Controller
         $loc = $request->loc;
         $bst_before = $request->best_date;
         $new_bst_before = Carbon::createFromFormat('d/m/Y', $bst_before)->format('Y-m-d');
+        $cust = Customers::where('id',$cx_id)->get();
 
 
         if($cx_id != "" || $label != "" || $qty != ""){
@@ -89,11 +90,30 @@ class StocksController extends Controller
                 if($products != ""){
                     foreach($products as $product){
                         $plabel = $product['label'];
-                        $gtin = $product['gtin'];
+                        if($product['gtin'] != " "){
+                            $gtin = $product['gtin'];
+
+                            $prod_bstdate = substr($plabel,18,6);
+                            $year = '20'.substr($prod_bstdate,0,2);
+                            $month = substr($prod_bstdate,2,2);
+                            $day = substr($prod_bstdate,4,2);
+                            $prod_bst_before = $year.'-'.$month.'-'.$day;
+                        }else{
+                            $gtin_start = $cust[0]->gtin_start;
+                            $gtin_end = $cust[0]->gtin_end;
+                            $gtin = substr($plabel,$gtin_start,$gtin_end);
+
+                            $prod_bstdate = substr($plabel,18,6);
+                            $year = '20'.substr($prod_bstdate,0,2);
+                            $month = substr($prod_bstdate,2,2);
+                            $day = substr($prod_bstdate,4,2);
+                            $prod_bst_before = $year.'-'.$month.'-'.$day;
+                        }
 
                         $scanProd = new ScanProducts();
                         $scanProd->label = $plabel;
                         $scanProd->gtin = $gtin;
+                        $scanProd->best_before = $prod_bst_before;
                         $scanProd->save();
 
                         if(isset($scanProd->id)){
@@ -111,7 +131,6 @@ class StocksController extends Controller
                 $date = $addStock->created_at;
                 $date = $date->format('d/m/Y');
             }
-            $cust = Customers::where('id',$cx_id)->get();
         }else{
 
         }
