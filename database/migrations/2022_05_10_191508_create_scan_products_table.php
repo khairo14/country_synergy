@@ -15,8 +15,9 @@ class CreateScanProductsTable extends Migration
     {
         Schema::create('scan_products', function (Blueprint $table) {
             $table->id();
-            $table->string('label');
+            $table->string('label')->unique();
             $table->string('gtin')->nullable();
+            $table->date('best_before');
             $table->timestamps();
         });
     }

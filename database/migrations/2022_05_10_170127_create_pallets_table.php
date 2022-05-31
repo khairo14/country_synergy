@@ -16,9 +16,6 @@ class CreatePalletsTable extends Migration
         Schema::create('pallets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            // $table->string('gtin')->nullable();
-            // $table->bigInteger('qty');
-            // $table->bigInteger('print_count')->default(0);
             $table->timestamps();
         });
     }
