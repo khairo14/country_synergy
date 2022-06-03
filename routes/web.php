@@ -62,7 +62,7 @@ Route::post('/products/edit',[ProductsController::class,'editProduct'])->middlew
 Route::get('/stocks',[StocksController::class,'viewStocks']);
 Route::post('/stocks/search-stocks',[StocksController::class,'searchStocks'])->middleware('auth');
 Route::post('/stocks/print-stock',[StocksController::class,'printStock'])->middleware('auth');
-
+Route::post('/stock/products-from-pallet',[StocksController::class,'viewStockProducts'])->middleware('auth');
 // Route::view('/scan', 'scan');
 // Route::post('/checkStocks',[StocksController::class,'checkStocks']);
 // Route::post('/scan/order',[StocksController::class,'checkOrders']);
