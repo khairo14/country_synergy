@@ -317,13 +317,12 @@ class StocksController extends Controller
         $pallet = Pallets::where('id',$palletid)->get();
         $products = $this->ProdfrmPallet($palletid);
 
-        // var_dump($products);
         return view('stocks.productTable')->with(['products'=>$products,'pallet'=>$pallet]);
     }
 
     public function ProdfrmPallet($id){
         $prods = ProductHistory::where('new_pallet_id',$id)->get();
-        $pallet = Pallets::where('id',$id)->get();
+
         foreach($prods as $prop){
             $scnItem = ScanProducts::where('id',$prop->scanned_id)->get();
             if($scnItem->isNotEmpty()){
