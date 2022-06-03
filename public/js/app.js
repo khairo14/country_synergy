@@ -3065,11 +3065,12 @@ $(document).on("click", ".srch_stcks", function () {
       $(".srch_message").text('');
     }, 2000);
   } else {
+    $("#stcks_tbl_body").empty();
     searchStocks(cx, date);
   }
 });
 $(document).on("click", ".stock_print", function () {
-  var stock_id = $(this).attr('id');
+  var stock_id = $(this).attr('data-id');
   $(".print_table").empty();
   $.ajax({
     url: "/stocks/print-stock",
@@ -3091,13 +3092,29 @@ $(document).on("click", ".stock_print", function () {
     }
   });
 });
-$(document).ready(function () {
-  $("#srch_date").on("change", function () {
-    alert('asd');
+$(document).on("click", ".prod_view", function () {
+  var pallet_id = $(this).attr('data-id');
+  $(".prod_table").empty();
+  $.ajax({
+    url: "/stock/products-from-pallet",
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    method: 'post',
+    data: {
+      'palletid': pallet_id
+    },
+    success: function success(result) {
+      // $("content").append(result);
+      // window.location.href = result;
+      $("#prodModal").show();
+      $("#prodModalBody").show();
+      $(".prod_table").append(result);
+    },
+    error: function error(request, status, _error12) {
+      alert(request.responseText);
+    }
   });
-});
-$(document).on("click", "._print", function () {
-  alert('a');
 });
 
 function searchStocks(cx, date) {
@@ -3115,7 +3132,7 @@ function searchStocks(cx, date) {
       if (result.status == 1) {
         var stocks = result.stocks;
         stocks.forEach(function (stock) {
-          var data = "<tr>" + "<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>" + "<p class='w-24 sm:w-24 truncate overflow-clip'>" + stock.pallet + "</p>" + "</td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + "<a href='#' class='hover:text-red-800 text-red-500'>" + stock.location + "</a></td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + stock.qty + "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.date + "</td>" + "<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' class='_print text-indigo-600 hover:text-indigo-900'>Print</a>" + "</td>" + "</tr>";
+          var data = "<tr>" + "<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>" + "<a href='#' data-id='" + stock.palletid + "' class='prod_view text-indigo-600 hover:text-indigo-900'>" + "<p class='w-24 sm:w-24 truncate overflow-clip'>" + stock.pallet + "</p>" + "</a>" + "</td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + "<a href='#' class='hover:text-red-800 text-red-500'>" + stock.location + "</a></td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + stock.qty + "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.best_before + "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.date + "</td>" + "<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' data-id='" + stock.stockid + "' class='stock_print text-indigo-600 hover:text-indigo-900'>Print</a>" + "</td>" + "</tr>";
           $("#stcks_tbl_body").append(data);
         });
       } else {
@@ -3125,11 +3142,21 @@ function searchStocks(cx, date) {
         }, 2000);
       }
     },
-    error: function error(request, status, _error12) {
+    error: function error(request, status, _error13) {
       alert(request.responseText);
     }
   });
 }
+
+$(document).on("click", ".print-product", function () {
+  var pname = $(".pallet_name").val();
+  $("#prod-tbl").tableHTMLExport({
+    type: 'csv',
+    filename: pname + '.csv',
+    ignoreColumns: '.acciones,#primero',
+    ignoreRows: '#ultimo'
+  });
+});
 
 /***/ }),
 

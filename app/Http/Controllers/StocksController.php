@@ -283,7 +283,7 @@ class StocksController extends Controller
             // $warn = $warn->addDays(7,'days');
             // $warn = $warn->format('d-m-Y');
 
-            $items[] = ['pallet'=>$pallet[0]->name,'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id];
+            $items[] = ['pallet'=>$pallet[0]->name,'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id];
         }
 
         return view('stocks.stocksView')->with(['customers'=>$customers,'stocks'=>$items]);
@@ -302,7 +302,7 @@ class StocksController extends Controller
                 $pallets = Pallets::where('id',$stock->pallet_id)->get();
                 $locations = Locations::where('id',$stock->location_id)->get();
 
-                $stck_item[] = ['pallet'=>$pallets[0]->name,'location'=>$locations[0]->name,'qty'=>$stock->qty,'date'=>$request->date];
+                $stck_item[] = ['pallet'=>$pallets[0]->name,'location'=>$locations[0]->name,'qty'=>$stock->qty,'date'=>$request->date,'palletid'=>$pallets[0]->id,'best_before'=>$stock->best_before,'stockid'=>$stock->id];
             }
             $status = 1;
         }else{
@@ -310,6 +310,40 @@ class StocksController extends Controller
             $stck_item = "No Stocks Found";
         }
         return response()->json(['stocks'=>$stck_item,'status'=>$status]);
+    }
+
+    public function viewStockProducts(Request $request){
+        $palletid = $request->palletid;
+        $pallet = Pallets::where('id',$palletid)->get();
+        $products = $this->ProdfrmPallet($palletid);
+
+        // var_dump($products);
+        return view('stocks.productTable')->with(['products'=>$products,'pallet'=>$pallet]);
+    }
+
+    public function ProdfrmPallet($id){
+        $prods = ProductHistory::where('new_pallet_id',$id)->get();
+        $pallet = Pallets::where('id',$id)->get();
+        foreach($prods as $prop){
+            $scnItem = ScanProducts::where('id',$prop->scanned_id)->get();
+            if($scnItem->isNotEmpty()){
+                $gtin = $scnItem[0]->gtin;
+                if($gtin != "" || $gtin != null){
+                    $prodDtls = Products::where('gtin',$gtin)->get();
+                    if($prodDtls->isNotEmpty()){
+                        $plu = $prodDtls[0]->product_code;
+                        $name = $prodDtls[0]->product_name;
+                        $dsc = $prodDtls[0]->description;
+                    }
+                }else{
+                        $plu = '';
+                        $name = '';
+                        $dsc = '';
+                }
+            }
+            $products[] = ['label'=>$scnItem[0]->label,'best_before'=>$scnItem[0]->best_before,'plu'=>$plu,'name'=>$name,'desc'=>$dsc,'rcvd'=>$scnItem[0]->created_at];
+        }
+        return $products;
     }
 
     public function printStock(Request $request){
