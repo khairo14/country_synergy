@@ -1,34 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div x-data="{cx:true,pallet_out:true}">
-    {{-- <div x-show="cx" class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
-        <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
-            <div class="mt-2 flex justify-center">
-                <div>
-                <label for="exist_cust1" class="block text-xs font-medium text-gray-700">Select Customer</label>
-                <select id="exist_cust1" name="exist_cust1" class="block w-64 py-2 pl-3 pr-10 mt-1 text-xs border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs">
-                    @if($customers->isNotEmpty())
-                        @foreach ($customers as $cust)
-                            <option value="{{$cust->id}}">{{$cust->name}}</option>
-                        @endforeach
-                    @else
-                        <option selected value="0">No Customer Available</option>
-                    @endif
-                </select>
-                </div>
-            </div>
-
-            <div class="flex justify-center mt-2">
-                <button @click="cx=!cx,pallet_out=!pallet_out" type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <span class="items-center mx-2">
-                        &nbsp; next &nbsp;
-                    </span>
-                </button>
-            </div>
-        </div>
-    </div> --}}
-    <div x-show="pallet_out">
+<div x-data="{pallet_out:true, docket:false}">
+    <div x-show="pallet_out" id="scannerOut">
     <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
         <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
             <div class="_scnpalletout">
@@ -81,14 +55,42 @@
             </div>
 
             <div class="flex justify-end mt-4">
-                <button type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button type="button" class="tk_out inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <span class="items-center mx-2">
-                        &nbsp; Pull Out &nbsp;
+                        &nbsp; Create Order &nbsp;
                     </span>
                 </button>
             </div>
         </div>
     </div>
+    </div>
+
+    <div class="or_done mt-1 sm:mx-auto sm:w-full sm:max-w-lg" style="display: none">
+        <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+            <div class="or_done1 w-full rounded-lg text-center">
+                <div class="pt-2">
+                    <div class="success mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100" style="display:none">
+                        <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div class="error mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100" style="display:none">
+                        <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <p class="co_message py-5 text-xl rounded-md text-white"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-4">
+                <button type="button" class="cmplte_order inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="items-center mx-2">
+                        &nbsp; Scan Again &nbsp;
+                    </span>
+                </button>
+            </div>
+        </div>
     </div>
 
 </div>

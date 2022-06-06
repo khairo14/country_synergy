@@ -1,7 +1,7 @@
 require('./bootstrap');
 require('./components');
 
-// scan product
+// scan product in
 $(document).on("click",".stockIn",function(){
     window.location.href=('/home/scan');
 });
@@ -23,14 +23,14 @@ $(document).ready(function(){
           $(".scan_pcode_message").text('Please Scan Product');
           setTimeout(function(){
             $(".scan_pcode_message").text('');
-          },2000);
+          },5000);
         }else if($.inArray(pcode,row_data1) != -1){
             $(".scan_pcode_message").text('Product Already Scanned');
             setTimeout(function(){
               $(".scan_pcode_message").text('');
               $("#scan_pcode").val('');
               $("#scan_pcode").focus();
-            },2000);
+            },5000);
         }else{
             var cx = $("#exist_cust1 option:selected").val();
             $.ajax({
@@ -43,12 +43,15 @@ $(document).ready(function(){
                         var gtin = result.message[0].gtin;
                         var pname = result.message[0].product_name;
                         var plu = result.message[0].product_code;
+                        $("#scan_pcode").val('');
+                        $("#scan_pcode").focus();
                         var prod = "<tr>"
                                 +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
                                 +"<p class='w-12 truncate overflow-clip'>"+pcode+"</p>"
                                 +"</td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+gtin+"</td>"
-                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+plu+"-"+pname+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+plu+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-12 truncate overflow-clip'>"+pname+"</p></td>"
                                 +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
                                     +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
                                         +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
@@ -58,21 +61,20 @@ $(document).ready(function(){
                                 +"</td>"
                                 +"</tr>";
                         $("#scnproducts_body").append(prod);
+                    }else if(result.status == 2){
                         $("#scan_pcode").val('');
                         $("#scan_pcode").focus();
-                    }else{
                         $(".scan_pcode_message").text(result.message);
                             setTimeout(function(){
                                 $(".scan_pcode_message").text('');
-                                $("#scan_pcode").val('');
-                                $("#scan_pcode").focus();
-                            },2000);
+                            },5000);
                         var prod = "<tr>"
                                 +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
                                 +"<p class='w-12 truncate overflow-clip'>"+pcode+"</p>"
                                 +"</td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
                                 +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
                                     +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
                                         +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
@@ -82,8 +84,13 @@ $(document).ready(function(){
                                 +"</td>"
                                 +"</tr>";
                         $("#scnproducts_body").append(prod);
+                    }else{
                         $("#scan_pcode").val('');
                         $("#scan_pcode").focus();
+                        $(".scan_pcode_message").text(result.message);
+                            setTimeout(function(){
+                                $(".scan_pcode_message").text('');
+                            },5000);
                     }
                 }
             });
@@ -106,7 +113,7 @@ $(document).ready(function(){
               $("#scan_pcode").val('');
               $("#scan_pcode").focus();
               $(".scan_pcode_message").text('');
-            },2000);
+            },5000);
         }else{
             var min = 10000000;
             var max = 99999900;
@@ -136,7 +143,7 @@ $(document).ready(function(){
             $("#loc").val("");
             setTimeout(function(){
                 $(".scan_loc_message2").text('');
-            },2000);
+            },5000);
         }else{
             $.ajax({
                 url: "/home/scan/check-location",
@@ -155,7 +162,7 @@ $(document).ready(function(){
                         $("#prod_loc").val("");
                         setTimeout(function(){
                             $(".scan_loc_message2").text('');
-                        },2000);
+                        },5000);
                     }
                 }
             });
@@ -211,22 +218,21 @@ $(document).ready(function(){
             $("#bst_before3").focus();
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else if(loc == "" || loc ==" "){
             $(".scan_loc_message2").text('Please Scan Location');
             $("#location2").focus();
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else{
-            // alert(bst_date);
             $.ajax({
                 url: "/home/scan/scan-products",
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 method: 'post',
                 data: {'cx':cx,'products':prod_data,'label':label,'qty':qty,'loc':loc,'best_date':bst_date},
                 success: function (result) {
-                    console.log(result);
+                    // console.log(result);
                     $(".print_card").show();
                     $("#pallet_card_no").hide();
                     $("#print_label").append(result);
@@ -238,9 +244,8 @@ $(document).ready(function(){
 
     });
 });
-
-// end scan product
-// scan pallet option yes
+// end scan product in
+// scan pallet in option yes
 $(document).ready(function(){
     $("#scnpallet").on("change", function(){
         var p_name = ($(this).val()).trim();
@@ -249,7 +254,7 @@ $(document).ready(function(){
             $(".scan_pallet_message").text('Pallet label cannot empty');
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else{
             $.ajax({
                 url: "/home/scan/check-pallet",
@@ -266,7 +271,7 @@ $(document).ready(function(){
                         $(".scan_pallet_message").text(result.message);
                         setTimeout(function(){
                             $(".scan_pallet_message").text('');
-                        },2000);
+                        },5000);
 
                         setTimeout(function(){
                             $("#scnpallet").val("");
@@ -290,7 +295,7 @@ $(document).ready(function(){
             $(".scan_pallet_message").text('Please Enter Quantity');
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else{
             $("#scnpallet_tbl_body tr").find('td').eq(1).text(qty);
             $("._box_qty").toggle();
@@ -336,7 +341,7 @@ $(document).ready(function(){
             $("#loc").val("");
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else{
             $.ajax({
                 url: "/home/scan/check-location",
@@ -355,7 +360,7 @@ $(document).ready(function(){
                         $("#loc").val("");
                         setTimeout(function(){
                             $(".scan_pallet_message").text('');
-                        },2000);
+                        },5000);
                     }
                 }
             });
@@ -376,19 +381,19 @@ $(document).ready(function(){
             $("#scnpallet").focus();
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else if(td_qty == ""){
             $(".scan_pallet_message").text('Please Enter Quantity');
             $("#scnpallet").focus();
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else if(loc == ""){
             $(".scan_pallet_message").text('Please Enter Location');
             $("#scnpallet").focus();
             setTimeout(function(){
                 $(".scan_pallet_message").text('');
-            },2000);
+            },5000);
         }else{
             $.ajax({
                 url: "/home/scan/add-pallet",
@@ -421,7 +426,7 @@ $(document).on("click",".rm_pallet",function(){
     $("#scnpallet").focus();
 });
 
-// scan pallet option no
+// scan pallet in option no
 $(document).on("click",".option_no",function(){
     var min = 10000000;
     var max = 99999900;
@@ -476,7 +481,7 @@ $(document).ready(function(){
             $("#loc2").val("");
             setTimeout(function(){
                 $(".scan_pallet_message2").text('');
-            },2000);
+            },5000);
         }else{
             $.ajax({
                 url: "/home/scan/check-location",
@@ -495,7 +500,7 @@ $(document).ready(function(){
                         $("#loc2").val("");
                         setTimeout(function(){
                             $(".scan_pallet_message2").text('');
-                        },2000);
+                        },5000);
                     }
                 }
             });
@@ -511,7 +516,7 @@ $(document).ready(function(){
             $(".scan_pallet_message2").text('Please Enter Quantity');
             setTimeout(function(){
                 $(".scan_pallet_message2").text('');
-            },2000);
+            },5000);
         }else{
             $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(qty);
             $("._box_qty2").toggle();
@@ -540,7 +545,7 @@ $(document).on("click",".print",function(){
             +"</style>";
 
     style += tbl.prop('outerHTML');
-    var wme = window.open("","","width=500","height=700");
+    var wme = window.open("","","width=1200","height=900");
     wme.document.write(style);
     wme.document.close();
     wme.focus();
@@ -561,13 +566,13 @@ $(document).ready(function(){
             $("#scnpallet2").focus();
             setTimeout(function(){
                 $(".scan_pallet_message2").text('');
-            },2000);
+            },5000);
         }else if(loc == ""){
             $(".scan_pallet_message2").text('Please Enter Location');
             $("#scnpallet2").focus();
             setTimeout(function(){
                 $(".scan_pallet_message2").text('');
-            },2000);
+            },5000);
         }else{
             $.ajax({
                 url: "/home/scan/add-pallet",
@@ -590,6 +595,344 @@ $(document).on("click",".scan_page",function(){
     window.location.reload();
 });
 
+// Scan In Addtopallet
+$(document).ready(function(){
+    $("#addtopallet").on("change",function(){
+        var pl = ($(this).val()).trim();
+
+        if(pl == ""){
+            $(".addtopallet_message").text('Please Scan Pallet');
+            $("#addtopallet").val('');
+            $("#addtopallet").focus();
+            setTimeout(function(){
+                $(".addtopallet_message").text('');
+            },5000);
+        }else{
+            $.ajax({
+                url: "/home/scan/checkStockPallet",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: {'label':pl},
+                success: function (result) {
+                    if(result.status == 1){
+                        var p_id = result.message['pallet'];
+                        var cx = result.message['customer'];
+
+                        $(".pallet_lbl").text(pl);
+                        $(".pallet_lbl").attr('data-id',p_id['0']['id']);
+                        $("#cx").val(cx['0']['id']);
+                        $("._prodtopallet").show();
+                        $("#prodtopallet").focus();
+                        $(".b_btn").show();
+                        $("#addtopallet").val('');
+                        $("._addtopallet").hide();
+                    }else{
+                        $(".addtopallet_message").text(result.message);
+                        $("#addtopallet").val('');
+                        $("#addtopallet").focus();
+                        setTimeout(function(){
+                            $(".addtopallet_message").text('');
+                        },5000);
+                    }
+                }
+            });
+        }
+    });
+});
+
+$(document).ready(function(){
+    $("#prodtopallet").on("change",function(){
+        var pcode = ($(this).val()).trim();
+        var row_data1 = [];
+        $("#scprodtopallet_body tr").each(function(){
+            var data1 = $(this).find('td').eq(0).text();
+            row_data1.push(data1);
+        });
+
+        if(pcode == " " || pcode == ""){
+          $(".addtopallet_message").text('Please Scan Product');
+          setTimeout(function(){
+            $(".addtopallet_message").text('');
+          },5000);
+        }else if($.inArray(pcode,row_data1) != -1){
+            $(".addtopallet_message").text('Product Already Scanned');
+            setTimeout(function(){
+              $(".addtopallet_message").text('');
+              $("#prodtopallet").val('');
+              $("#prodtopallet").focus();
+            },5000);
+        }else{
+            var cx = $("#cx").val();
+            $.ajax({
+                url: "/home/scan/check-product",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: { "label": pcode,'cust':cx},
+                success: function (result) {
+                    if(result.status == 1){
+                        var gtin = result.message[0].gtin;
+                        var pname = result.message[0].product_name;
+                        var plu = result.message[0].product_code;
+                        $("#prodtopallet").val('');
+                        $("#prodtopallet").focus();
+                        var prod = "<tr>"
+                                +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
+                                +"<p class='w-12 truncate overflow-clip'>"+pcode+"</p>"
+                                +"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+gtin+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+plu+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-20 truncate overflow-clip'>"+pname+"</p></td>"
+                                +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
+                                    +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
+                                        +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                                            +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                                        +"</svg>"
+                                    +"</a>"
+                                +"</td>"
+                                +"</tr>";
+                        $("#scprodtopallet_body").append(prod);
+                    }else if(result.status == 2){
+                        $("#prodtopallet").val('');
+                        $("#prodtopallet").focus();
+                        $(".addtopallet_message").text(result.message);
+                            setTimeout(function(){
+                                $(".addtopallet_message").text('');
+                            },5000);
+                        var prod = "<tr>"
+                                +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
+                                +"<p class='w-12 truncate overflow-clip'>"+pcode+"</p>"
+                                +"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
+                                    +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
+                                        +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                                            +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                                        +"</svg>"
+                                    +"</a>"
+                                +"</td>"
+                                +"</tr>";
+                        $("#scprodtopallet_body").append(prod);
+                    }else{
+                        $("#prodtopallet").val('');
+                        $("#prodtopallet").focus();
+                        $(".addtopallet_message").text(result.message);
+                            setTimeout(function(){
+                                $(".addtopallet_message").text('');
+                            },5000);
+                    }
+                }
+            });
+        }
+    });
+});
+
+$(document).ready(function(){
+    $(".save_add2pallet").on("click",function(){
+       var tbl = $("#scprodtopallet_body tr").length;
+       var prod_data = [];
+
+       $("#scprodtopallet_body tr").each(function(){
+            var data1 = $(this).find('td p').eq(0).text();
+            var data2 = $(this).find('td').eq(1).text();
+            var item = {};
+            item.label = data1;
+            item.gtin = data2;
+            prod_data.push(item);
+        });
+
+        if(tbl < 1){
+            $(".addtopallet_message").text('Please Scan Products')
+            $("#prodtopallet").val('');
+            $("#prodtopallet").focus();
+            setTimeout(function(){
+                $(".addtopallet_message").text('');
+            },5000);
+        }else{
+            var cx = $("#cx").val();
+            var pallet = $(".pallet_lbl").attr('data-id');
+
+            $.ajax({
+                url: "/home/scan/prodtopallet",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: {'products':prod_data,'cx':cx,'pallet_id':pallet},
+                success: function (result) {
+                    if(result.status == 1){
+                        $(".atp_card").hide();
+                        $("#prod_out").val('');
+                        $("#scprodtopallet tr").empty();
+                        $(".or_done").show();
+                        $(".or_done1").addClass('bg-green-500');
+                        $(".success").show();
+                        $(".co_message").text(result.message);
+                    }else{
+                        $(".atp_card").hide();
+                        $("#prod_out").val('');
+                        $("#scprodtopallet tr").empty();
+                        $(".or_done").show();
+                        $(".or_done1").addClass('bg-red-500');
+                        $(".error").show();
+                        $(".co_message").text(result.message);
+                    }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+
+    });
+});
+
+// Product Out
+$(document).ready(function(){
+    $("#prod_out").on("change",function(){
+       var plabel = ($("#prod_out").val()).trim();
+
+       var row_data1 = [];
+       $("#prod_out_body tr").each(function(){
+            var data1 = $(this).find('td p').eq(0).text();
+            row_data1.push(data1);
+        });
+
+       if(plabel == ""){
+            $(".p_out_message").text("Please Scan Product");
+            $("#prod_out").val('');
+            $("#prod_out").focus();
+            setTimeout(function(){
+                $(".p_out_message").text("");
+            },5000);
+       }else if($.inArray(plabel,row_data1) != -1){
+            $(".p_out_message").text("Product Already Scanned");
+            $("#prod_out").val('');
+            $("#prod_out").focus();
+            setTimeout(function(){
+                $(".p_out_message").text("");
+            },5000);
+        }else{
+            $.ajax({
+                url: "/home/scan-out/checkStock",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: {'label':plabel},
+                success: function (result) {
+                    // console.log(result.message['label']);
+                    if(result.status == 1){
+                        var lbl = result.message['label'];
+                        var gtin = result.message['gtin'];
+                        var pname = result.message['name'];
+                        var plu = result.message['plu'];
+                        $("#prod_out").val('');
+                        $("#prod_out").focus();
+                        var prod = "<tr>"
+                                +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
+                                +"<p class='w-12 truncate overflow-clip'>"+lbl+"</p>"
+                                +"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+plu+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-20 truncate overflow-clip'>"+pname+"</p></td>"
+                                +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
+                                    +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
+                                        +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                                            +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                                        +"</svg>"
+                                    +"</a>"
+                                +"</td>"
+                                +"</tr>";
+                        $("#prod_out_body").append(prod);
+                    }else if(result.status == 2){
+                        var lbl = result.message['label'];
+                        $("#prod_out").val('');
+                        $("#prod_out").focus();
+                        var prod = "<tr>"
+                                +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
+                                +"<p class='w-12 truncate overflow-clip'>"+lbl+"</p>"
+                                +"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
+                                    +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
+                                        +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                                            +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                                        +"</svg>"
+                                    +"</a>"
+                                +"</td>"
+                                +"</tr>";
+                        $("#prod_out_body").append(prod);
+                    }else{
+                        $(".p_out_message").text(result.message);
+                        $("#prod_out").val('');
+                        $("#prod_out").focus();
+                        setTimeout(function(){
+                            $(".p_out_message").text("");
+                        },5000);
+                    }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+       }
+    });
+});
+
+$(document).ready(function(){
+    $(".tk_pr_out").on("click",function(){
+        var stcks = $("#prod_out_body tr").length;
+        var prod_data = [];
+
+        if(stcks < 1){
+            $(".p_out_message").text("Please Scan Product");
+            $("#prod_out").val('');
+            $("#prod_out").focus();
+            setTimeout(function(){
+                $(".p_out_message").text("");
+            },5000);
+        }else{
+            $("#prod_out_body tr").each(function(){
+                var data1 = $(this).find('td p').eq(0).text();
+                var data2 = $(this).find('td').eq(1).text();
+                var item = {};
+                item.label = data1;
+                item.plu = data2;
+                prod_data.push(item);
+            });
+            $.ajax({
+                url: "/home/scan-out/checkOutProduct",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: {'prods':prod_data},
+                success: function (result) {
+                    if(result.status == 1){
+                        $("#scprod_out").hide();
+                        $("#prod_out").val('');
+                        $("#prod_out_body tr").empty();
+                        $(".or_done").show();
+                        $(".or_done1").addClass('bg-green-500');
+                        $(".success").show();
+                        $(".co_message").text(result.message);
+                    }else{
+                        $("#scprod_out").hide();
+                        $("#prod_out").val('');
+                        $("#prod_out_body tr").empty();
+                        $(".or_done").show();
+                        $(".or_done1").addClass('bg-red-500');
+                        $(".error").show();
+                        $(".co_message").text(result.message);
+                    }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+
+    });
+});
+
+$(document).ready(function(){
+    $(".cmplte_order").on("click",function(){
+        window.location.reload();
+    });
+});
 // Pallet out
 $(document).ready(function(){
     $("#scnpalletout").on("change",function(){
@@ -599,7 +942,7 @@ $(document).ready(function(){
             $(".scan_pallet_message").text('Please Scan Pallet');
             setTimeout(function(){
                 $(".scan_pallet_message").text("");
-            },2000);
+            },5000);
         }else{
             $.ajax({
                 url: "/home/scan-out/getPallet",
@@ -607,7 +950,7 @@ $(document).ready(function(){
                 method: 'post',
                 data: { "label": pout_name},
                 success: function(result){
-                    console.log(result);
+                    // console.log(result);
                     if(result.status == 1){
                         var qty = result.message.qty;
                         var loc = result.message.location;
@@ -624,7 +967,7 @@ $(document).ready(function(){
                         $(".scan_pallet_message").text(result.message);
                         setTimeout(function(){
                             $(".scan_pallet_message").text("");
-                        },2000);
+                        },5000);
                     }
                 }, error: function (request, status, error) {
                     alert(request.responseText);
@@ -632,6 +975,77 @@ $(document).ready(function(){
             });
         }
     });
+});
+
+$(document).ready(function(){
+    $(".tk_out").on("click",function(){
+        var lbl = $("#scnpalletout_tbl_body tr").find('td p').eq(0).text();
+
+        if(lbl == ""){
+            $(".scan_pallet_message").text('Please Scan Pallet');
+            $("#scnpalletout").val("");
+            $("#scnpalletout").focus();
+            setTimeout(function(){
+                $(".scan_pallet_message").text("");
+            },5000);
+        }else{
+            $.ajax({
+                url: "/home/scan-out/palletOut",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: { "label": lbl},
+                success: function(result){
+                    if(result.status == 1){
+                        $("#scannerOut").hide();
+                        $(".scnpalletout_tbl").val('');
+                        $("#scnpalletout_tbl_body tr").empty();
+                        $(".or_done").show();
+                        $(".or_done1").addClass('bg-green-500');
+                        $(".success").show();
+                        $(".co_message").text(result.message);
+                    }else{
+                        $("#scannerOut").hide();
+                        $(".scnpalletout_tbl").val('');
+                        $("#scnpalletout_tbl_body tr").empty();
+                        $(".or_done").show();
+                        $(".or_done1").addClass('bg-red-500');
+                        $(".error").show();
+                        $(".co_message").text(result.message);
+                    }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+    });
+});
+
+$(document).on("click",".print_docket",function(){
+    var tbl = $("#docket_table");
+    var style = "<style type='text/css'>"
+            +"#docket_table{width:auto; height:auto; border-collapse:collapse;}"
+            +"#docket_table thead{padding:5px}"
+            +".th1 img{width:50%; height:50px; object-position:2% 100%;}"
+            +".th1_a{column-span:1; text-align:left;} .th1_b{column-span:2} .th1_c{column-span:3}"
+            +".th2_a,.th2_b,.th2_c,.th3_a,.th3_b,.th3_c{border:1px solid #000; border-collapse:collapse; text-align:center;}"
+            +".th1,.th2,.th3,.th4,.th5,.th6,{column-count:6; padding:5px;}"
+            +".th4 th,.th5 td,.th6 td{text-align:left;}"
+            +".th4_a,.th5_a,.th6_a{column-count:1; column-span:1;}"
+            +".th4_b,.th5_b,.th6_b{column-count:2; column-span:2;}"
+            +".th4_c,.th5_c,.th6_c{column-count:3; column-span:3;}"
+            +".th7_a,.th8_a,.th7_c,.th8_c{column-count:1; column-span:1;}"
+            +".th7_b,.th8_b{column-count:4; column-span:4;}"
+            +".th7,.th8{text-align:left; height:2%}"
+            +".th7,.th8{border:1px solid #000; border-collapse: collapse; text-align:center;}"
+            +"</style>";
+
+    style += tbl.prop('outerHTML');
+    var wme = window.open("","","width=1200","height=900");
+    wme.document.write(style);
+    wme.document.close();
+    wme.focus();
+    wme.print();
+    // wme.close();
 });
 // end scan pallet
 // locations
@@ -975,12 +1389,12 @@ $(document).on("click",".srch_stcks",function(){
         $(".srch_message").text('Select Customer');
         setTimeout(function(){
             $(".srch_message").text('');
-        },2000)
+        },5000)
     }else if(date ==""){
         $(".srch_message").text('Select Date');
         setTimeout(function(){
             $(".srch_message").text('');
-        },2000)
+        },5000)
     }else{
         $("#stcks_tbl_body").empty();
         searchStocks(cx,date);
@@ -1016,8 +1430,6 @@ $(document).on("click",".prod_view",function(){
         method: 'post',
         data: {'palletid':pallet_id},
         success: function (result) {
-            // $("content").append(result);
-            // window.location.href = result;
             $("#prodModal").show();
             $("#prodModalBody").show();
             $(".prod_table").append(result);
@@ -1059,7 +1471,7 @@ function searchStocks(cx,date){
                 $(".srch_message").text(result.stocks);
                 setTimeout(function(){
                     $(".srch_message").text('');
-                },2000)
+                },5000)
             }
 
 

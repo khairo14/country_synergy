@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductHistory extends Model
+class OrderLines extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'scanned_id',
-        'gtin',
-        'old_pallet_id',
-        'new_pallet_id',
         'order_id',
-        'order_out_date',
-        'actions',
+        'plu',
+        'product_name',
+        'qty',
     ];
 }

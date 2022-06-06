@@ -2,7 +2,6 @@
 
 @section('content')
 <div x-data="{cx:true,qstion:false,scnproducts:false,labelModal:false,gen_label:false}">
-    {{-- <div x-data="{qstion:true, scnpallet:false, slct_cust:false, scnproducts:false, prod_printLabel:false, assign:false, labelModal:false}"> --}}
     <div x-show="cx" class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
         <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
             <div class="mt-2 flex justify-center">
@@ -33,7 +32,7 @@
     <div x-show="scnproducts" id="scnproducts" class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg" style="display:none">
         <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
             <div class="border border-gray-400 rounded-md">
-                <label for="scan_pcode" class="sr-only">PLU</label>
+                <label for="scan_pcode" class="sr-only">Label</label>
                 <input type="text" name="scan_pcode" id="scan_pcode" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Products" autofocus >
             </div>
             <div class="mt-1 text-center bg-red-300 rounded-md p2">
@@ -48,7 +47,8 @@
                           <tr>
                             <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Label</th>
                             <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">GTIN</th>
-                            <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU-Name</th>
+                            <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU</th>
+                            <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th>
                             <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6">
                               <span class="sr-only">Edit</span>
                             </th>
@@ -64,7 +64,7 @@
             </div>
 
             <div class="flex justify-end mt-2">
-                <button @click="scnproducts=!scnproducts,slct_cust=!slct_cust" type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button @click="scnproducts=!scnproducts,cx=!cx" type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <span class="items-center mx-2">
                         &nbsp; back &nbsp;
                     </span>
