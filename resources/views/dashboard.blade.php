@@ -12,9 +12,9 @@
             </button>
         </div>
         <div class="px-4">
-            <button type="button" class="inline-flex items-center px-10 py-10 text-2xl font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md stockOut hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <button type="button" class="inline-flex items-center px-10 py-10 text-2xl font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md stockOut hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span class="items-center mx-5">
-                    Stocks Out
+                    Stock Take
                 </span>
             </button>
         </div>

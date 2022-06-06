@@ -39,10 +39,19 @@ Route::post('/home/scan/add-pallet',[StocksController::class,'addPallet'])->midd
 Route::post('/home/scan/check-location',[StocksController::class,'checkLocation'])->middleware('auth');
 // scanIn AddtoPallet
 Route::get('/home/scan/addtopallet',[StocksController::class,'viewAdd2pallet'])->middleware('auth');
-
+Route::post('/home/scan/checkStockPallet',[StocksController::class,'getPallet'])->middleware('auth');
+Route::post('/home/scan/prodtopallet',[StocksController::class,'prodToPallet'])->middleware('auth');
 // scanOut
 Route::get('/home/scan-out/pallets',[StocksController::class,'viewPalletOut'])->middleware('auth');
+Route::get('/home/scan-out/products',[StocksController::class,'viewProductOut'])->middleware('auth');
+// scanOut Pallet
 Route::post('/home/scan-out/getPallet',[StocksController::class,'getPallet'])->middleware('auth');
+Route::post('/home/scan-out/palletOut',[StocksController::class,'palletOut'])->middleware('auth');
+// Route::post('/home/scan-out/print',[StocksController::class,'printDocket'])->middleware('auth');
+// scanOut Product
+Route::post('/home/scan-out/checkStock',[StocksController::class,'checkStockProduct'])->middleware('auth');
+Route::post('/home/scan-out/checkOutProduct',[StocksController::class,'orderProductOut'])->middleware('auth');
+// Route::view('/printDocket','./print/printDocket');
 
 // freezer locations
 Route::get('/location',[LocationsController::class,'fLocation'])->name('location');
@@ -87,7 +96,7 @@ Route::get('/printlabels', [PDFController::class,'printlabels'])->middleware('au
 Route::resource('/customers', CustomersController::class);
 
 // orders
-// Route::get('/orders',[OrdersController::class,'viewOrders']);
+Route::get('/orders',[OrdersController::class,'viewOrders']);
 // Route::get('/createOrder',[OrdersController::class,'getCustomer'])->middleware('auth');
 // Route::post('/get-productList',[OrdersController::class,'productList'])->middleware('auth');
 // Route::post('/get-product',[OrdersController::class,'getProduct'])->middleware('auth');

@@ -1,35 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-<div x-data="{addtopallet:true,prodtopallet:false,bbtn:false}" class="atp_card mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
+
+<div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg" id="scprod_out">
     <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
-        <div x-show="addtopallet" class="_addtopallet">
-            <label for="addtopallet" class="sr-only">Pallet</label>
-            <input type="text" name="addtopallet" id="addtopallet" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Pallet" autofocus />
+        <div class="border border-gray-400 rounded-md">
+            <label for="prod_out" class="sr-only">Label</label>
+            <input type="text" name="prod_out" id="prod_out" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Products" autofocus >
         </div>
-        <div x-show="prodtopallet" class="_prodtopallet" style="display: none">
-            <label for="addtopallet" class="sr-only">Products</label>
-            <input type="text" name="prodtopallet" id="prodtopallet" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Product" autofocus />
+        <div class="mt-1 text-center bg-red-300 rounded-md p2">
+            <span class="p_out_message"></span>
         </div>
-
-        <div class="mt-2 text-center bg-red-300 rounded-md">
-            <span class="addtopallet_message"></span>
-        </div>
-    </div>
-
-    <div class="px-4 py-4 mt-2 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
-        <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
+        <div class="flex flex-col mt-2">
+            <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle md:px-8 lg:px-8">
-                <div class="inline-flex w-full bg-white my-1 rounded-md shadow ring-1 ring-black ring-opacity-5 md:rounded-md">
-                    <p class="font-medium text-md px-6">Pallet Label:</p><p class="pallet_lbl ml-2" data-id=""></p>
-                    <input type="hidden" id="cx" value="">
-                </div>
                 <div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-300 scprodtopallet">
+                <table class="min-w-full divide-y divide-gray-300 prod_out">
                     <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Product Label</th>
-                        <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">GTIN</th>
+                        <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Label</th>
                         <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU</th>
                         <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th>
                         <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6">
@@ -37,22 +26,18 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200" id="scprodtopallet_body">
+                    <tbody class="bg-white divide-y divide-gray-200" id="prod_out_body">
                     {{-- tr here --}}
                     </tbody>
                 </table>
                 </div>
             </div>
+            </div>
         </div>
-        <div class="flex justify-end mt-2">
-            <button x-show="bbtn" @click="addtopallet=!addtopallet,prodtopallet=!prodtopallet,bbtn=!bbtn" type="button" class="b_btn inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" style="display: none">
+        <div class="flex justify-end mt-4">
+            <button type="button" class="tk_pr_out inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span class="items-center mx-2">
-                    &nbsp; back &nbsp;
-                </span>
-            </button>
-            <button type="button" class="save_add2pallet inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span class="items-center mx-2">
-                    &nbsp; Add &nbsp;
+                    &nbsp; Create Order &nbsp;
                 </span>
             </button>
         </div>
@@ -87,5 +72,6 @@
     </div>
 </div>
 
+</div>
 
 @endsection
