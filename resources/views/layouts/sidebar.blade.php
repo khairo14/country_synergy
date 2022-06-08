@@ -4,7 +4,7 @@
         <img class="w-auto h-10 mx-4 my-4" src="{{asset('img/cs-Logo.png')}}" alt="Workflow">
       </div>
 
-      <div x-data={active:'{{Request::segment(1)}}'} class="flex flex-col flex-1 overflow-y-auto">
+      <div x-data="{active:'{{Request::segment(1)}}', active2:'{{Request::segment(2)}}'}" class="flex flex-col flex-1 overflow-y-auto">
         <nav class="flex-1 px-2 py-4 space-y-1">
           <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
           <a href="{{url('/')}}" :class="{'bg-gray-900 text-white' : active==='home'}" class="flex items-center px-2 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group">
@@ -51,14 +51,44 @@
             Stocks
           </a>
 
-          <a href="{{url('/orders')}}" :class="{'bg-gray-900 text-white': active ==='orders'}"class="flex items-center px-2 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group">
+          {{-- <a href="{{url('/orders')}}" :class="{'bg-gray-900 text-white': active ==='orders'}"class="flex items-center px-2 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group">
             <!-- Heroicon name: outline/users -->
             <svg :class="{'text-gray-300': active ==='orders'}" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
             Orders
-          </a>
+          </a> --}}
 
+          <div x-data="{open:false}" class="space-y-1">
+            <button type="button"
+                class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-controls="sub-menu-2" aria-expanded="false"
+                :class="{'bg-gray-900 text-white': active === 'view-orders' || active === 'create-order'}"
+                x-state:on="Current"
+                x-state:off="Default"
+                aria-controls="sub-menu-2"
+                @click="open=!open"
+                aria-expanded="false"
+                x-bind:aria-expanded="open.toString()"
+                x-state-description="Current: bg-gray-100 text-gray-900, Default:bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+              <svg class="flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+              <span class="flex-1"> Orders </span>
+              <svg class="flex-shrink-0 w-5 h-5 ml-3 text-gray-300 transition-colors duration-150 ease-in-out transform group-hover:text-gray-400" viewBox="0 0 20 20" aria-hidden="true"
+                x-state:on="Expanded" x-state:off="Collapsed" aria-hidden="true" :class="{ 'text-gray-400 rotate-90': open, 'text-gray-300': !(open) }">
+                <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
+              </svg>
+            </button>
+            <div x-show="open" x-description="Expandable link section, show/hide based on state." class="space-y-1" id="sub-menu-2" style="display: none">
+              <a href="{{url('/view-orders')}}" :class="{'bg-gray-900 text-white': active === 'view-orders'}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-300 rounded-md group pl-11 hover:text-white hover:bg-gray-700"> View Orders </a>
+
+              <a href="{{url('/create-order')}}":class="{'bg-gray-900 text-white': active === 'create-order'}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-300 rounded-md group pl-11 hover:text-white hover:bg-gray-700"> Create Order </a>
+
+              {{-- <a href="#" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50"> Calendar </a>
+
+              <a href="#" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50"> Settings </a> --}}
+            </div>
+          </div>
         </nav>
       </div>
 

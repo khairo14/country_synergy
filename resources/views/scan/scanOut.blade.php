@@ -11,9 +11,9 @@
             </a>
         </div>
         <div class="px-4">
-            <a href="" class="inline-flex items-center px-4 py-8 text-2xl font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md sm:px-6 sm:py-12 stockOut hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <a href="{{url('/home/scan-out/orders')}}" class="inline-flex items-center px-5 py-8 text-2xl font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md sm:px-7 sm:py-12 stockOrder hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span class="items-center mx-5 text-center">
-                    Add To </br> Existing Order
+                    &nbsp;&nbsp;Scan Order&nbsp;
                 </span>
             </a>
         </div>

@@ -28,7 +28,11 @@ class EditPallets extends Migration
     {
         //
         Schema::table('pallets', function (Blueprint $table) {
-            $table->string('name')->change();
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $indexesFound = $sm->listTableIndexes('pallets');
+
+            if(array_key_exists("pallets_name_unique", $indexesFound))
+                $table->dropUnique("pallets_name_unique");
         });
     }
 }

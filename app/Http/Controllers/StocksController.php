@@ -235,6 +235,10 @@ class StocksController extends Controller
         return view('scan.scanProductOut');
     }
 
+    public function viewOrderOut(){
+        return view('scan.scanOrderOut');
+    }
+
     public function getPallet(Request $request){
         $label = $request->label;
 
@@ -319,7 +323,7 @@ class StocksController extends Controller
         return response()->json(['status'=>$status,'message'=>$message]);
     }
 
-    // Stock take - Pallet out
+    // Stock out - Pallet out
     public function palletOut(Request $request){
         $label = $request->label;
         $pallet = Pallets::where(['name'=>$label])->get();
@@ -377,9 +381,9 @@ class StocksController extends Controller
                 foreach($or_lines as $or_line){
                     $new_line = new OrderLines();
                     $new_line->order_id = $order_id;
-                    $new_line->plu = $or_line['plu'];
-                    $new_line->product_name = $or_line['name'];
-                    $new_line->qty = $or_line['count'];
+                    $new_line->sc_plu = $or_line['plu'];
+                    $new_line->sc_prod_name = $or_line['name'];
+                    $new_line->sc_qty = $or_line['count'];
                     $new_line->save();
                 }
 
@@ -395,9 +399,9 @@ class StocksController extends Controller
 
                     $new_line = new OrderLines();
                     $new_line->order_id = $order_id;
-                    $new_line->plu = " ";
-                    $new_line->product_name = " ";
-                    $new_line->qty = $stks[0]->qty;
+                    $new_line->sc_plu = " ";
+                    $new_line->sc_prod_name = " ";
+                    $new_line->sc_qty = $stks[0]->qty;
                     $new_line->save();
 
                     if(isset($new_line->id)){
@@ -420,8 +424,7 @@ class StocksController extends Controller
         return response()->json(['status'=>$status,'message'=>$message]);
     }
 
-
-    // Stock take - product out
+    // Stock out - product out
     public function checkStockProduct(Request $request){
         $label = $request->label;
 
@@ -470,7 +473,7 @@ class StocksController extends Controller
                     $ph = ProductHistory::where('scanned_id',$sp[0]->id)->get();
                     if($sp[0]->gtin != ""){
                         $prod_dtls = Products::where('gtin',$sp[0]->gtin)->get();
-                        $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name]);
+                        $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->gtin]);
                     }else{
                         $pr_qty->push(['plu'=>'','name'=>'']);
                     }
@@ -501,15 +504,16 @@ class StocksController extends Controller
             }
             $pr = $pr_qty->groupBy(['plu']);
             $or_lines = $pr->map(function ($prs) {
-                return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'count'=>$prs->count()];
+                return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'gtin'=>$prs[0]['gtin'],'count'=>$prs->count()];
             });
 
             foreach($or_lines as $or_line){
                 $new_line = new OrderLines();
                 $new_line->order_id = $order_id;
-                $new_line->plu = $or_line['plu'];
-                $new_line->product_name = $or_line['name'];
-                $new_line->qty = $or_line['count'];
+                $new_line->sc_plu = $or_line['plu'];
+                $new_line->sc_gtin = $or_line['gtin'];
+                $new_line->sc_prod_name = $or_line['name'];
+                $new_line->sc_qty = $or_line['count'];
                 $new_line->save();
             }
             $status = 1;
@@ -520,6 +524,138 @@ class StocksController extends Controller
         }
         return response()->json(['status'=>$status,'message'=>$message]);
 
+    }
+
+    // Stock out - orders
+    public function getOrder($id){
+        if($id != ""){
+            $order = Orders::where('id',$id)->get();
+            if($order->isNotEmpty()){
+                $status = $order[0]->status;
+                if($status == 'Incomplete'){
+                    $or_line = OrderLines::where('order_id',$id)->get();
+                    if($or_line->isNotEmpty()){
+                        $status = 1;
+                        $message = ['order'=>$order,'or_line'=>$or_line];
+                    }
+                }else{
+                    $status = 0;
+                    $message = 'Order Already Completed';
+                }
+
+            }else{
+                $status = 0;
+                $message ='Order Not Found';
+            }
+        }else{
+            $status = 0;
+            $message ='Invalid Order';
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function addProdToOrder(Request $request){
+        $or_id = $request->order_id;
+        $pr_lbl = $request->label;
+        $now = Carbon::now();
+
+        if($pr_lbl == "" || $pr_lbl == " "){
+            $status = 0;
+            $message = "Please Scan Again";
+        }else{
+            $scn_id = ScanProducts::where('label',$pr_lbl)->get();
+            if($scn_id->isEmpty()){
+                $status = 0;
+                $message = "Product Not Found";
+            }else{
+                $chk_ph = ProductHistory::where(['scanned_id'=>$scn_id[0]->id,'actions'=>'In'])->get();
+                if($chk_ph->isEmpty()){
+                    $status = 0;
+                    $message = "Product Already Added to Order / Delivered - see Product Tracking";
+                }else{
+                    $stock = Stocks::where(['pallet_id'=>$chk_ph[0]->new_pallet_id,'status'=>'In'])->get();
+                    if($stock->isEmpty()){
+                        $status = 0;
+                        $message = "Unable to Find Product Location From Stocks";
+                    }else{
+                        $prod_dtls = Products::where('gtin',$scn_id[0]->gtin)->get();
+
+                        $new_ph = ProductHistory::find($chk_ph[0]->id);
+                        $new_ph->order_id = $or_id;
+                        $new_ph->order_out_date = $now;
+                        $new_ph->actions = "Out";
+                        $new_ph->save();
+
+                        $stk_qty = $stock[0]->qty - 1;
+                        if($stk_qty <= 0){
+                            $new_stk = Stocks::find($stock[0]->id);
+                            $new_stk->qty = $stk_qty;
+                            $new_stk->status = 'Out';
+                            $new_stk->save();
+                        }else{
+                            $new_stk = Stocks::find($stock[0]->id);
+                            $new_stk->qty = $stk_qty;
+                            $new_stk->save();
+                        }
+
+                        $sc_gtin = $scn_id[0]->gtin;
+                        $or_line = OrderLines::where('order_id',$or_id)->get();
+                        if($or_line->isNotEmpty()){
+                            foreach($or_line as $line){
+                               $chk_line = OrderLines::where(['order_id'=>$or_id,'sc_gtin'=>$line->gtin])->where('sc_qty','!=',null)->get();
+                               if($chk_line->isNotEmpty()){
+                                   $new_sc_qty = $line->sc_qty + 1;
+                                   $update_or_line = OrderLines::find($chk_line[0]->id);
+                                   $update_or_line->sc_qty = $new_sc_qty;
+                                   $update_or_line->save();
+                               }else{
+                                    if($prod_dtls->isNotEmpty()){
+                                        $new_line = new OrderLines();
+                                        $new_line->sc_qty = 1;
+                                        $new_line->sc_prod_name = $prod_dtls[0]->product_name;
+                                        $new_line->sc_gtin = $prod_dtls[0]->gtin;
+                                        $new_line->sc_plu = $prod_dtls[0]->product_code;
+                                        $new_line->order_type = "Out";
+                                        $new_line->order_id = $or_id;
+                                        $new_line->save();
+                                    }else{
+                                        $new_line = new OrderLines();
+                                        $new_line->sc_qty = 1;
+                                        $new_line->sc_gtin = $sc_gtin;
+                                        $new_line->order_type = "Out";
+                                        $new_line->order_id = $or_id;
+                                        $new_line->save();
+                                    }
+                               }
+                            }
+
+                            $new_order = OrderLines::where('order_id',$or_id)->get();
+                            $status = 1;
+                            $message = $new_order;
+                        }else{
+                            $status = 0;
+                            $message = "Unable to Add Products to Order Lines";
+
+                            $stk_qty = $stock[0]->qty + 1;
+                            $revert_stock = Stocks::find($stock[0]->id);
+                            $revert_stock->qty = $stk_qty;
+                            $revert_stock->status = 'In';
+                            $revert_stock->save();
+
+                            $revert_ph = ProductHistory::find($chk_ph[0]->id);
+                            $revert_ph->order_id = null;
+                            $revert_ph->order_out_date = null;
+                            $revert_ph->actions = "In";
+                            $revert_ph->save();
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
     }
 
     // stocks
@@ -537,10 +673,6 @@ class StocksController extends Controller
             $best_before = $stock->best_before;
             $best_before = Carbon::createFromFormat('Y-m-d', $best_before)->format('d-m-Y');
 
-            // $warn = new Carbon($best_before);
-            // $warn = $warn->addDays(7,'days');
-            // $warn = $warn->format('d-m-Y');
-            // dd($pallet);
             $items[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id];
         }
 
