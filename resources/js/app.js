@@ -1108,8 +1108,8 @@ $(document).ready(function(){
                     }else{
                         $(".orderout_message").text(result.message);
                         $(".orderout_message").addClass('bg-red-300');
-                        $("#orderout_prod").val("");
-                        $("#orderout_prod").focus;
+                        $("#orderout").val("");
+                        $("#orderout").focus;
                         setTimeout(function(){
                             $(".orderout_message").text("");
                             $(".orderout_message").removeClass('bg-red-300');
@@ -1127,6 +1127,7 @@ $(document).ready(function(){
     $("#orderout_prod").on("change",function(){
         var label = ($(this).val()).trim();
         var order_id = $(".or_num").attr('data-id');
+        $(".or_out_tbl_body").empty();
 
         if(label == "" || label ==" "){
             $(".orderout_message").text('Scan Products');
@@ -1138,48 +1139,57 @@ $(document).ready(function(){
                 $(".orderout_message").removeClass('bg-red-300');
             },5000);
         }else{
-            $(".or_out_tbl_body").empty();
             $.ajax({
                 url: "/home/scan-out/orderProd",
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 method: 'post',
                 data: { "label": label,"order_id":order_id},
                 success: function(result){
-                    $(".orderout_message").text('Product Succefully Added to Order');
-                    $(".orderout_message").addClass('bg-green-300');
-                    $("#orderout_prod").val("");
-                    $("#orderout_prod").focus;
-                    setTimeout(function(){
-                        $(".orderout_message").text("");
-                        $(".orderout_message").removeClass('bg-green-300');
-                    },5000);
+                    // console.log(result);
+                    if(result.status == 1){
+                        var or_line = result.message['or_line'];
+                        or_line.forEach(function(or_line){
+                            var or_dtls = "<tr class='px-2 text-center divide-x divide-black'>";
+                                if(or_line['or_plu'] != null){
+                                    or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['or_plu']+"</td>";
+                                }else if(or_line['sc_plu'] != null){
+                                    or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['sc_plu']+"</td>";
+                                }else{
+                                    or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>0000</td>";
+                                }
 
-                    var or_line = result.message['or_line'];
+                                if(or_line['or_prod_name'] != null){
+                                    or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['or_prod_name']+"</td>";
+                                }else if(or_line['sc_prod_name'] != null){
+                                    or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['sc_prod_name']+"</td>";
+                                }else{
+                                    or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>No Name Avbl</td>";
+                                }
 
-                    or_line.forEach(function(or_line){
-                        var or_dtls = "<tr class='px-2 text-center divide-x divide-black'>";
-                            if(or_line['or_plu'] != null){
-                                or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['or_plu']+"</td>"
-                            }else if(or_line['sc_plu'] != null){
-                                or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['sc_plu']+"</td>"
-                            }else{
-                                or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>0000</td>"
-                            }
+                                or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['or_qty']+"</td>"
+                                +"<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['sc_qty']+"</td>"
+                                +"</tr>";
 
-                            if(or_line['or_prod_name'] != null){
-                                or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['or_prod_name']+"</td>"
-                            }else if(or_line['sc_prod_name'] != null){
-                                or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['sc_prod_name']+"</td>"
-                            }else{
-                                or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>No Name Avbl</td>"
-                            }
-
-                            or_dtls +="<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['or_qty']+"</td>"
-                            +"<td class='px-2 py-2 text-xs font-medium tracking-wide text-center text-gray-500 uppercase'>"+or_line['sc_qty']+"</td>"
-                            +"</tr>";
-
-                        $(".or_out_tbl_body").append(or_dtls);
-                    });
+                            $(".or_out_tbl_body").append(or_dtls);
+                        });
+                        $(".orderout_message").text('Product Succefully Added to Order');
+                        $(".orderout_message").addClass('bg-green-300');
+                        $("#orderout_prod").val("");
+                        $("#orderout_prod").focus;
+                        setTimeout(function(){
+                            $(".orderout_message").text("");
+                            $(".orderout_message").removeClass('bg-green-300');
+                        },5000);
+                    }else{
+                        $(".orderout_message").text(result.message);
+                        $(".orderout_message").addClass('bg-red-300');
+                        $("#orderout_prod").val("");
+                        $("#orderout_prod").focus;
+                        setTimeout(function(){
+                            $(".orderout_message").text("");
+                            $(".orderout_message").removeClass('bg-red-300');
+                        },5000);
+                    }
                 }, error: function (request, status, error) {
                     alert(request.responseText);
                 }

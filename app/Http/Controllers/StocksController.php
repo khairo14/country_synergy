@@ -599,40 +599,45 @@ class StocksController extends Controller
                             $new_stk->save();
                         }
 
-                        $sc_gtin = $scn_id[0]->gtin;
-                        $or_line = OrderLines::where('order_id',$or_id)->get();
-                        if($or_line->isNotEmpty()){
-                            foreach($or_line as $line){
-                               $chk_line = OrderLines::where(['order_id'=>$or_id,'sc_gtin'=>$line->gtin])->where('sc_qty','!=',null)->get();
-                               if($chk_line->isNotEmpty()){
-                                   $new_sc_qty = $line->sc_qty + 1;
-                                   $update_or_line = OrderLines::find($chk_line[0]->id);
-                                   $update_or_line->sc_qty = $new_sc_qty;
-                                   $update_or_line->save();
-                               }else{
-                                    if($prod_dtls->isNotEmpty()){
-                                        $new_line = new OrderLines();
-                                        $new_line->sc_qty = 1;
-                                        $new_line->sc_prod_name = $prod_dtls[0]->product_name;
-                                        $new_line->sc_gtin = $prod_dtls[0]->gtin;
-                                        $new_line->sc_plu = $prod_dtls[0]->product_code;
-                                        $new_line->order_type = "Out";
-                                        $new_line->order_id = $or_id;
-                                        $new_line->save();
-                                    }else{
-                                        $new_line = new OrderLines();
-                                        $new_line->sc_qty = 1;
-                                        $new_line->sc_gtin = $sc_gtin;
-                                        $new_line->order_type = "Out";
-                                        $new_line->order_id = $or_id;
-                                        $new_line->save();
-                                    }
-                               }
+                        $scan_gtin = $scn_id[0]->gtin;
+                        if($scan_gtin != "" || $scan_gtin != null){
+                            $or_line = OrderLines::where(['order_id'=>$or_id,'or_gtin'=>$scan_gtin])->get();
+                            if($or_line->isNotEmpty()){
+                                $sc_qty = $or_line[0]->sc_qty;
+                                if($sc_qty != "" || $sc_qty != null){
+                                    $new_sc_qty = $sc_qty + 1;
+                                    $update_or_line = OrderLines::find($or_line[0]->id);
+                                    $update_or_line->sc_qty = $new_sc_qty;
+                                    $update_or_line->save();
+                                }else{
+                                    $update_or_line = OrderLines::find($or_line[0]->id);
+                                    $update_or_line->sc_qty = 1;
+                                    $update_or_line->sc_prod_name =  $or_line[0]->or_prod_name;
+                                    $update_or_line->sc_gtin = $or_line[0]->or_gtin;
+                                    $update_or_line->sc_plu =  $or_line[0]->or_plu;
+                                    $update_or_line->save();
+                                }
+                            }else{
+                                $sc_line = OrderLines::where(['order_id'=>$or_id,'sc_gtin'=>$scan_gtin])->get();
+                                if($sc_line->isNotEmpty()){
+                                        $new_sc_qty = $sc_line[0]->sc_qty + 1;
+                                        $update_or_line = OrderLines::find($sc_line[0]->id);
+                                        $update_or_line->sc_qty = $new_sc_qty;
+                                        $update_or_line->save();
+                                }else{
+                                    $add_line = new OrderLines();
+                                    $add_line->order_id = $or_id;
+                                    $add_line->order_type = "Out";
+                                    $add_line->sc_plu = $prod_dtls[0]->product_code;
+                                    $add_line->sc_gtin = $scan_gtin;
+                                    $add_line->sc_prod_name = $prod_dtls[0]->product_name;
+                                    $add_line->sc_qty = 1;
+                                    $add_line->save();
+                                }
                             }
-
-                            $new_order = OrderLines::where('order_id',$or_id)->get();
+                            $new_or = OrderLines::where('order_id',$or_id)->get();
                             $status = 1;
-                            $message = $new_order;
+                            $message = ['or_line'=>$new_or];
                         }else{
                             $status = 0;
                             $message = "Unable to Add Products to Order Lines";
@@ -649,7 +654,6 @@ class StocksController extends Controller
                             $revert_ph->actions = "In";
                             $revert_ph->save();
                         }
-
                     }
                 }
             }
