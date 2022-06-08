@@ -75,7 +75,7 @@ Route::post('/products/get',[ProductsController::class,'getProduct'])->middlewar
 Route::post('/products/edit',[ProductsController::class,'editProduct'])->middleware('auth');
 
 // stocks
-Route::get('/stocks',[StocksController::class,'viewStocks']);
+Route::get('/stocks',[StocksController::class,'viewStocks'])->middleware('auth');
 Route::post('/stocks/search-stocks',[StocksController::class,'searchStocks'])->middleware('auth');
 Route::post('/stocks/print-stock',[StocksController::class,'printStock'])->middleware('auth');
 Route::post('/stocks/products-from-pallet',[StocksController::class,'viewStockProducts'])->middleware('auth');
