@@ -668,8 +668,27 @@ class StocksController extends Controller
         $stocks = Stocks::where('status','In')->orderBy('best_before','asc')->get();
 
         foreach($stocks as $stock){
+            $pr_qty = collect([]);
             $pallet = Pallets::where('id',$stock->pallet_id)->get();
             $location = Locations::where('id',$stock->location_id)->get();
+            $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->get();
+            if($ph->isNotEmpty()){
+                foreach($ph as $p){
+                    $sp = ScanProducts::where('id',$p->scanned_id)->get();
+                    if($sp->isNotEmpty()){
+                        $prod_dtls = Products::where('gtin',$sp[0]->gtin)->get();
+                        if($prod_dtls->isNotEmpty()){
+                            $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->gtin]);
+                        }else{
+                            $pr_qty->push(['plu'=>'0000','name'=>'','gtin'=>'']);
+                        }
+                    }
+                }
+            }
+            $pr = $pr_qty->groupBy(['plu']);
+            $or_lines = $pr->map(function ($prs) {
+                return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'gtin'=>$prs[0]['gtin'],'count'=>$prs->count()];
+            });
 
             $stored = $stock->created_at;
             $stored = $stored->format('d-m-Y');
@@ -677,8 +696,9 @@ class StocksController extends Controller
             $best_before = $stock->best_before;
             $best_before = Carbon::createFromFormat('Y-m-d', $best_before)->format('d-m-Y');
 
-            $items[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id];
+            $items[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
         }
+
 
         return view('stocks.stocksView')->with(['customers'=>$customers,'stocks'=>$items]);
     }
@@ -706,12 +726,22 @@ class StocksController extends Controller
         return response()->json(['stocks'=>$stck_item,'status'=>$status]);
     }
 
-    public function viewStockProducts(Request $request){
-        $palletid = $request->palletid;
+    public function viewStockProducts($id){
+        $palletid = $id;
         $pallet = Pallets::where('id',$palletid)->get();
         $products = $this->ProdfrmPallet($palletid);
+        $pallets =Pallets::orderBy('name','asc')->get();
 
-        return view('stocks.productTable')->with(['products'=>$products,'pallet'=>$pallet]);
+        return view('stocks.stockPallet')->with(['products'=>$products,'pallet'=>$pallet,'pallets'=>$pallets]);
+    }
+
+    public function viewProductby($id){
+        $palletid = $id;
+        // $pallet = Pallets::where('id',$palletid)->get();
+        $products = $this->ProdfrmPallet($palletid);
+        // $pallets =Pallets::orderBy('name','asc')->get();
+
+        return response()->json(['products'=>$products,]);
     }
 
     public function ProdfrmPallet($id){
@@ -721,20 +751,28 @@ class StocksController extends Controller
             $scnItem = ScanProducts::where('id',$prop->scanned_id)->get();
             if($scnItem->isNotEmpty()){
                 $gtin = $scnItem[0]->gtin;
+                $rcvd = $scnItem[0]->created_at->format('Y-m-d');
                 if($gtin != "" || $gtin != null){
                     $prodDtls = Products::where('gtin',$gtin)->get();
                     if($prodDtls->isNotEmpty()){
                         $plu = $prodDtls[0]->product_code;
                         $name = $prodDtls[0]->product_name;
                         $dsc = $prodDtls[0]->description;
-                    }
-                }else{
-                        $plu = '';
+                        $gtin = $prodDtls[0]->gtin;
+                    }else{
+                        $plu = '0000';
                         $name = '';
                         $dsc = '';
+                        $gtin ='';
+                    }
+                }else{
+                        $plu = '0000';
+                        $name = '';
+                        $dsc = '';
+                        $gtin ='';
                 }
             }
-            $products[] = ['label'=>$scnItem[0]->label,'best_before'=>$scnItem[0]->best_before,'plu'=>$plu,'name'=>$name,'desc'=>$dsc,'rcvd'=>$scnItem[0]->created_at];
+            $products[] = ['label'=>$scnItem[0]->label,'best_before'=>$scnItem[0]->best_before,'plu'=>$plu,'name'=>$name,'desc'=>$dsc,'rcvd'=>$rcvd,'gtin'=>$gtin];
         }
         return $products;
     }

@@ -837,6 +837,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .grid-rows-2 {
   grid-template-rows: repeat(2, minmax(0, 1fr));
 }
+.flex-row {
+  flex-direction: row;
+}
 .flex-row-reverse {
   flex-direction: row-reverse;
 }
@@ -1650,6 +1653,14 @@ Ensure the default browser behavior of the `hidden` attribute.
 .hover\:text-gray-700:hover {
   --tw-text-opacity: 1;
   color: rgb(55 65 81 / var(--tw-text-opacity));
+}
+.hover\:text-red-900:hover {
+  --tw-text-opacity: 1;
+  color: rgb(127 29 29 / var(--tw-text-opacity));
+}
+.hover\:text-green-900:hover {
+  --tw-text-opacity: 1;
+  color: rgb(20 83 45 / var(--tw-text-opacity));
 }
 .focus\:z-10:focus {
   z-index: 10;
