@@ -3603,25 +3603,30 @@ $(document).on("click", ".stock_print", function () {
     }
   });
 });
-$(document).on("click", ".prod_view", function () {
-  var pallet_id = $(this).attr('data-id');
-  $(".prod_table").empty();
-  $.ajax({
-    url: "/stocks/products-from-pallet",
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
-    method: 'post',
-    data: {
-      'palletid': pallet_id
-    },
-    success: function success(result) {
-      $("#prodModal").show();
-      $("#prodModalBody").show();
-      $(".prod_table").append(result);
-    },
-    error: function error(request, status, _error18) {
-      alert(request.responseText);
+$(document).ready(function () {
+  $("#pallet1").on("change", function () {
+    var id = $(this).val();
+    $(".prod-tbl-body").empty();
+
+    if (id == "") {
+      alert("Error 515");
+    } else {
+      $.ajax({
+        url: "/stocks/viewProductby/" + id,
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'get',
+        success: function success(result) {
+          if (result != "") {
+            var products = result.products;
+            products.forEach(function (product) {
+              var products = "<tr>" + "<td class='py-1 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + product['plu'] + "</td>" + "<td class='py-1 pl-4 pr-3 text-sm font-medium text-gray-500 whitespace-nowrap sm:pl-6'>" + product['label'] + "</td>" + "<td class='py-1 pl-4 pr-3 text-sm font-medium text-gray-500 whitespace-nowrap sm:pl-6'>" + product['name'] + "</td>" + "<td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>" + product['gtin'] + "</td>" + "<td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>" + product['best_before'] + "</td>" + "<td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>" + product['rcvd'] + "</td>" + "<td class='relative flex flex-row invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6'>" + "<a href='#' id='' class='px-2 text-green-600 hover:text-green-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4' />" + "</svg>" + "</a>" + "<a href='#' id='' class='px-2 text-red-600 hover:text-red-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+              $(".prod-tbl-body").append(products);
+            });
+          }
+        }
+      });
     }
   });
 });
@@ -3651,7 +3656,7 @@ function searchStocks(cx, date) {
         }, 5000);
       }
     },
-    error: function error(request, status, _error19) {
+    error: function error(request, status, _error18) {
       alert(request.responseText);
     }
   });
@@ -3779,7 +3784,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error20) {
+        error: function error(request, status, _error19) {
           alert(request.responseText);
         }
       });
