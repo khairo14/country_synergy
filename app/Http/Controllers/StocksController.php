@@ -671,7 +671,7 @@ class StocksController extends Controller
             $pr_qty = collect([]);
             $pallet = Pallets::where('id',$stock->pallet_id)->get();
             $location = Locations::where('id',$stock->location_id)->get();
-            $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->get();
+            $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->where('actions','!=','Out')->get();
             if($ph->isNotEmpty()){
                 foreach($ph as $p){
                     $sp = ScanProducts::where('id',$p->scanned_id)->get();
