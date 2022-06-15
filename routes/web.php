@@ -98,6 +98,9 @@ Route::get('/stocks/viewProductby/{id}',[StocksController::class,'viewProductby'
 Route::get('/palletlabels', [PDFController::class,'palletlabels'])->middleware('auth');
 Route::get('/printlabels', [PDFController::class,'printlabels'])->middleware('auth');
 
+// invoice
+Route::get('/print-invoice',[PDFController::class,'printinvoice'])->middleware('auth');
+
 // import products
 // Route::get('/file-import-export',[ProductsController::class,'fileImportExport']);
 // Route::post('/file-import',[ProductsController::class,'fileImport'])->name('file-import');
@@ -116,3 +119,5 @@ Route::post('/orders/add-order',[OrdersController::class,'addOrder'])->middlewar
 // Route::post('/save-order',[OrdersController::class,'addOrderIn'])->middleware('auth');
 // Route::post('/get-company-order',[OrdersController::class,'viewCompOrder']);
 // stocks
+
+
