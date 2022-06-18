@@ -26,40 +26,44 @@ Route::view('/','login')->name('login')->middleware('guest');
 Route::view('/home','dashboard')->name('home')->middleware('auth')->name('home');
 
 // dashboard
-Route::view('/home/scan','/scan/scanIn')->middleware('auth');
+Route::view('/home/scan-in','/scan/scanIn')->middleware('auth');
 Route::view('/home/scan-out','/scan/scanOut')->middleware('auth');
+Route::view('/home/transfer', '/scan/scanTransfer')->middleware('auth');
 // scanIn products
-Route::get('/home/scan/products',[StocksController::class,'scanProducts'])->middleware('auth');
-Route::post('/home/scan/check-product',[StocksController::class,'checkProduct'])->middleware('auth');
-Route::post('/home/scan/scan-products',[StocksController::class,'addProducts'])->middleware('auth');
+Route::get('/home/scan-in/products',[StocksController::class,'scanProducts'])->middleware('auth');
+Route::post('/home/scan-in/check-product',[StocksController::class,'checkProduct'])->middleware('auth');
+Route::post('/home/scan-in/scan-products',[StocksController::class,'addProducts'])->middleware('auth');
 // scanIn pallets
-Route::get('/home/scan/pallets',[StocksController::class,'scanPallets'])->middleware('auth');
-Route::post('/home/scan/check-pallet',[StocksController::class,'checkPallet'])->middleware('auth');
-Route::post('/home/scan/add-pallet',[StocksController::class,'addPallet'])->middleware('auth');
-Route::post('/home/scan/check-location',[StocksController::class,'checkLocation'])->middleware('auth');
+Route::get('/home/scan-in/pallets',[StocksController::class,'scanPallets'])->middleware('auth');
+Route::post('/home/scan-in/check-pallet',[StocksController::class,'checkPallet'])->middleware('auth');
+Route::post('/home/scan-in/add-pallet',[StocksController::class,'addPallet'])->middleware('auth');
+Route::post('/home/scan-in/check-location',[StocksController::class,'checkLocation'])->middleware('auth');
 // scanIn AddtoPallet
-Route::get('/home/scan/addtopallet',[StocksController::class,'viewAdd2pallet'])->middleware('auth');
-Route::post('/home/scan/checkStockPallet',[StocksController::class,'getPallet'])->middleware('auth');
-Route::post('/home/scan/prodtopallet',[StocksController::class,'prodToPallet'])->middleware('auth');
+Route::get('/home/scan-in/addtopallet',[StocksController::class,'viewAdd2pallet'])->middleware('auth');
+Route::post('/home/scan-in/checkStockPallet',[StocksController::class,'getPallet'])->middleware('auth');
+Route::post('/home/scan-in/prodtopallet',[StocksController::class,'prodToPallet'])->middleware('auth');
 // scanOut
 Route::get('/home/scan-out/pallets',[StocksController::class,'viewPalletOut'])->middleware('auth');
 Route::get('/home/scan-out/products',[StocksController::class,'viewProductOut'])->middleware('auth');
 Route::get('/home/scan-out/orders',[StocksController::class,'viewOrderOut'])->middleware('auth');
-
 // scanOut Pallet
 Route::post('/home/scan-out/getPallet',[StocksController::class,'getPallet'])->middleware('auth');
 Route::post('/home/scan-out/palletOut',[StocksController::class,'palletOut'])->middleware('auth');
-// Route::post('/home/scan-out/print',[StocksController::class,'printDocket'])->middleware('auth');
-
 // scanOut Product
 Route::post('/home/scan-out/checkStock',[StocksController::class,'checkStockProduct'])->middleware('auth');
 Route::post('/home/scan-out/checkOutProduct',[StocksController::class,'orderProductOut'])->middleware('auth');
-// Route::view('/printDocket','./print/printDocket');
-
 // scanOut Order
 Route::get('/home/scan-out/getOrder/{id}',[StocksController::class,'getOrder'])->middleware('auth');
 Route::post('/home/scan-out/orderProd',[StocksController::class,'addProdToOrder'])->middleware('auth');
-
+// Transfer
+Route::get('/home/transfer/products',[StocksController::class,'findProduct'])->middleware('auth');
+Route::get('/home/transfer/pallets',[StocksController::class,'findPallet'])->middleware('auth');
+Route::post('/home/transfer/product-check',[StocksController::class,'trnsfrProdChck'])->middleware('auth');
+// Stock Take
+Route::get('/home/stock-take',[StocksController::class,'viewStockTake'])->middleware('auth');
+Route::post('/home/stock-take/checkPallet',[StocksController::class,'stkPalletCheck'])->middleware('auth');
+Route::post('/home/stock-take/checkProduct',[StocksController::class,'stkProductCheck'])->middleware('auth');
+Route::post('/home/stock-take/saveProducts',[StocksController::class,'stkUpdatePallet'])->middleware('auth');
 // freezer locations
 Route::get('/location',[LocationsController::class,'fLocation'])->name('location');
 Route::post('/location/add',[LocationsController::class,'addLocation'])->middleware('auth');
@@ -81,19 +85,6 @@ Route::post('/stocks/print-stock',[StocksController::class,'printStock'])->middl
 Route::get('/stocks/viewProduct/{id}',[StocksController::class,'viewStockProducts'])->middleware('auth');
 Route::get('/stocks/viewProductby/{id}',[StocksController::class,'viewProductby'])->middleware('auth');
 
-
-// Route::view('/scan', 'scan');
-// Route::post('/checkStocks',[StocksController::class,'checkStocks']);
-// Route::post('/scan/order',[StocksController::class,'checkOrders']);
-// Route::post('/checkBin',[StocksController::class,'checkBins']);
-// Route::post('/check/pallete',[StocksController::class,'checkStocksPallete']);
-// Route::post('/store/products',[StocksController::class,'storeProducts']);
-// Route::get('/getStocks/{id}',[StocksController::class,'getStocks']);
-// Route::get('/getBin/{id}',[StocksController::class,'getBin']);
-// Route::get('/orderType/{id}',[StocksController::class,'getOrderType']);
-
-
-
 //Printing labels
 Route::get('/palletlabels', [PDFController::class,'palletlabels'])->middleware('auth');
 Route::get('/printlabels', [PDFController::class,'printlabels'])->middleware('auth');
@@ -111,8 +102,3 @@ Route::get('/create-order',[OrdersController::class,'viewCreate'])->middleware('
 Route::get('/orders/get-order/{id}',[OrdersController::class,'getOrderStock'])->middleware('auth');
 Route::get('/orders/get-product/{id}',[OrdersController::class,'getProduct'])->middleware('auth');
 Route::post('/orders/add-order',[OrdersController::class,'addOrder'])->middleware('auth');
-// Route::post('/get-productList',[OrdersController::class,'productList'])->middleware('auth');
-// Route::post('/get-product',[OrdersController::class,'getProduct'])->middleware('auth');
-// Route::post('/save-order',[OrdersController::class,'addOrderIn'])->middleware('auth');
-// Route::post('/get-company-order',[OrdersController::class,'viewCompOrder']);
-// stocks
