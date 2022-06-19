@@ -20,6 +20,11 @@ class PDFController extends Controller
         $customPaper = array(0,0,289.13,425.19);
         $pdf = PDF::loadView('printlabels', $data)->setPaper($customPaper, 'portrait');;
      
-        return $pdf->download('PalletLabels.pdf');
+        return $pdf->stream('PalletLabels.pdf');
+    }
+
+    public function printinvoice() {
+
+        return view('invoice.print');
     }
 }
