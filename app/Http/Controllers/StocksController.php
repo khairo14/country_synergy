@@ -662,6 +662,249 @@ class StocksController extends Controller
         return response()->json(['status'=>$status,'message'=>$message]);
     }
 
+    // Transfer
+    public function findProduct(){
+        return view('scan.scanTransferProduct');
+    }
+
+    public function trnsfrProdChck(Request $request){
+        $lbl = $request->lbl;
+
+        if($lbl != ""){
+            $scanChk = ScanProducts::where('label',$lbl)->get();
+            if($scanChk->isNotEmpty()){
+                $ph = ProductHistory::where('scanned_id',$scanChk[0]->id)->get();
+                if($ph->isNotEmpty()){
+                    $status = $ph[0]->actions;
+                    if($status == 'Out'){
+                        $status = 0;
+                        $message = "Product Added On Order Out Please Check Order #".$ph[0]->order_id;
+                    }else{
+                        $prd_info = Products::where('gtin',$scanChk[0]->gtin)->get();
+                        if($prd_info->isNotEmpty()){
+                            $status = 1;
+                            $message = ['label'=>$lbl,'plu'=>$prd_info[0]->product_code];
+                        }else{
+                            $status = 1;
+                            $message = ['label'=>$lbl,'plu'=>""];
+                        }
+                    }
+                }
+            }else{
+                $status = 0;
+                $message = "Product Not Exist In Stock - Please Use Scan In";
+            }
+        }else{
+            $status = 0;
+            $message = "Error Scanning Products";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    // Stock Take
+    public function viewStockTake(){
+        return view('scan.scanStockTake');
+    }
+
+    public function stkPalletCheck(Request $request){
+        $pname = $request->pname;
+
+        if($pname != ""){
+            $pallets = Pallets::where('name',$pname)->get();
+
+            if($pallets->isNotEmpty()){
+                $p_id = $pallets[0]->id;
+                $stock = Stocks::where('pallet_id',$p_id)->get();
+                if($stock->isNotEmpty()){
+                    $stk_status = $stock[0]->status;
+                    if($stk_status == "In"){
+                        $ph = ProductHistory::where('new_pallet_id',$p_id)->where('actions','In')->get();
+                        $pr_qty = collect([]);
+                        if($ph->isNotEmpty()){
+                            foreach($ph as $p){
+                                $sp = ScanProducts::where('id',$p->scanned_id)->get();
+                                if($sp->isNotEmpty()){
+                                    $prod_dtls = Products::where('gtin',$sp[0]->gtin)->get();
+                                    if($prod_dtls->isNotEmpty()){
+                                        $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name]);
+                                    }else{
+                                        $pr_qty->push(['plu'=>'0000','name'=>'','gtin'=>'']);
+                                    }
+                                }
+                            }
+                        }
+                        $pr = $pr_qty->groupBy(['plu']);
+                        $stk_lines = $pr->map(function ($prs) {
+                            return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'count'=>$prs->count()];
+                        });
+
+                        $l_id = $stock[0]->location_id;
+                        $l_name = Locations::where('id',$l_id)->pluck('name');
+
+                        $status = 1;
+                        $message = ['stk_line'=>$stk_lines,'location'=>$l_name,'pallet'=>$pname];
+                    }else{
+                        $status = 2;
+                        $message = "Pallet Is Out and No Product Stock";
+                    }
+                }else{
+                    $status = 0;
+                    $message = "Pallet No Longer In Stock";
+                }
+
+            }else{
+                $status = 0;
+                $message = "Pallet Not Found";
+            }
+        }else{
+            $status = 0;
+            $message = "Pallet Name Cannot Be Empty";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function stkProductCheck(Request $request){
+        $lbl = $request->lbl;
+        $p_name = $request->pallet;
+
+        if($lbl != ""){
+            $sc_id = ScanProducts::where('label',$lbl)->get();
+            if($sc_id->isNotEmpty()){
+                $gtin = $sc_id[0]->gtin;
+                $pallet = Pallets::where('name',$p_name)->get();
+                if($pallet->isNotEmpty()){
+                    $ph = ProductHistory::where('scanned_id',$sc_id[0]->id)->get();
+                    $cur_pallet = $ph[0]->new_pallet_id;
+                    $sc_pallet = $pallet[0]->id;
+
+                    if($gtin != ""){
+                        $prd = Products::where('gtin',$gtin)->get();
+                        if($prd->isNotEmpty()){
+                            $prod_details = ['plu'=>$prd[0]->product_code,'name'=>$prd[0]->product_name];
+                        }else{
+                            $prod_details = ['plu'=>'0000','name'=>''];
+                        }
+                    }else{
+                        $prod_details = ['plu'=>'0000','name'=>''];
+                    }
+
+                    if($sc_pallet == $cur_pallet){
+                        $status = 1;
+                        $message = "Ok";
+                        $message2 = $prod_details;
+                    }else{
+                        $status = 1;
+                        $message = "Product Located From Pallet-".$pallet[0]->name." Will transfer to this Pallet";
+                        $message2 = $prod_details;
+
+                    }
+                }
+            }else{
+                $status = 1;
+                $message = "Product Not In Stock But will be added once completed";
+                $prod_details = ['plu'=>'0000','name'=>''];
+                $message2 = $prod_details;
+
+            }
+        }else{
+            $status = 0;
+            $message = "Invalid Product";
+            $message2 = "";
+
+        }
+        return response()->json(['status'=>$status,'message'=>$message,'message2'=>$message2]);
+    }
+
+    public function stkUpdatePallet(Request $request){
+        $products = $request->products;
+        $pallet = $request->pallet;
+
+        if($pallet != "" || $products != ""){
+            $p_id = Pallets::where('name',$pallet)->get();
+            $cur_qty = count($products);
+
+            $ph = ProductHistory::where('new_pallet_id',$p_id[0]->id)->get();
+            if($ph->isNotEmpty()){
+                $p = Pallets::where('name','Dump')->get();
+                if($p->isNotEmpty()){
+                    $trash_pallet = $p[0]->id;
+
+                }else{
+                    $new_p = new Pallets();
+                    $new_p->name = "Dump";
+                    $new_p->save();
+
+                    if(isset($new_p->id)){
+                        $trash_pallet = $new_p->id;
+                    }else{
+                        $trash_pallet = $p[0]->id;
+                    }
+                }
+
+                foreach($ph as $scph){
+                    $upPH = ProductHistory::find($scph['id']);
+                    $upPH->new_pallet_id = $trash_pallet;
+                    $upPH->save();
+                }
+            }
+
+            foreach($products as $product){
+                $sc = ScanProducts::where('label',$product['label'])->get();
+                $stks = Stocks::where('pallet_id',$p_id[0]->id)->get();
+                $cs = Customers::where('id',$stks[0]->customer_id)->get();
+
+                if($stks->isNotEmpty()){
+                    $new_stks = Stocks::find($stks[0]->id);
+                    $new_stks->qty = $cur_qty;
+                    $new_stks->save();
+                }
+
+                if($cs->isNotEmpty()){
+                    $gtin_start = $cs[0]->gtin_start;
+                    $gtin_end = $cs[0]->gtin_end;
+                    $gtin = substr($product['label'],$gtin_start,$gtin_end);
+                }else{
+                    $gtin = null;
+                }
+
+
+                if($sc->isNotEmpty()){
+                    $sc_id = $sc[0]->id;
+                    $ph_id = ProductHistory::where('scanned_id',$sc_id)->pluck('id');
+                    if($ph_id->isNotEmpty()){
+                        $new_ph = ProductHistory::find($ph_id[0]);
+                        $new_ph->new_pallet_id = $p_id[0]->id;
+                        $new_ph->save();
+                    }
+                }else{
+                    $new_sc = new ScanProducts();
+                    $new_sc->label = $product['label'];
+                    $new_sc->gtin = $gtin;
+                    $new_sc->save();
+
+                    if(isset($new_sc->id)){
+                        $new_ph = new ProductHistory();
+                        $new_ph->scanned_id = $new_sc->id;
+                        $new_ph->new_pallet_id = $p_id[0]->id;
+                        $new_ph->actions = "In";
+                        $new_ph->save();
+                    }
+                }
+
+
+            }
+            $status = 1;
+            $message = "Stock Updated";
+        }else{
+            $status = 0;
+            $message = "Unable to Save Products - Try Again";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
     // stocks
     public function viewStocks(){
         $customers = Customers::orderBy('name')->get();
@@ -737,9 +980,7 @@ class StocksController extends Controller
 
     public function viewProductby($id){
         $palletid = $id;
-        // $pallet = Pallets::where('id',$palletid)->get();
         $products = $this->ProdfrmPallet($palletid);
-        // $pallets =Pallets::orderBy('name','asc')->get();
 
         return response()->json(['products'=>$products,]);
     }
