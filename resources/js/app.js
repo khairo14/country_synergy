@@ -1470,6 +1470,7 @@ $(document).ready(function(){
     $(".cmplt_stk").on("click",function(){
         var upTrigger = $(".new_stock_body tr").length;
         var pallet = $(".p_name").text();
+        var loc = $(".loc_name").text();
 
         var prod_data = [];
         $(".new_stock_body tr").each(function(){
@@ -1493,7 +1494,7 @@ $(document).ready(function(){
                 url: "/home/stock-take/saveProducts",
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 method: 'post',
-                data: { "pallet": pallet,"products":prod_data},
+                data: { "pallet": pallet,"products":prod_data,'loc':loc},
                 success: function(result){
                     if(result.status == 1){
                         $(".or_done").show();

@@ -820,6 +820,7 @@ class StocksController extends Controller
     public function stkUpdatePallet(Request $request){
         $products = $request->products;
         $pallet = $request->pallet;
+        $loc = $request->loc;
 
         if($pallet != "" || $products != ""){
             $p_id = Pallets::where('name',$pallet)->get();
@@ -846,7 +847,51 @@ class StocksController extends Controller
                 foreach($ph as $scph){
                     $upPH = ProductHistory::find($scph['id']);
                     $upPH->new_pallet_id = $trash_pallet;
+                    $upPH->actions = "Dump";
                     $upPH->save();
+                }
+
+                $location = Locations::where('name','Dump')->get();
+                if($location->isNotEmpty()){
+                    $new_loc = $location[0]->id;
+                }else{
+                    $loc_create = new Locations();
+                    $loc_create->name = "Dump";
+                    $loc_create->save();
+
+                    if(isset($loc_create->id)){
+                        $new_loc = $loc_create->id;
+                    }
+                }
+
+                $stk = Stocks::where('pallet_id',$trash_pallet)->get();
+                $old_qty = Stocks::where('pallet_id',$p_id[0]->id)->pluck('qty');
+                if($stk->isNotEmpty()){
+                    $stk_qty = $stk[0]->qty;
+                    $new_qty = ($old_qty[0] - $cur_qty) + $stk_qty;
+                    $now = Carbon::now();
+
+                    $new_stk = Stocks::find($stk[0]->id);
+                    $new_stk->customer_id = $stk[0]->customer_id;
+                    $new_stk->pallet_id = $trash_pallet;
+                    $new_stk->location_id = $new_loc;
+                    $new_stk->qty = $new_qty;
+                    $new_stk->best_before = $now;
+                    $new_stk->status = "Dump";
+                    $new_stk->save();
+                }else{
+                    $cs_id = Stocks::where('pallet_id',$p_id[0]->id)->pluck('customer_id');
+                    $new_qty = $old_qty[0] - $cur_qty;
+                    $now = Carbon::now();
+
+                    $new_stk = new Stocks();
+                    $new_stk->customer_id = $cs_id[0];
+                    $new_stk->pallet_id = $trash_pallet;
+                    $new_stk->location_id = $new_loc;
+                    $new_stk->qty = $new_qty;
+                    $new_stk->best_before = $now;
+                    $new_stk->status = "Dump";
+                    $new_stk->save();
                 }
             }
 
@@ -876,6 +921,7 @@ class StocksController extends Controller
                     if($ph_id->isNotEmpty()){
                         $new_ph = ProductHistory::find($ph_id[0]);
                         $new_ph->new_pallet_id = $p_id[0]->id;
+                        $new_ph->actions = "In";
                         $new_ph->save();
                     }
                 }else{
