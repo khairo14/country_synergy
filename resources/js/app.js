@@ -1320,6 +1320,15 @@ $(document).ready(function(){
                         $("#stkPallet").focus();
                         $(".p_name").text(pname);
                         $(".loc_name").text(lname);
+                        $("._stkPallet").hide();
+                        $("._stkProducts").show();
+                        $("._new_stock").show();
+                        $("#stkProduct").val("");
+                        $("#stkProduct").focus();
+
+                        $(".up_stk").hide();
+                        $(".back_stk").show();
+                        $(".cmplt_stk").show();
                     }else if(result.status == 2){
                         $(".stk_take_message").text(result.message);
                         $(".stk_take_message").addClass('bg-red-300');
@@ -1345,32 +1354,32 @@ $(document).ready(function(){
     });
 });
 
-$(document).ready(function(){
-    $(".up_stk").on("click",function(){
-        var upTrigger = $(".stk_Pallet_tbl_body tr").length;
+// $(document).ready(function(){
+//     $(".up_stk").on("click",function(){
+//         var upTrigger = $(".stk_Pallet_tbl_body tr").length;
 
-        if(upTrigger < 1){
-            $(".stk_take_message").text('Please Scan Pallet');
-            $(".stk_take_message").addClass('bg-red-300');
-            $("#stkPallet").val("");
-            $("#stkPallet").focus();
-            setTimeout(function(){
-                $(".stk_take_message").text("");
-                $(".stk_take_message").removeClass('bg-red-300');
-            },5000);
-        }else{
-            $("._stkPallet").hide();
-            $("._stkProducts").show();
-            $("._new_stock").show();
-            $("#stkProduct").val("");
-            $("#stkProduct").focus();
+//         if(upTrigger < 1){
+//             $(".stk_take_message").text('Please Scan Pallet');
+//             $(".stk_take_message").addClass('bg-red-300');
+//             $("#stkPallet").val("");
+//             $("#stkPallet").focus();
+//             setTimeout(function(){
+//                 $(".stk_take_message").text("");
+//                 $(".stk_take_message").removeClass('bg-red-300');
+//             },5000);
+//         }else{
+//             $("._stkPallet").hide();
+//             $("._stkProducts").show();
+//             $("._new_stock").show();
+//             $("#stkProduct").val("");
+//             $("#stkProduct").focus();
 
-            $(".up_stk").hide();
-            $(".back_stk").show();
-            $(".cmplt_stk").show();
-        }
-    });
-});
+//             $(".up_stk").hide();
+//             $(".back_stk").show();
+//             $(".cmplt_stk").show();
+//         }
+//     });
+// });
 
 $(document).ready(function(){
     $(".back_stk").on("click",function(){
@@ -1380,7 +1389,7 @@ $(document).ready(function(){
         $("#stkPallet").val("");
         $("#stkPallet").focus();
 
-        $(".up_stk").show();
+        // $(".up_stk").show();
         $(".back_stk").hide();
         $(".cmplt_stk").hide();
     });
