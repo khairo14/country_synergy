@@ -57,11 +57,11 @@
         </div>
 
         <div class="flex justify-end mt-4">
-            <button type="button" class="up_stk inline-flex items-center px-1 py-2 font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            {{-- <button type="button" class="up_stk inline-flex items-center px-1 py-2 font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 <span class="items-center mx-2">
                     &nbsp; Update &nbsp;
                 </span>
-            </button>
+            </button> --}}
             <button type="button" class="back_stk inline-flex items-center px-1 py-2 font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display:none">
                 <span class="items-center mx-2">
                     &nbsp; Back &nbsp;
