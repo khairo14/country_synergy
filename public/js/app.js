@@ -2587,7 +2587,7 @@ $(document).ready(function () {
 });
 $(document).on("click", ".print", function () {
   var tbl = $("#print_table");
-  var style = "<style type='text/css'>" + "#print_table{width:100%; height:100%; border-collapse:collapse; border:1px solid #000;}" + "#print_table_body tr{text-align:center;padding:5px;}" + "#print_table_body td{border:1px solid #000; border-collapse:collapse; text-align:center;}" + "</style>";
+  var style = "<style type='text/css'>" + "#print_table{width:100%; height:100%; border-collapse:collapse;}" + "#print_table_body tr{text-align:center;padding:5px;}" + ".clnt,.act_purpose,.rcvd_date,.lbl{border:1px solid #000; border-collapse:collapse; text-align:center;}" + "</style>";
   style += tbl.prop('outerHTML');
   var wme = window.open("", "", "width=1200", "height=900");
   wme.document.write(style);
