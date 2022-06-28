@@ -58,7 +58,9 @@ Route::post('/home/scan-out/orderProd',[StocksController::class,'addProdToOrder'
 // Transfer
 Route::get('/home/transfer/products',[StocksController::class,'findProduct'])->middleware('auth');
 Route::get('/home/transfer/pallets',[StocksController::class,'findPallet'])->middleware('auth');
+Route::get('/home/transfer/merge',[StocksController::class,'mergeView'])->middleware('auth');
 Route::post('/home/transfer/product-check',[StocksController::class,'trnsfrProdChck'])->middleware('auth');
+
 // Stock Take
 Route::get('/home/stock-take',[StocksController::class,'viewStockTake'])->middleware('auth');
 Route::post('/home/stock-take/checkPallet',[StocksController::class,'stkPalletCheck'])->middleware('auth');
@@ -98,6 +100,7 @@ Route::get('/print-invoice',[PDFController::class,'printinvoice'])->middleware('
 
 // customers
 Route::resource('/customers', CustomersController::class);
+
 
 // orders
 Route::get('/view-orders',[OrdersController::class,'viewOrders']);

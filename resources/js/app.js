@@ -1870,7 +1870,6 @@ $(document).ready(function(){
     });
 });
 // end Products
-
 // stocks page
 $(document).on("click",".srch_stcks",function(){
     var cx = $("#exist_cust1 option:selected").val();

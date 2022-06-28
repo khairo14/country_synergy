@@ -702,6 +702,10 @@ class StocksController extends Controller
         return response()->json(['status'=>$status,'message'=>$message]);
     }
 
+    public function mergeView(){
+        return view('scan.scanMerge');
+    }
+
     // Stock Take
     public function viewStockTake(){
         return view('scan.scanStockTake');
@@ -1089,4 +1093,6 @@ class StocksController extends Controller
     public function printDocket(){
         return view('print.printDocket');
     }
+
+
 }
