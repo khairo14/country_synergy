@@ -2116,6 +2116,21 @@ $(document).on("click",".print_stock",function(){
     });
 });
 
+$(document).on("click",".print_summary",function(){
+    var c_date = moment().format('DD-MM-YYYY');
+    var sum_name = "stock summary "+c_date;
+
+    $("#pr_tbl").tableExport({
+        type:'csv',
+        mso: {fileFormat:'xlsx',worksheetName: sum_name},
+        headings: true,
+        fileName: sum_name,
+        bootstrap: true,
+        exportHiddenCells: false,
+        // ignoreColumn: ["GTIN","MOVE / DELETE"],
+    });
+});
+
 $(document).on("click",".print_palletProds",function(){
     var c_date = moment().format('DD-MM-YYYY');
     var pallet = $("#pallet1 option:selected").text();
