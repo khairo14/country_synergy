@@ -1,4 +1,5 @@
 const { each } = require('jquery');
+const moment = require('moment');
 
 require('./bootstrap');
 require('./components');
@@ -1872,23 +1873,49 @@ $(document).ready(function(){
 // end Products
 
 // stocks page
+$(document).ready(function(){
+    $("#flter").on("change",function(){
+        var fltr = $(this).val();
+        if(fltr.length > 1){
+            $("#plu_fltr").show();
+            $("#rcvd_dte_fltr").show();
+        }else{
+            if(fltr == 1){
+                $("#plu_fltr").show();
+            }
+            else{
+                $("#plu_fltr").hide();
+            }
+            if(fltr == 2){
+                $("#rcvd_dte_fltr").show();
+            }else{
+                $("#rcvd_dte_fltr").hide();
+            }
+        }
+    });
+});
+
 $(document).on("click",".srch_stcks",function(){
     var cx = $("#exist_cust1 option:selected").val();
-    var date = $("#srch_date").val();
 
     if(cx == 0){
         $(".srch_message").text('Select Customer');
         setTimeout(function(){
             $(".srch_message").text('');
         },5000)
-    }else if(date ==""){
-        $(".srch_message").text('Select Date');
-        setTimeout(function(){
-            $(".srch_message").text('');
-        },5000)
     }else{
+        if($("#plu_fltr").css("display") != "none"){
+            var plu = $("#fltr_plu option:selected").val();
+        }else{
+            plu = "";
+        }
+        if($("#rcvd_dte_fltr").css("display") != "none"){
+            var date = $("#srch_date").val();
+        }else{
+            date = "";
+        }
         $("#stcks_tbl_body").empty();
-        searchStocks(cx,date);
+        searchStocks(cx,date,plu);
     }
 });
 
@@ -1930,9 +1957,10 @@ $(document).ready(function(){
 
                         var products = "<tr>"
                                     +"<td class='py-1 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"+product['plu']+"</td>"
-                                    +"<td class='py-1 pl-4 pr-3 text-sm font-medium text-gray-500 whitespace-nowrap sm:pl-6'>"+product['label']+"</td>"
-                                    +"<td class='py-1 pl-4 pr-3 text-sm font-medium text-gray-500 whitespace-nowrap sm:pl-6'>"+product['name']+"</td>"
-                                    +"<td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>"+product['gtin']+"</td>"
+                                    +"<td class='px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>"+product['label']+"</td>"
+                                    +"<td class='px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>"+product['name']+"</td>"
+                                    +"<td class='hidden invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>"+product['gtin']+"</td>"
+                                    +"<td class='px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase'>"+product['weight']+"</td>"
                                     +"<td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>"+product['best_before']+"</td>"
                                     +"<td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>"+product['rcvd']+"</td>"
                                     +"<td class='relative flex flex-row invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6'>"
@@ -1958,31 +1986,105 @@ $(document).ready(function(){
     });
 });
 
-function searchStocks(cx,date){
+function searchStocks(cx,date,plu){
     $.ajax({
         url: "/stocks/search-stocks",
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         method: 'post',
-        data: { "cx":cx,'date':date},
+        data: { "cx":cx,'date':date,'plu':plu},
         success: function (result) {
             if(result.status == 1){
                 var stocks = result.stocks;
                 stocks.forEach(function(stock){
                     var data = "<tr>"
                         +"<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>"
-                            +"<a href='#' data-id='"+stock.palletid+"' class='prod_view text-indigo-600 hover:text-indigo-900'>"
+                            +"<a href='/stocks/viewProduct/"+stock.palletid+"' data-id='"+stock.palletid+"' class='prod_view text-indigo-600 hover:text-indigo-900'>"
                                     +"<p class='w-24 sm:w-24 truncate overflow-clip'>"+stock.pallet+"</p>"
                             +"</a>"
                         +"</td>"
                         +"<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>"
                             +"<a href='#' class='hover:text-red-800 text-red-500'>"+stock.location+"</a></td>"
-                        +"<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>"+stock.qty+"</td>"
-                        +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
-                        +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.date+"</td>"
-                        +"<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>"
-                        +   "<a href='#' data-id='"+stock.stockid+"' class='stock_print text-indigo-600 hover:text-indigo-900'>Print</a>"
+                        +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>";
+                        var sc = stock.sc_line;
+                        $.map( sc, function( val, i ) {
+                            data += val['plu']+"</br>";
+                        });
+                        data +="</td>";
+                        data +="<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"
+                        $.map( sc, function( val, i ) {
+                            data += val['name']+"</br>";
+                        });
+                        data +="</td>";
+                        data +="<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"
+                        $.map( sc, function( val, i ) {
+                            data += val['count']+"</br>";
+                        });
+                        data +="</td>"
+                                +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
+                                +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.stored+"</td>"
+                                +"<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>"
+                                +   "<a href='#' data-id='"+stock.stockid+"' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>"
+                                +"</td>";
+
+                    data +="</tr>";
+
+                    $("#stcks_tbl_body").append(data);
+                });
+            }else if(result.status == 2){
+                stocks = result.stocks[0];
+                $.map( stocks, function( val, i ) {
+                    var prods = "<tr>"
+                                +"<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>"
+                                    +"<a href='/stocks/viewProduct/"+val['palletid']+"' data-id='"+val['palletid']+"' class='prod_view text-indigo-600 hover:text-indigo-900'>"
+                                            +"<p class='w-24 sm:w-24 truncate overflow-clip'>"+val['pallet']+"</p>"
+                                    +"</a>"
+                                +"</td>"
+                                +"<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>"
+                                    +"<a href='#' class='hover:text-red-800 text-red-500'>"+val['location']+"</a></td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['plu']+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['name']+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['count']+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['best_before']+"</td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['received_date']+"</td>"
+                                +"<td class='relative invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6'>"
+                                +"</td>"
+                                +"</tr>";
+                    $("#stcks_tbl_body").append(prods);
+                });
+            }else if(result.status == 3){
+                stocks = result.stocks;
+                stocks.forEach(function(stock){
+                    var data = "<tr>"
+                        +"<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>"
+                            +"<a href='/stocks/viewProduct/"+stock.palletid+"' data-id='"+stock.palletid+"' class='prod_view text-indigo-600 hover:text-indigo-900'>"
+                                    +"<p class='w-24 sm:w-24 truncate overflow-clip'>"+stock.pallet+"</p>"
+                            +"</a>"
                         +"</td>"
-                    +"</tr>";
+                        +"<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>"
+                            +"<a href='#' class='hover:text-red-800 text-red-500'>"+stock.location+"</a></td>"
+                        +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>";
+                        var sc = stock.sc_line;
+                        $.map( sc, function( val, i ) {
+                            data += val['plu']+"</br>";
+                        });
+                        data +="</td>";
+                        data +="<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"
+                        $.map( sc, function( val, i ) {
+                            data += val['name']+"</br>";
+                        });
+                        data +="</td>";
+                        data +="<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"
+                        $.map( sc, function( val, i ) {
+                            data += val['count']+"</br>";
+                        });
+                        data +="</td>"
+                                +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
+                                +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.stored+"</td>"
+                                +"<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>"
+                                +   "<a href='#' data-id='"+stock.stockid+"' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>"
+                                +"</td>";
+
+                    data +="</tr>";
 
                     $("#stcks_tbl_body").append(data);
                 });
@@ -1999,15 +2101,44 @@ function searchStocks(cx,date){
         }
     });
 }
+$(document).on("click",".print_stock",function(){
+    var c_date = moment().format('DD-MM-YYYY');
+    var pname = "cs_"+c_date+"Stock";
 
-$(document).on("click",".print-product",function(){
-    var pname = $(".pallet_name").val();
-    $("#prod-tbl").tableHTMLExport({
+    $("#stcks_tbl").tableExport({
         type:'csv',
-        filename:pname+'.csv',
-        ignoreColumns:'.acciones,#primero',
-        ignoreRows: '#ultimo'});
+        mso: {fileFormat:'xlsx',worksheetName: pname},
+        headings: true,
+        fileName: pname,
+        bootstrap: true,
+        exportHiddenCells: false,
+        // ignoreColumn: ["GTIN","MOVE / DELETE"],
+    });
 });
+
+$(document).on("click",".print_palletProds",function(){
+    var c_date = moment().format('DD-MM-YYYY');
+    var pallet = $("#pallet1 option:selected").text();
+    var pname = "cs_"+c_date+"Stock";
+    $("#prod-tbl").tableExport({
+        type:'csv',
+        mso: {fileFormat:'xlsx',worksheetName: pname},
+        headings: true,
+        fileName: pallet,
+        bootstrap: true,
+        exportHiddenCells: false,
+        ignoreColumn: ["GTIN","MOVE / DELETE"],
+    });
+});
+
+// $(document).on("click",".print-product",function(){
+//     var pname = $(".pallet_name").val();
+//     $("#prod-tbl").tableHTMLExport({
+//         type:'csv',
+//         filename:pname+'.csv',
+//         ignoreColumns:'.acciones,#primero',
+//         ignoreRows: '#ultimo'});
+// });
 
 // orders
 $(document).ready(function(){

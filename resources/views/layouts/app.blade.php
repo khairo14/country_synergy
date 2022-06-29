@@ -45,6 +45,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-    <script src="https://rawcdn.githack.com/FuriosoJack/TableHTMLExport/v2.0.0/src/tableHTMLExport.js"></script>
+    {{-- <script src="https://rawcdn.githack.com/FuriosoJack/TableHTMLExport/v2.0.0/src/tableHTMLExport.js"></script> --}}
+    {{-- <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script> --}}
+    {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.js"></script> --}}
+
+    <script type="text/javascript" src="{{asset('js/tableExport/libs/FileSaver/FileSaver.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/tableExport/libs/js-xlsx/xlsx.core.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/tableExport/tableExport.min.js')}}"></script>
+
+
 {{-- end scripts --}}
 </html>
