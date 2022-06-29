@@ -14,6 +14,13 @@
                 <option selected>No Customers Found</option>
             @endif
         </select>
+        {{-- <div class="flex justify-end mt-4"> --}}
+            <button type="button" class="print_palletProds inline-flex items-center px-1 py-1 text-sm font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-1 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <span class="items-center mx-2">
+                    &nbsp; Print &nbsp;
+                </span>
+            </button>
+        {{-- </div> --}}
     </div>
 
     <div class="w-full" id="pr_tbl">
@@ -23,7 +30,8 @@
                 <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Plu</th>
                 <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Label</th>
                 <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th>
-                <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">GTIN</th>
+                <th scope="col" class="hidden px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">GTIN</th>
+                <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Weight</th>
                 <th scope="col" class="invisible px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Best Before</th>
                 <th scope="col" class="invisible px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Received Date</th>
                 <th scope="col" class="invisible px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">
@@ -36,10 +44,11 @@
                 @if($products != "")
                     @foreach ($products as $product)
                         <tr>
-                            <td class="py-1 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">{{$product['plu']}}</td>
-                            <td class="px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['label']}}</td>
+                            <td data-tableexport-msonumberformat="0" class="py-1 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">{{$product['plu']}} </td>
+                            <td class="px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['label']}} </td>
                             <td class="px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['name']}}</td>
-                            <td class="px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['gtin']}}</td>
+                            <td class="hidden px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['gtin']}} </td>
+                            <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['weight']}} Kg</td>
                             <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['best_before']}}</td>
                             <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['rcvd']}}</td>
                             <td class="relative flex flex-row invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6">
