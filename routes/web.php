@@ -8,6 +8,7 @@ use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ReportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,3 +106,6 @@ Route::get('/create-order',[OrdersController::class,'viewCreate'])->middleware('
 Route::get('/orders/get-order/{id}',[OrdersController::class,'getOrderStock'])->middleware('auth');
 Route::get('/orders/get-product/{id}',[OrdersController::class,'getProduct'])->middleware('auth');
 Route::post('/orders/add-order',[OrdersController::class,'addOrder'])->middleware('auth');
+
+// reports
+Route::get('/reports/stock-summary',[ReportsController::class,'stockSummary'])->middleware('auth');
