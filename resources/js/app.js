@@ -1201,7 +1201,7 @@ $(document).ready(function(){
 
 });
 
-// transfer
+// transfer product
 $(document).ready(function(){
     $("#trnsfr_prod").on("change",function(){
         var lbl = ($(this).val()).trim();
@@ -1213,17 +1213,21 @@ $(document).ready(function(){
 
         if(lbl == "" || lbl == " "){
             $(".trnsfr_message").text("Please Scan Product");
+            $(".trnsfr_message").addClass('bg-red-300');
             $("#trnsfr_prod").val("");
             $("#trnsfr_prod").focus();
             setTimeout(function(){
                 $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
             },5000);
         }else if($.inArray(lbl,row_data1) != -1){
             $(".trnsfr_message").text("Product Already Scanned");
+            $(".trnsfr_message").addClass('bg-red-300');
             $("#trnsfr_prod").val("");
             $("#trnsfr_prod").focus();
             setTimeout(function(){
                 $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
             },5000);
         }else{
             $.ajax({
@@ -1237,7 +1241,7 @@ $(document).ready(function(){
 
                         var data = "<tr>"
                             +"<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>"
-                                +"<p class='w-24 sm:w-24 truncate overflow-clip'>"+prd.label+"</p>"
+                                +"<p class='w-24 sm:w-24 truncate overflow-clip' data-id='"+prd.ph_id+"'>"+prd.label+"</p>"
                             +"</td>"
                             +"<td class='whitespace-nowrap px-2 py-4 text-sm text-gray-500'>"+prd.plu+"</td>"
                             +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
@@ -1254,10 +1258,12 @@ $(document).ready(function(){
                         $("#trnsfr_prod").focus();
                     }else{
                         $(".trnsfr_message").text(result.message);
+                        $(".trnsfr_message").addClass('bg-red-300');
                         $("#trnsfr_prod").val("");
                         $("#trnsfr_prod").focus();
                         setTimeout(function(){
                             $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-red-300');
                         },5000);
                     }
                 }, error: function (request, status, error) {
@@ -1283,6 +1289,310 @@ $(document).ready(function(){
     });
 });
 
+$(document).ready(function(){
+    $(".trnsfr_new_pallet").on("click",function(){
+        var line = $("#trnsfr_tbl_body tr").length;
+
+        if(line < 1){
+            $(".trnsfr_message").text("please Scan Products first");
+            $(".trnsfr_message").addClass('bg-red-300');
+            setTimeout(function(){
+                $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
+            },5000);
+        }else{
+            $(".card_1").hide();
+            $(".card_3").show();
+            $(".card_5").show();
+            $(".trnsfr_new_pallet").hide();
+            $(".trnsfr_exist_pallet").hide();
+            $(".bck").show();
+            $(".complete1").show();
+        }
+    });
+});
+
+$(document).ready(function(){
+    $(".bck").on("click",function(){
+        $(".card_1").show();
+        $(".card_2").hide();
+        $(".card_3").hide();
+        $(".card_4").hide();
+        $(".card_5").hide();
+        $(".card_6").hide();
+        $(".trnsfr_new_pallet").show();
+        $(".trnsfr_exist_pallet").show();
+        $(".bck").hide();
+        $(".complete1").hide();
+        $(".complete2").hide();
+        $(".bb_date").text("");
+        $(".loc_name").text("");
+        $(".trnsfr_pp").text("");
+    });
+});
+
+$(document).ready(function(){
+    $(".trnsfr_exist_pallet").on("click",function(){
+        var line = $("#trnsfr_tbl_body tr").length;
+
+        if(line < 1){
+            $(".trnsfr_message").text("please Scan Products first");
+            $(".trnsfr_message").addClass('bg-red-300');
+            setTimeout(function(){
+                $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
+            },5000);
+        }else{
+            $(".card_1").hide();
+            $(".card_2").show();
+            $(".card_6").show();
+            $(".trnsfr_new_pallet").hide();
+            $(".trnsfr_exist_pallet").hide();
+            $(".bck").show();
+            $(".complete2").show();
+            $("#trnsfr_pp").focus();
+        }
+    });
+});
+
+$(document).ready(function(){
+    $("#trnsfr_dd").on("change",function(){
+        var dd = $(this).val();
+        $(".bb_date").text(dd);
+        $(".card_3").hide();
+        $(".card_4").show();
+        $("#trnsfr_loc").focus();
+    });
+});
+
+$(document).ready(function(){
+    $("#trnsfr_loc").on("change",function(){
+        var loc_name = ($(this).val()).trim();
+        if(loc_name == "" || loc_name == " "){
+            $(".trnsfr_message").text("please Scan location");
+            $(".trnsfr_message").addClass('bg-red-300');
+            setTimeout(function(){
+                $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
+            },5000);
+        }else{
+            $.ajax({
+                url: "/home/scan-in/check-location",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: { "loc": loc_name},
+                success: function(result){
+                    if(result.status == 0){
+                        $(".loc_name").text(result.message[0]['name']);
+                        $(".loc_name").attr('data-id',result.message[0]['id']);
+                        $("#trnsfr_loc").val("");
+                    }else{
+                        $(".loc_name").text(loc_name);
+                        $(".loc_name").attr('data-id',0);
+                        $("#trnsfr_loc").val("");
+                        $(".trnsfr_message").text("New Location will be added Once Continue");
+                        $(".trnsfr_message").addClass('bg-green-300');
+                        setTimeout(function(){
+                            $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-green-300');
+                        },3000);
+
+                    }
+                }
+            });
+        }
+    });
+});
+
+$(document).ready(function(){
+    $("#trnsfr_pp").on("change",function(){
+        var p_name = ($(this).val()).trim();
+
+        if(p_name == "" || p_name == " "){
+            $(".trnsfr_message").text("please Scan Pallets");
+            $(".trnsfr_message").addClass('bg-red-300');
+            setTimeout(function(){
+                $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
+            },5000);
+        }else{
+            $.ajax({
+                url: "/home/transfer/pallet-check",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: { "pname":p_name},
+                success: function(result){
+                    if(result.status == 1){
+                        var pallet = result.message['name'];
+                        var pallet_id = result.message['p_id'];
+                        $(".trnsfr_pp").text(pallet);
+                        $(".trnsfr_pp").attr('data-id',pallet_id);
+
+                        $(".trnsfr_message").text('ok');
+                        $(".trnsfr_message").addClass('bg-green-300');
+                        $("#trnsfr_pp").val("");
+                        setTimeout(function(){
+                            $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-green-300');
+                        },3000);
+                    }else{
+                        $(".trnsfr_message").text(result.message);
+                        $(".trnsfr_message").addClass('bg-red-300');
+                        $("#trnsfr_pp").val("");
+                        setTimeout(function(){
+                            $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-red-300');
+                        },5000);
+                    }
+                }
+            });
+        }
+
+    });
+});
+
+$(document).ready(function(){
+    $(".complete1").on("click",function(){
+        var loc_id = $(".loc_name").attr('data-id');
+        var loc_name = $(".loc_name").text();
+        var bb_date = $(".bb_date").text();
+
+        var prod_data = [];
+        $("#trnsfr_tbl_body tr").each(function(){
+            var data1 = $(this).find('td p').eq(0).text();
+            var data2 = $(this).find('td p').eq(0).attr('data-id');
+            var item = {};
+            item.label = data1;
+            item.ph_id = data2;
+            prod_data.push(item);
+        });
+
+            var min = 10000000;
+            var max = 99999900;
+            var random = Math.floor(Math.random()*(max-min + 1))+min;
+            var pallet = '99' + random;
+
+        if(loc_name == ""){
+            $(".trnsfr_message").text("please Scan location");
+            $(".trnsfr_message").addClass('bg-red-300');
+            setTimeout(function(){
+                $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
+            },5000);
+        }else{
+            $.ajax({
+                url: "/home/transfer/save-toNewPallet",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: { "loc": loc_name,'loc_id':loc_id,'bb_date':bb_date,'prod':prod_data,'pallet':pallet},
+                success: function(result){
+                    if(result.status == 1){
+                        $(".trnsfr_message").text("Successfully Save please see Pallet"+result.message['pallet']);
+                        $(".trnsfr_message").addClass('bg-green-300');
+                        $("#trnsfr_tbl_body").empty();
+                        $(".card_1").show();
+                        $(".card_2").hide();
+                        $(".card_3").hide();
+                        $(".card_4").hide();
+                        $(".card_5").hide();
+                        $(".card_6").hide();
+                        $(".trnsfr_new_pallet").show();
+                        $(".trnsfr_exist_pallet").show();
+                        $(".bck").hide();
+                        $(".complete1").hide();
+                        $(".complete2").hide();
+                        $(".bb_date").text("");
+                        $(".loc_name").text("");
+                        $(".trnsfr_pp").text("");
+                        setTimeout(function(){
+                            $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-green-300');
+                        },5000);
+                    }else{
+                        $(".trnsfr_message").text(result.message);
+                        $(".trnsfr_message").addClass('bg-red-300');
+                        setTimeout(function(){
+                            $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-red-300');
+                        },5000);
+                    }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+
+    });
+});
+
+$(document).ready(function(){
+    $(".complete2").on("click",function(){
+        var p_name = $(".trnsfr_pp").text();
+        var p_id = $(".trnsfr_pp").attr('data-id');
+
+        var prod_data = [];
+        $("#trnsfr_tbl_body tr").each(function(){
+            var data1 = $(this).find('td p').eq(0).text();
+            var data2 = $(this).find('td p').eq(0).attr('data-id');
+            var item = {};
+            item.label = data1;
+            item.ph_id = data2;
+            prod_data.push(item);
+        });
+
+        if(p_name == ""){
+            $(".trnsfr_message").text("please Scan Pallet");
+            $(".trnsfr_message").addClass('bg-red-300');
+            setTimeout(function(){
+                $(".trnsfr_message").text("");
+                $(".trnsfr_message").removeClass('bg-red-300');
+            },5000);
+        }else{
+            $.ajax({
+                url: "/home/transfer/save-toExistPallet",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                method: 'post',
+                data: { "prod":prod_data,"p_name":p_name,"p_id":p_id},
+                success: function(result){
+                    if(result.status == 1){
+                        $(".trnsfr_message").text(result.message);
+                        $(".trnsfr_message").addClass('bg-green-300');
+                        $("#trnsfr_tbl_body").empty();
+                        $(".card_1").show();
+                        $(".card_2").hide();
+                        $(".card_3").hide();
+                        $(".card_4").hide();
+                        $(".card_5").hide();
+                        $(".card_6").hide();
+                        $(".trnsfr_new_pallet").show();
+                        $(".trnsfr_exist_pallet").show();
+                        $(".bck").hide();
+                        $(".complete1").hide();
+                        $(".complete2").hide();
+                        $(".bb_date").text("");
+                        $(".loc_name").text("");
+                        $(".trnsfr_pp").text("");
+                        setTimeout(function(){
+                            $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-green-300');
+                        },5000);
+                    }else{
+                        $(".trnsfr_message").text(result.message);
+                        $(".trnsfr_message").addClass('bg-red-300');
+                        setTimeout(function(){
+                            $(".trnsfr_message").text("");
+                            $(".trnsfr_message").removeClass('bg-red-300');
+                        },5000);
+                    }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+    });
+});
+
+// transfer pallet
 $(document).ready(function(){
     $("#trnsfrPallet").on("change",function(){
         var p_name = ($(this).val()).trim();

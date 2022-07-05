@@ -61,6 +61,8 @@ Route::get('/home/transfer/products',[StocksController::class,'findProduct'])->m
 Route::get('/home/transfer/pallets',[StocksController::class,'findPallet'])->middleware('auth');
 Route::get('/home/transfer/merge',[StocksController::class,'viewMerge'])->middleware('auth');
 Route::post('/home/transfer/product-check',[StocksController::class,'trnsfrProdChck'])->middleware('auth');
+Route::post('/home/transfer/save-toNewPallet',[StocksController::class,'trnsfrProdNewPallet'])->middleware('auth');
+Route::post('/home/transfer/save-toExistPallet',[StocksController::class,'trsnfrProdExistPallet'])->middleware('auth');
 Route::post('/home/transfer/pallet-check',[StocksController::class,'trnsfrPalltChck'])->middleware('auth');
 Route::post('/home/transfer/location-check',[StocksController::class,'trnsfrLocChck'])->middleware('auth');
 Route::post('/home/transfer/save-transfer',[StocksController::class,'trnsfrSave'])->middleware('auth');
