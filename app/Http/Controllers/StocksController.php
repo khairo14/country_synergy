@@ -786,6 +786,94 @@ class StocksController extends Controller
 
     }
 
+    public function viewMerge(){
+        return view('scan.scanMergePallet');
+    }
+
+    public function PalletCheck(Request $request){
+        $p_name = $request->p_name;
+
+        $pallet = Pallets::where('name',$p_name)->get();
+        if($pallet->isNotEmpty()){
+            // $stk = Stocks::where('pallet_id',$pallet[0]->id)->get();
+            $ph = ProductHistory::where('new_pallet_id',$pallet[0]->id)->where('actions','!=','Out')->get();
+            $pr_qty = collect([]);
+            if($ph->isNotEmpty()){
+                foreach($ph as $p){
+                    $sp = ScanProducts::where('id',$p->scanned_id)->get();
+                    if($sp->isNotEmpty()){
+                        $prod_dtls = Products::where('gtin',$sp[0]->gtin)->get();
+                        if($prod_dtls->isNotEmpty()){
+                            $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->gtin]);
+                        }else{
+                            $pr_qty->push(['plu'=>'0000','name'=>'','gtin'=>'']);
+                        }
+                    }
+                }
+            }
+            $pr = $pr_qty->groupBy(['plu']);
+            $lines = $pr->map(function ($prs) {
+                return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'gtin'=>$prs[0]['gtin'],'count'=>$prs->count()];
+            });
+
+            $status = 1;
+            $message = ['lines'=>$lines,'pallet_id'=>$pallet[0]->id,'pallet_name'=>$pallet[0]->name];
+        }else{
+            $status = 0;
+            $message = "Pallet Not Found";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function saveMerge(Request $request){
+        $p1 = $request->p1;
+        $p2 = $request->p2;
+
+        if($p1 != "" || $p2 != ""){
+            $c1 = Stocks::where('pallet_id',$p1)->get();
+            $c2 = Stocks::where('pallet_id',$p2)->get();
+
+            if($c1[0]->customer_id != $c2[0]->customer_id){
+                $status = 0;
+                $message = "Cannot Merge Pallet from different Customer";
+            }elseif($c1[0]->status == "Out" || $c2[0]->status == "Out"){
+                $status = 0;
+                $message = "Cannot Merge Pallet That's already Out";
+            }elseif($c1[0]->status == "Dump" || $c2[0]->status == "Dump"){
+                $status = 0;
+                $message = "Cannot Merge Pallet To Dump Pallet";
+            }else{
+                $ph1 = ProductHistory::where('new_pallet_id',$p1)->where('actions','In')->get();
+                foreach($ph1 as $ph){
+                    $update_ph = ProductHistory::find($ph->id);
+                    $update_ph->old_pallet_id = $p1;
+                    $update_ph->new_pallet_id = $p2;
+                    $update_ph->save();
+                }
+                $new_stk_qty = $c1[0]->qty + $c2[0]->qty;
+
+                $update_stk1 = Stocks::find($c2[0]->id);
+                $update_stk1->qty = $new_stk_qty;
+                $update_stk1->save();
+
+                $update_stk2 = Stocks::find($c1[0]->id);
+                $update_stk2->qty = 0;
+                $update_stk2->status = "Out";
+                $update_stk2->save();
+
+                $status = 1;
+                $message = "Merging Succesfull";
+            }
+
+        }else{
+            $status = 0;
+            $message = "unable to merge - Missing pallet";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
     // Stock Take
     public function viewStockTake(){
         return view('scan.scanStockTake');
