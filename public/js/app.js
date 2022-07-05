@@ -3271,6 +3271,185 @@ $(document).ready(function () {
     changeMonth: true,
     changeYear: true
   });
+});
+$(document).ready(function () {
+  $("#trnsfrPallet").on("change", function () {
+    var p_name = $(this).val().trim();
+
+    if (p_name == "" || p_name == " ") {
+      $(".trnsfrPallet_message").text("Please Scan Pallet");
+      $(".trnsfrPallet_message").addClass('bg-red-300');
+      $("#trnsfrPallet").val("");
+      $("#trnsfrPallet").focus();
+      setTimeout(function () {
+        $(".trnsfrPallet_message").text("");
+        $(".trnsfrPallet_message").removeClass('bg-red-300');
+      }, 5000);
+    } else {
+      $.ajax({
+        url: "/home/transfer/pallet-check",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "pname": p_name
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            var pallet = result.message['name'];
+            var pallet_id = result.message['p_id'];
+            var loc_name = result.message['loc_name'];
+            var loc_id = result.message['loc_id'];
+            var cl1 = $("#trnsfer_pallet_body").find('td').eq(0);
+            var cl2 = $("#trnsfer_pallet_body").find('td').eq(1);
+            cl1.text(pallet);
+            cl1.attr('data-id', pallet_id);
+            cl2.text(loc_name);
+            cl2.attr('data-id', loc_id);
+            $("._trnsfrPallet").hide();
+            $("._trnsfrloc").show();
+            $("#trnsfrloc").focus();
+          } else {
+            $(".trnsfrPallet_message").text(result.message);
+            $(".trnsfrPallet_message").addClass('bg-red-300');
+            $("#trnsfrPallet").val("");
+            $("#trnsfrPallet").focus();
+            setTimeout(function () {
+              $(".trnsfrPallet_message").text("");
+              $(".trnsfrPallet_message").removeClass('bg-red-300');
+            }, 5000);
+          }
+        }
+      });
+    }
+  });
+});
+$(document).ready(function () {
+  $("#trnsfrloc").on("change", function () {
+    var loc_name = $(this).val().trim();
+
+    if (loc_name == "" || loc_name == " ") {
+      $(".trnsfrPallet_message").text("Please Scan Location");
+      $(".trnsfrPallet_message").addClass('bg-red-300');
+      $("#trnsfrloc").val("");
+      $("#trnsfrloc").focus();
+      setTimeout(function () {
+        $(".trnsfrPallet_message").text("");
+        $(".trnsfrPallet_message").removeClass('bg-red-300');
+      }, 5000);
+    } else {
+      $.ajax({
+        url: "/home/transfer/location-check",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "loc_name": loc_name
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            var loc_id = result.message['loc_id'];
+            var loc_nm = result.message['loc_name'];
+            var cl3 = $("#trnsfer_pallet_body").find('td').eq(2);
+            cl3.text(loc_nm);
+            cl3.attr('data-id', loc_id);
+            $("#trnsfrloc").focus();
+            $("#trnsfrloc").val("");
+            $(".trnsf_btn").show();
+          } else {
+            var cl3 = $("#trnsfer_pallet_body").find('td').eq(2);
+            cl3.text(loc_name);
+            cl3.attr('data-id', '0');
+            $("#trnsfrloc").focus();
+            $("#trnsfrloc").val("");
+            $(".trnsf_btn").show();
+          }
+        }
+      });
+    }
+  });
+});
+$(document).ready(function () {
+  $(".trnsfr_back").on("click", function () {
+    $("#trnsfer_pallet_body").find('td').eq(0).text("");
+    $("#trnsfer_pallet_body").find('td').eq(1).text("");
+    $("#trnsfer_pallet_body").find('td').eq(2).text("");
+    $("#trnsfer_pallet_body").find('td').eq(0).attr("data-id", "");
+    $("#trnsfer_pallet_body").find('td').eq(1).attr("data-id", "");
+    $("#trnsfer_pallet_body").find('td').eq(2).attr("data-id", "");
+    $("._trnsfrPallet").show();
+    $("._trnsfrloc").hide();
+    $("#trnsfrPallet").focus();
+    $("#trnsfrPallet").val("");
+    $(".trnsf_btn").hide();
+  });
+});
+$(document).ready(function () {
+  $(".trnsfr_save").on("click", function () {
+    var new_loc = $("#trnsfer_pallet_body").find('td').eq(2).attr('data-id');
+
+    if (new_loc == "") {
+      $(".trnsfrPallet_message").text("Please Scan Location");
+      $(".trnsfrPallet_message").addClass('bg-red-300');
+      $("#trnsfrloc").val("");
+      $("#trnsfrloc").focus();
+      setTimeout(function () {
+        $(".trnsfrPallet_message").text("");
+        $(".trnsfrPallet_message").removeClass('bg-red-300');
+      }, 5000);
+    } else {
+      var p_id = $("#trnsfer_pallet_body").find('td').eq(0).attr('data-id');
+      var new_loc_id = $("#trnsfer_pallet_body").find('td').eq(2).attr('data-id');
+      var new_loc_name = $("#trnsfer_pallet_body").find('td').eq(2).text();
+      $.ajax({
+        url: "/home/transfer/save-transfer",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "p_id": p_id,
+          'new_loc_id': new_loc_id,
+          'new_loc_name': new_loc_name
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            $(".trnsfrPallet_message").text(result.message);
+            $(".trnsfrPallet_message").addClass('bg-green-300');
+            $("#trnsfer_pallet_body").find('td').eq(0).text("");
+            $("#trnsfer_pallet_body").find('td').eq(1).text("");
+            $("#trnsfer_pallet_body").find('td').eq(2).text("");
+            $("#trnsfer_pallet_body").find('td').eq(0).attr("data-id", "");
+            $("#trnsfer_pallet_body").find('td').eq(1).attr("data-id", "");
+            $("#trnsfer_pallet_body").find('td').eq(2).attr("data-id", "");
+            $("._trnsfrPallet").show();
+            $("._trnsfrloc").hide();
+            $("#trnsfrPallet").focus();
+            $("#trnsfrPallet").val("");
+            $(".trnsf_btn").hide();
+            setTimeout(function () {
+              $(".trnsfrPallet_message").text("");
+              $(".trnsfrPallet_message").removeClass('bg-green-300');
+            }, 5000);
+          } else {
+            $(".trnsfrPallet_message").text(result.message);
+            $(".trnsfrPallet_message").addClass('bg-red-300');
+            $("#trnsfrloc").val("");
+            $("#trnsfrloc").focus();
+            setTimeout(function () {
+              $(".trnsfrPallet_message").text("");
+              $(".trnsfrPallet_message").removeClass('bg-red-300');
+            }, 5000);
+          }
+        },
+        error: function error(request, status, _error15) {
+          alert(request.responseText);
+        }
+      });
+    }
+  });
 }); // Stock Take
 
 $(document).ready(function () {
@@ -3442,7 +3621,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error15) {
+        error: function error(request, status, _error16) {
           alert(request.responseText);
         }
       });
@@ -3506,7 +3685,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error16) {
+        error: function error(request, status, _error17) {
           alert(request.responseText);
         }
       });
@@ -3547,7 +3726,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error17) {
+      error: function error(request, status, _error18) {
         alert(request.responseText);
       }
     });
@@ -3593,7 +3772,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error18) {
+      error: function error(request, status, _error19) {
         alert(request.responseText);
       }
     });
@@ -3635,7 +3814,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error19) {
+        error: function error(request, status, _error20) {
           alert(request.responseText);
         }
       });
@@ -3682,7 +3861,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error20) {
+        error: function error(request, status, _error21) {
           alert(request.responseText);
         }
       });
@@ -3940,7 +4119,7 @@ $(document).on("click", ".stock_print", function () {
       $(".print_table").append(result);
       $(".scan_page").hide();
     },
-    error: function error(request, status, _error21) {
+    error: function error(request, status, _error22) {
       alert(request.responseText);
     }
   });
@@ -4043,7 +4222,7 @@ function searchStocks(cx, date, plu) {
         }, 5000);
       }
     },
-    error: function error(request, status, _error22) {
+    error: function error(request, status, _error23) {
       alert(request.responseText);
     }
   });
@@ -4219,7 +4398,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error23) {
+        error: function error(request, status, _error24) {
           alert(request.responseText);
         }
       });

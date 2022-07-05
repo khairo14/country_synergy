@@ -60,6 +60,9 @@ Route::post('/home/scan-out/orderProd',[StocksController::class,'addProdToOrder'
 Route::get('/home/transfer/products',[StocksController::class,'findProduct'])->middleware('auth');
 Route::get('/home/transfer/pallets',[StocksController::class,'findPallet'])->middleware('auth');
 Route::post('/home/transfer/product-check',[StocksController::class,'trnsfrProdChck'])->middleware('auth');
+Route::post('/home/transfer/pallet-check',[StocksController::class,'trnsfrPalltChck'])->middleware('auth');
+Route::post('/home/transfer/location-check',[StocksController::class,'trnsfrLocChck'])->middleware('auth');
+Route::post('/home/transfer/save-transfer',[StocksController::class,'trnsfrSave'])->middleware('auth');
 // Stock Take
 Route::get('/home/stock-take',[StocksController::class,'viewStockTake'])->middleware('auth');
 Route::post('/home/stock-take/checkPallet',[StocksController::class,'stkPalletCheck'])->middleware('auth');

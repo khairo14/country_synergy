@@ -703,6 +703,89 @@ class StocksController extends Controller
         return response()->json(['status'=>$status,'message'=>$message]);
     }
 
+    public function findPallet(){
+        return view('scan.scanTransferPallet');
+    }
+
+    public function trnsfrPalltChck(Request $request){
+        $p_name = $request->pname;
+
+        $pallet = Pallets::where('name',$p_name)->get();
+        if($pallet->isNotEmpty()){
+            $stk_loc = Stocks::where('pallet_id',$pallet[0]->id)->pluck('location_id');
+            if($stk_loc->isNotEmpty()){
+                $loc_id = $stk_loc[0];
+                $loc_name = Locations::where('id',$loc_id)->pluck('name');
+            }else{
+                $status = 0;
+                $message = "Pallet Missing";
+            }
+            $status = 1;
+            $message = ["name"=>$pallet[0]->name,'p_id'=>$pallet[0]->id,'loc_name'=>$loc_name[0],'loc_id'=>$loc_id];
+        }else{
+            $status = 0;
+            $message = "Pallet Not found Please Scan Again";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function trnsfrLocChck(Request $request){
+        $loc_name = $request->loc_name;
+
+        $loc = Locations::where('name',$loc_name)->get();
+
+        if($loc->isNotEmpty()){
+            $status = 1;
+            $message = ['loc_id'=>$loc[0]->id,'loc_name'=>$loc[0]->name];
+        }else{
+            $status = 0;
+            $message = "Location Not Found but will be added on the List";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+
+    }
+
+    public function trnsfrSave(Request $request){
+        $p_id = $request->p_id;
+        $new_loc_id = $request->new_loc_id;
+        $new_loc_name = $request->new_loc_name;
+
+        if($new_loc_id == 0){
+            $add_loc = new Locations();
+            $add_loc->name = $new_loc_name;
+            $add_loc->save();
+
+            if(isset($add_loc->id)){
+                $stk_id = Stocks::where('pallet_id',$p_id)->pluck('id');
+                if($stk_id->isNotEmpty()){
+                    $update_stk = Stocks::find($stk_id[0]);
+                    $update_stk->location_id = $add_loc->id;
+                    $update_stk->save();
+                }
+                $status = 1;
+                $message = "New Pallet Location Save";
+            }else{
+                $status = 0;
+                $message = "Unable to Save a New location";
+            }
+        }else{
+            $stk_id = Stocks::where('pallet_id',$p_id)->pluck('id');
+            if($stk_id->isNotEmpty()){
+                $update_stk = Stocks::find($stk_id[0]);
+                $update_stk->location_id = $new_loc_id;
+                $update_stk->save();
+
+                $status = 1;
+                $message = "New Pallet Location Save";
+            }
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+
+    }
+
     // Stock Take
     public function viewStockTake(){
         return view('scan.scanStockTake');
