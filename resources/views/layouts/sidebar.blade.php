@@ -89,6 +89,37 @@
               <a href="#" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50"> Settings </a> --}}
             </div>
           </div>
+
+          <div x-data="{open:false}" class="space-y-1">
+            <button type="button"
+                class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white group focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-controls="sub-menu-2" aria-expanded="false"
+                :class="{'bg-gray-900 text-white': active === 'reports' || active === 'reports'}"
+                x-state:on="Current"
+                x-state:off="Default"
+                aria-controls="sub-menu-2"
+                @click="open=!open"
+                aria-expanded="false"
+                x-bind:aria-expanded="open.toString()"
+                x-state-description="Current: bg-gray-100 text-gray-900, Default:bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+              <svg class="flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+              <span class="flex-1"> Reports </span>
+              <svg class="flex-shrink-0 w-5 h-5 ml-3 text-gray-300 transition-colors duration-150 ease-in-out transform group-hover:text-gray-400" viewBox="0 0 20 20" aria-hidden="true"
+                x-state:on="Expanded" x-state:off="Collapsed" aria-hidden="true" :class="{ 'text-gray-400 rotate-90': open, 'text-gray-300': !(open) }">
+                <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
+              </svg>
+            </button>
+            <div x-show="open" x-description="Expandable link section, show/hide based on state." class="space-y-1" id="sub-menu-2" style="display: none">
+              <a href="{{url('/reports/stock-summary')}}" :class="{'bg-gray-900 text-white': active2 === 'stock-summary'}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-300 rounded-md group pl-11 hover:text-white hover:bg-gray-700"> Stock Summary </a>
+
+              {{-- <a href="{{url('/create-order')}}":class="{'bg-gray-900 text-white': active === 'create-order'}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-300 rounded-md group pl-11 hover:text-white hover:bg-gray-700"> Create Order </a> --}}
+
+              {{-- <a href="#" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50"> Calendar </a>
+
+              <a href="#" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50"> Settings </a> --}}
+            </div>
+          </div>
         </nav>
       </div>
 
