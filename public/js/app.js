@@ -3450,6 +3450,208 @@ $(document).ready(function () {
       });
     }
   });
+}); // Merge
+
+$(document).ready(function () {
+  $("#mergePalletfrom").on("change", function () {
+    var p1 = $(this).val().trim();
+    $(".pallet1_body").empty();
+
+    if (p1 == "" || p1 == " ") {
+      $(".merge_message").text("Please Scan Pallet for Merge");
+      $(".merge_message").addClass('bg-red-300');
+      $("#mergePalletfrom").val("");
+      $("#mergePalletfrom").focus();
+      setTimeout(function () {
+        $(".merge_message").text("");
+        $(".merge_message").removeClass("bg-red-300");
+      }, 5000);
+    } else {
+      $.ajax({
+        url: "/home/transfer/merge-check",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "p_name": p1
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            var m1 = $("#merge_pallet_body").find('td').eq(0);
+            var items = result.message['lines'];
+            m1.text(result.message['pallet_name']);
+            m1.attr('data-id', result.message['pallet_id']);
+            $.map(items, function (val, i) {
+              var prods = "<tr>" + "<td class='py-1 pl-4 pr-3 text-sm text-center font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + val['plu'] + "</td>" + "<td class='py-1 pl-4 pr-3 text-sm text-center font-medium text-gray-500 whitespace-nowrap sm:pl-6'>" + val['name'] + "</td>" + "<td class='py-1 pl-4 pr-3 text-sm text-center font-medium text-gray-500 whitespace-nowrap sm:pl-6'>" + val['count'] + "</td>" + "</tr>";
+              $(".pallet1_body").append(prods);
+            });
+            $("._mergePalletfrom").hide();
+            $("._mergePalletTo").show();
+            $("#mergePalletTo").focus();
+          } else {
+            $(".merge_message").text(result.message);
+            $(".merge_message").addClass('bg-red-300');
+            $("#mergePalletfrom").val("");
+            $("#mergePalletfrom").focus();
+            setTimeout(function () {
+              $(".merge_message").text("");
+              $(".merge_message").removeClass("bg-red-300");
+            }, 5000);
+          }
+        }
+      });
+    }
+  });
+});
+$(document).ready(function () {
+  $("#mergePalletTo").on("change", function () {
+    var p2 = $(this).val().trim();
+    $(".pallet2_body").empty();
+    var ch_p1 = $("#merge_pallet_body").find('td').eq(0).text();
+
+    if (p2 == "" || p2 == " ") {
+      $(".merge_message").text("Please Scan Pallet for Merge");
+      $(".merge_message").addClass('bg-red-300');
+      $("#mergePalletTo").val("");
+      $("#mergePalletTo").focus();
+      setTimeout(function () {
+        $(".merge_message").text("");
+        $(".merge_message").removeClass("bg-red-300");
+      }, 5000);
+    } else if (p2 == ch_p1) {
+      $(".merge_message").text("Please Scan a different Pallet");
+      $(".merge_message").addClass('bg-red-300');
+      $("#mergePalletTo").val("");
+      $("#mergePalletTo").focus();
+      setTimeout(function () {
+        $(".merge_message").text("");
+        $(".merge_message").removeClass("bg-red-300");
+      }, 5000);
+    } else {
+      $.ajax({
+        url: "/home/transfer/merge-check",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "p_name": p2
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            var m2 = $("#merge_pallet_body").find('td').eq(2);
+            var items = result.message['lines'];
+            m2.text(result.message['pallet_name']);
+            m2.attr('data-id', result.message['pallet_id']);
+            $.map(items, function (val, i) {
+              var prods = "<tr>" + "<td class='py-1 pl-4 pr-3 text-sm text-center font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + val['plu'] + "</td>" + "<td class='py-1 pl-4 pr-3 text-sm text-center font-medium text-gray-500 whitespace-nowrap sm:pl-6'>" + val['name'] + "</td>" + "<td class='py-1 pl-4 pr-3 text-sm text-center font-medium text-gray-500 whitespace-nowrap sm:pl-6'>" + val['count'] + "</td>" + "</tr>";
+              $(".pallet2_body").append(prods);
+            });
+            $(".mrege_btn").show();
+          } else {
+            $(".merge_message").text(result.message);
+            $(".merge_message").addClass('bg-red-300');
+            $("#mergePalletfrom").val("");
+            $("#mergePalletfrom").focus();
+            setTimeout(function () {
+              $(".merge_message").text("");
+              $(".merge_message").removeClass("bg-red-300");
+            }, 5000);
+          }
+        }
+      });
+    }
+  });
+});
+$(document).ready(function () {
+  $(".merge_back").on("click", function () {
+    $("#merge_pallet_body").find('td').eq(0).text("");
+    $("#merge_pallet_body").find('td').eq(2).text("");
+    $("#merge_pallet_body").find('td').eq(0).attr("data-id", "");
+    $("#merge_pallet_body").find('td').eq(2).attr("data-id", "");
+    $(".pallet1_body").empty();
+    $(".pallet2_body").empty();
+    $("._mergePalletfrom").show();
+    $("._mergePalletTo").hide();
+    $(".mrege_btn").hide();
+    $("#mergePalletfrom").focus();
+    $("#mergePalletfrom").val("");
+    $("#mergePalletTo").val("");
+  });
+});
+$(document).ready(function () {
+  $(".merge_save").on("click", function () {
+    var p1 = $("#merge_pallet_body").find('td').eq(0).attr("data-id");
+    var p2 = $("#merge_pallet_body").find('td').eq(2).attr("data-id");
+
+    if (p2 == "" || p1 == "") {
+      $(".merge_message").text("Unable to Merge Pallet - Please click clear and try again");
+      $(".merge_message").addClass('bg-red-300');
+      $("#mergePalletfrom").val("");
+      $("#mergePalletfrom").focus();
+      setTimeout(function () {
+        $(".merge_message").text("");
+        $(".merge_message").removeClass("bg-red-300");
+      }, 5000);
+    } else {
+      $.ajax({
+        url: "/home/transfer/merge-save",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "p1": p1,
+          'p2': p2
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            $(".merge_message").text(result.message);
+            $(".merge_message").addClass('bg-green-300');
+            $("#merge_pallet_body").find('td').eq(0).text("");
+            $("#merge_pallet_body").find('td').eq(2).text("");
+            $("#merge_pallet_body").find('td').eq(0).attr("data-id", "");
+            $("#merge_pallet_body").find('td').eq(2).attr("data-id", "");
+            $(".pallet1_body").empty();
+            $(".pallet2_body").empty();
+            $("._mergePalletfrom").show();
+            $("._mergePalletTo").hide();
+            $(".mrege_btn").hide();
+            $("#mergePalletfrom").focus();
+            $("#mergePalletfrom").val("");
+            $("#mergePalletTo").val("");
+            setTimeout(function () {
+              $(".merge_message").text("");
+              $(".merge_message").removeClass("bg-green-300");
+            }, 5000);
+          } else {
+            $(".merge_message").text(result.message);
+            $(".merge_message").addClass('bg-red-300');
+            setTimeout(function () {
+              $(".merge_message").text("");
+              $(".merge_message").removeClass("bg-red-300");
+              $("#merge_pallet_body").find('td').eq(0).text("");
+              $("#merge_pallet_body").find('td').eq(2).text("");
+              $("#merge_pallet_body").find('td').eq(0).attr("data-id", "");
+              $("#merge_pallet_body").find('td').eq(2).attr("data-id", "");
+              $(".pallet1_body").empty();
+              $(".pallet2_body").empty();
+              $("._mergePalletfrom").show();
+              $("._mergePalletTo").hide();
+              $(".mrege_btn").hide();
+              $("#mergePalletfrom").focus();
+              $("#mergePalletfrom").val("");
+              $("#mergePalletTo").val("");
+            }, 5000);
+          }
+        },
+        error: function error(request, status, _error16) {
+          alert(request.responseText);
+        }
+      });
+    }
+  });
 }); // Stock Take
 
 $(document).ready(function () {
@@ -3621,7 +3823,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error16) {
+        error: function error(request, status, _error17) {
           alert(request.responseText);
         }
       });
@@ -3685,7 +3887,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error17) {
+        error: function error(request, status, _error18) {
           alert(request.responseText);
         }
       });
@@ -3726,7 +3928,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error18) {
+      error: function error(request, status, _error19) {
         alert(request.responseText);
       }
     });
@@ -3772,7 +3974,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error19) {
+      error: function error(request, status, _error20) {
         alert(request.responseText);
       }
     });
@@ -3814,7 +4016,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error20) {
+        error: function error(request, status, _error21) {
           alert(request.responseText);
         }
       });
@@ -3861,7 +4063,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error21) {
+        error: function error(request, status, _error22) {
           alert(request.responseText);
         }
       });
@@ -4119,7 +4321,7 @@ $(document).on("click", ".stock_print", function () {
       $(".print_table").append(result);
       $(".scan_page").hide();
     },
-    error: function error(request, status, _error22) {
+    error: function error(request, status, _error23) {
       alert(request.responseText);
     }
   });
@@ -4222,7 +4424,7 @@ function searchStocks(cx, date, plu) {
         }, 5000);
       }
     },
-    error: function error(request, status, _error23) {
+    error: function error(request, status, _error24) {
       alert(request.responseText);
     }
   });
@@ -4398,7 +4600,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error24) {
+        error: function error(request, status, _error25) {
           alert(request.responseText);
         }
       });
