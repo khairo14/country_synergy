@@ -57,9 +57,10 @@ $(document).ready(function(){
                                 +"</tr>";
                         $("#scnproducts_body").append(prod);
                     }else if(result.status == 2){
+                        var gtin = result.message['message2'];
                         $("#scan_pcode").val('');
                         $("#scan_pcode").focus();
-                        $(".scan_pcode_message").text(result.message);
+                        $(".scan_pcode_message").text(result.message['message1']);
                             setTimeout(function(){
                                 $(".scan_pcode_message").text('');
                             },5000);
@@ -67,7 +68,7 @@ $(document).ready(function(){
                                 +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
                                 +"<p class='w-12 truncate overflow-clip'>"+pcode+"</p>"
                                 +"</td>"
-                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+gtin+"</td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
                                 +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
@@ -2565,12 +2566,33 @@ $(document).ready(function(){
 $(document).ready(function(){
     $("#flter").on("change",function(){
         var fltr = $(this).val();
+        var cx = $("#exist_cust1 option:selected").val();
         if(fltr.length > 1){
             $("#plu_fltr").show();
             $("#rcvd_dte_fltr").show();
         }else{
             if(fltr == 1){
-                $("#plu_fltr").show();
+                $.ajax({
+                    url: "/stocks/get-plu",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    method: 'post',
+                    data: { "cx":cx},
+                    success: function (result) {
+                        if(result.status == 1){
+                            var plu = result.plu;
+                            var pl_arr = [];
+                            $.map( plu, function( val, i ) {
+                                pl_arr.push(val);
+                            });
+                            var plu = pl_arr.sort();
+                            plu.forEach(function(pl){
+                                var option = "<option value='"+pl+"'>"+pl+"</option>"
+                                $("#fltr_plu").append(option);
+                            });
+                            $("#plu_fltr").show();
+                        }
+                    }
+                });
             }
             else{
                 $("#plu_fltr").hide();
@@ -2790,6 +2812,7 @@ function searchStocks(cx,date,plu){
         }
     });
 }
+
 $(document).on("click",".print_stock",function(){
     var c_date = moment().format('DD-MM-YYYY');
     var pname = "cs_"+c_date+"Stock";

@@ -42,7 +42,7 @@ class StocksController extends Controller
             $exist = Products::where('gtin',$gtin)->get();
             if($exist->isEmpty()){
                 $status = 2;
-                $message = 'Product not registered - please add later';
+                $message = ['message1'=>'Product not registered - please add later','message2'=>$gtin];
             }else{
                 $status = 1;
                 $message = $exist;
@@ -100,12 +100,19 @@ class StocksController extends Controller
                             $gtin_start = $cust[0]->gtin_start;
                             $gtin_end = $cust[0]->gtin_end;
                             $gtin = substr($plabel,$gtin_start,$gtin_end);
-
-                            $prod_bstdate = substr($plabel,18,6);
-                            $year = '20'.substr($prod_bstdate,0,2);
-                            $month = substr($prod_bstdate,2,2);
-                            $day = substr($prod_bstdate,4,2);
-                            $prod_bst_before = $year.'-'.$month.'-'.$day;
+                            if($cust[0]->id == 1){
+                                $prod_bstdate = substr($plabel,18,6);
+                                $year = '20'.substr($prod_bstdate,0,2);
+                                $month = substr($prod_bstdate,2,2);
+                                $day = substr($prod_bstdate,4,2);
+                                $prod_bst_before = $year.'-'.$month.'-'.$day;
+                            }else{
+                                $prod_bstdate = substr($plabel,28,6);
+                                $year = '20'.substr($prod_bstdate,0,2);
+                                $month = substr($prod_bstdate,2,2);
+                                $day = substr($prod_bstdate,4,2);
+                                $prod_bst_before = $year.'-'.$month.'-'.$day;
+                            }
                         }
 
                         $scanProd = new ScanProducts();
@@ -1292,7 +1299,13 @@ class StocksController extends Controller
             $items[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
         }
 
+        return view('stocks.stocksView')->with(['customers'=>$customers,'stocks'=>$items]);
+    }
 
+    public function getPlu(Request $request){
+        $cx = $request->cx;
+        $stk = Stocks::where('customer_id',$cx)->get();
+        if($stk->isNotEmpty()){
             $ph0 = ProductHistory::where('actions','In')->get();
             if($ph0->isNotEmpty()){
                 $sc_collection = collect([]);
@@ -1312,8 +1325,13 @@ class StocksController extends Controller
                     }
                 }
                 $plu = Arr::sort($plu);
+                $status = 1;
             }
-        return view('stocks.stocksView')->with(['customers'=>$customers,'stocks'=>$items,'plu'=>$plu]);
+        }else{
+            $status = 0;
+            $plu = "No Product Code";
+        }
+        return response()->json(['status'=>$status,'plu'=>$plu]);
     }
 
     public function searchStocks(Request $request){
@@ -1323,37 +1341,42 @@ class StocksController extends Controller
 
         if($plu == "" && $date ==""){
             $stocks = Stocks::where('customer_id',$cx)->where('status','In')->orderBy('best_before','asc')->get();
-            foreach($stocks as $stock){
-                $pr_qty = collect([]);
-                $pallet = Pallets::where('id',$stock->pallet_id)->get();
-                $location = Locations::where('id',$stock->location_id)->get();
-                $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->where('actions','!=','Out')->get();
-                if($ph->isNotEmpty()){
-                    foreach($ph as $p){
-                        $sp = ScanProducts::where('id',$p->scanned_id)->get();
-                        if($sp->isNotEmpty()){
-                            $prod_dtls = Products::where('gtin',$sp[0]->gtin)->get();
-                            if($prod_dtls->isNotEmpty()){
-                                $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->gtin]);
-                            }else{
-                                $pr_qty->push(['plu'=>'0000','name'=>'','gtin'=>'']);
+            if($stocks->isNotEmpty()){
+                foreach($stocks as $stock){
+                    $pr_qty = collect([]);
+                    $pallet = Pallets::where('id',$stock->pallet_id)->get();
+                    $location = Locations::where('id',$stock->location_id)->get();
+                    $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->where('actions','!=','Out')->get();
+                    if($ph->isNotEmpty()){
+                        foreach($ph as $p){
+                            $sp = ScanProducts::where('id',$p->scanned_id)->get();
+                            if($sp->isNotEmpty()){
+                                $prod_dtls = Products::where('gtin',$sp[0]->gtin)->get();
+                                if($prod_dtls->isNotEmpty()){
+                                    $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->gtin]);
+                                }else{
+                                    $pr_qty->push(['plu'=>'0000','name'=>'','gtin'=>'']);
+                                }
                             }
                         }
                     }
+                    $pr = $pr_qty->groupBy(['plu']);
+                    $or_lines = $pr->map(function ($prs) {
+                        return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'gtin'=>$prs[0]['gtin'],'count'=>$prs->count()];
+                    });
+
+                    $stored = $stock->created_at;
+                    $stored = $stored->format('d-m-Y');
+
+                    $best_before = $stock->best_before;
+                    $best_before = Carbon::createFromFormat('Y-m-d', $best_before)->format('d-m-Y');
+                    $stk_lines[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
                 }
-                $pr = $pr_qty->groupBy(['plu']);
-                $or_lines = $pr->map(function ($prs) {
-                    return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'gtin'=>$prs[0]['gtin'],'count'=>$prs->count()];
-                });
-
-                $stored = $stock->created_at;
-                $stored = $stored->format('d-m-Y');
-
-                $best_before = $stock->best_before;
-                $best_before = Carbon::createFromFormat('Y-m-d', $best_before)->format('d-m-Y');
-                $stk_lines[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'qty'=>$stock->qty,'best_before'=>$best_before,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
+                $status = 1;
+            }else{
+                $status = 0;
+                $stk_lines = "No Stocks Found";
             }
-            $status = 1;
         }elseif($plu != "" && $date == ""){
             $prods = Products::where('product_code',$plu)->get();
             $sc_collect = collect([]);

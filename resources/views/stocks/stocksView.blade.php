@@ -13,7 +13,7 @@
                             <option value="2">Received Date</option>
                     </select>
                 </div>
-                <div class="justify-items-start row-start-2 flex grid-cols-4 space-x-1">
+                <div class="flex grid-cols-4 row-start-2 space-x-1 justify-items-start">
                     <div class="">
                         <label for="exist_cust1" class="block text-xs font-medium text-gray-700">Select Customer</label>
                         <select id="exist_cust1" name="exist_cust1" class="block py-1 mt-1 text-xs border-gray-300 rounded-md w-52 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs">
@@ -28,12 +28,12 @@
                     </div>
                     <div class="w-auto" id="plu_fltr" style="display: none">
                         <label for="fltr_plu" class="block text-xs font-medium text-gray-700">Select PLU</label>
-                        <select id="fltr_plu" name="fltr_plu" class="block py-1 mt-1 text-xs border-gray-300 rounded-md w-24 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs">
-                                @forelse ($plu as $pl)
+                        <select id="fltr_plu" name="fltr_plu" class="block w-24 py-1 mt-1 text-xs border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs">
+                                {{-- @forelse ($plu as $pl)
                                     <option value="{{$pl}}">{{$pl}}</option>
                                 @empty
                                     <option value="0">No Product Available</option>
-                                @endforelse
+                                @endforelse --}}
                         </select>
                     </div>
                     <div class="" id="rcvd_dte_fltr" style="display: none">
@@ -42,7 +42,7 @@
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
                             </div>
-                            <input type="text" id="srch_date" class="block w-36 py-1 pl-10 text-gray-900 border border-gray-300 rounded-md bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Select Date">
+                            <input type="text" id="srch_date" class="block py-1 pl-10 text-gray-900 border border-gray-300 rounded-md w-36 bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Select Date">
                         </div>
                     </div>
                     <div class="mt-4">
@@ -53,7 +53,7 @@
                         </button>
                     </div>
                     <div class="flex justify-end mt-4">
-                        <button type="button" class="print_stock inline-flex items-center px-1 py-1 text-sm font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-1 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <button type="button" class="inline-flex items-center px-1 py-1 text-sm font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md print_stock text-md sm:px-2 sm:py-1 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             <span class="items-center mx-2">
                                 &nbsp; Print &nbsp;
                             </span>
