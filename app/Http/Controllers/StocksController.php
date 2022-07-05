@@ -684,10 +684,10 @@ class StocksController extends Controller
                         $prd_info = Products::where('gtin',$scanChk[0]->gtin)->get();
                         if($prd_info->isNotEmpty()){
                             $status = 1;
-                            $message = ['label'=>$lbl,'plu'=>$prd_info[0]->product_code];
+                            $message = ['label'=>$lbl,'plu'=>$prd_info[0]->product_code,'ph_id'=>$ph[0]->id];
                         }else{
                             $status = 1;
-                            $message = ['label'=>$lbl,'plu'=>""];
+                            $message = ['label'=>$lbl,'plu'=>"0000"];
                         }
                     }
                 }
@@ -698,6 +698,139 @@ class StocksController extends Controller
         }else{
             $status = 0;
             $message = "Error Scanning Products";
+        }
+
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function trnsfrProdNewPallet(Request $request){
+        $bb_date = $request->bb_date;
+        $bb_date = Carbon::createFromFormat('d/m/Y', $bb_date)->format('Y-m-d');
+        $loc_name = $request->loc;
+        $loc_id = $request->loc_id;
+        $p_name = $request->pallet;
+        $prod = $request->prod;
+
+        if($p_name != ""){
+            $chk_pallet = Pallets::where('name',$p_name)->get();
+            if($chk_pallet->isNotEmpty()){
+                $status = 0;
+                $message = "Pallet Name Already Exist Try Again";
+            }else{
+                $new_pallet = new Pallets();
+                $new_pallet->name = $p_name;
+                $new_pallet->save();
+
+                if($loc_id == 0){
+                    $new_location = new Locations();
+                    $new_location->name = $loc_name;
+                    $new_location->save();
+                    if(isset($new_location->id)){
+                        $new_loc_id = $new_location->id;
+                    }
+                }else{
+                    $new_loc_id = $loc_id;
+                }
+
+                if(isset($new_pallet->id)){
+                    foreach($prod as $pr){
+                        $old_pallet_id = ProductHistory::where('id',$pr['ph_id'])->pluck('new_pallet_id');
+
+                        $new_ph = ProductHistory::find($pr['ph_id']);
+                        $new_ph->old_pallet_id = $old_pallet_id[0];
+                        $new_ph->new_pallet_id = $new_pallet->id;
+                        $new_ph->save();
+
+                        // remove from stocks
+                        $stk = Stocks::where('pallet_id',$old_pallet_id[0])->get();
+                        if($stk->isNotEmpty()){
+                            $update_qty = $stk[0]->qty - 1;
+                            if($update_qty == 0){
+                                $status = "Out";
+                            }else{
+                                $status = $stk[0]->status;
+                            }
+                            $update_stk = Stocks::find($stk[0]->id);
+                            $update_stk->qty = $update_qty;
+                            $update_stk->status = $status;
+                            $update_stk->save();
+                        }
+                        // add to stocks
+                        $chk = Stocks::where('pallet_id',$new_pallet->id)->get();
+                        if($chk->isNotEmpty()){
+                            $up_qty = $chk[0]->qty +1;
+                            $up_stk = Stocks::find($chk[0]->id);
+                            $up_stk->qty = $up_qty;
+                            $up_stk->save();
+                        }else{
+                            $up_stk = new Stocks();
+                            $up_stk->customer_id = $stk[0]->customer_id;
+                            $up_stk->pallet_id = $new_pallet->id;
+                            $up_stk->location_id = $new_loc_id;
+                            $up_stk->qty = 1;
+                            $up_stk->best_before = $bb_date;
+                            $up_stk->status = "In";
+                            $up_stk->save();
+                        }
+                    }
+                    $status = 1;
+                    $message = ['pallet'=>$p_name];
+                }else{
+                    $status = 0;
+                    $message = "Unable to Create New Pallet";
+                }
+            }
+        }else{
+            $status = 0;
+            $message = "Pallet Name Missing";
+        }
+        return response()->json(['status'=>$status,'message'=>$message]);
+    }
+
+    public function trsnfrProdExistPallet(Request $request){
+        $prod = $request->prod;
+        $p_name = $request->p_name;
+        $p_id = $request->p_id;
+
+        if($p_name != ""){
+            foreach($prod as $pr){
+                $old_pallet_id = ProductHistory::where('id',$pr['ph_id'])->pluck('new_pallet_id');
+                    $new_ph = ProductHistory::find($pr['ph_id']);
+                    $new_ph->old_pallet_id = $old_pallet_id[0];
+                    $new_ph->new_pallet_id = $p_id;
+                    $new_ph->save();
+
+                    // remove from stocks
+                    $stk = Stocks::where('pallet_id',$old_pallet_id[0])->get();
+                    if($stk->isNotEmpty()){
+                        $update_qty = $stk[0]->qty - 1;
+                        if($update_qty == 0){
+                            $status = "Out";
+                        }else{
+                            $status = $stk[0]->status;
+                        }
+                        $update_stk = Stocks::find($stk[0]->id);
+                        $update_stk->qty = $update_qty;
+                        $update_stk->status = $status;
+                        $update_stk->save();
+                    }
+                    // add to stocks
+                    $chk = Stocks::where('pallet_id',$p_id)->get();
+                    if($chk->isNotEmpty()){
+                        $up_qty = $chk[0]->qty +1;
+                        $up_stk = Stocks::find($chk[0]->id);
+                        $up_stk->qty = $up_qty;
+                        $up_stk->save();
+                    }else{
+                        $status = 0;
+                        $message = "Pallet was Removed from stocks";
+                    }
+            }
+            $status = 1;
+            $message = "Transfer Succesfull";
+        }else{
+            $status = 0;
+            $message = "Unable to locate Pallet";
         }
 
         return response()->json(['status'=>$status,'message'=>$message]);
