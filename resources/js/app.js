@@ -613,6 +613,7 @@ $(document).ready(function(){
                 method: 'post',
                 data: {'label':pl},
                 success: function (result) {
+                    console.log(result);
                     if(result.status == 1){
                         var p_id = result.message['pallet'];
                         var cx = result.message['customer'];
@@ -633,6 +634,8 @@ $(document).ready(function(){
                             $(".addtopallet_message").text('');
                         },5000);
                     }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
                 }
             });
         }
@@ -668,6 +671,7 @@ $(document).ready(function(){
                 method: 'post',
                 data: { "label": pcode,'cust':cx},
                 success: function (result) {
+                    console.log(result);
                     if(result.status == 1){
                         var gtin = result.message[0].gtin;
                         var pname = result.message[0].product_name;
@@ -693,7 +697,7 @@ $(document).ready(function(){
                     }else if(result.status == 2){
                         $("#prodtopallet").val('');
                         $("#prodtopallet").focus();
-                        $(".addtopallet_message").text(result.message);
+                        $(".addtopallet_message").text(result.message['message1']);
                             setTimeout(function(){
                                 $(".addtopallet_message").text('');
                             },5000);
@@ -701,7 +705,7 @@ $(document).ready(function(){
                                 +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
                                 +"<p class='w-12 truncate overflow-clip'>"+pcode+"</p>"
                                 +"</td>"
-                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+result.message['message2']+"</td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
                                 +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"

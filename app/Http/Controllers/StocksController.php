@@ -296,11 +296,19 @@ class StocksController extends Controller
                     $cust = Customers::where('id',$cx)->get();
                     $gtin = substr($product['label'],$cust[0]->gtin_start,$cust[0]->gtin_end);
 
-                    $prod_bstdate = substr($product['label'],18,6);
-                    $year = '20'.substr($prod_bstdate,0,2);
-                    $month = substr($prod_bstdate,2,2);
-                    $day = substr($prod_bstdate,4,2);
-                    $prod_bst_before = $year.'-'.$month.'-'.$day;
+                    if($cust[0]->id == 1){
+                        $prod_bstdate = substr($$product['label'],18,6);
+                        $year = '20'.substr($prod_bstdate,0,2);
+                        $month = substr($prod_bstdate,2,2);
+                        $day = substr($prod_bstdate,4,2);
+                        $prod_bst_before = $year.'-'.$month.'-'.$day;
+                    }else{
+                        $prod_bstdate = substr($product['label'],28,6);
+                        $year = '20'.substr($prod_bstdate,0,2);
+                        $month = substr($prod_bstdate,2,2);
+                        $day = substr($prod_bstdate,4,2);
+                        $prod_bst_before = $year.'-'.$month.'-'.$day;
+                    }
                 }
 
                 $scanProd = new ScanProducts();
