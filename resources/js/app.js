@@ -613,7 +613,6 @@ $(document).ready(function(){
                 method: 'post',
                 data: {'label':pl},
                 success: function (result) {
-                    console.log(result);
                     if(result.status == 1){
                         var p_id = result.message['pallet'];
                         var cx = result.message['customer'];
@@ -671,7 +670,6 @@ $(document).ready(function(){
                 method: 'post',
                 data: { "label": pcode,'cust':cx},
                 success: function (result) {
-                    console.log(result);
                     if(result.status == 1){
                         var gtin = result.message[0].gtin;
                         var pname = result.message[0].product_name;
@@ -2483,7 +2481,6 @@ $(document).ready(function(){
             method: 'post',
             data: { "id": id},
             success: function (result) {
-                console.log(result);
                 $("#edit_prod_code").val(result.product['0'].product_code);
                 $("#edit_prod_name").val(result.product['0'].product_name);
                 $("#edit_prod_gtin").val(result.product['0'].gtin);
