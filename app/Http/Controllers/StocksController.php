@@ -1515,7 +1515,11 @@ class StocksController extends Controller
                 $w2 = 6;
                 $w_val = substr($scnItem[0]->label,$w1,$w2);
                 $weight = $w_val / 1000;
-                $bb = Carbon::createFromFormat('Y-m-d', $scnItem[0]->best_before)->format('d-m-Y');
+                if($scnItem[0]->best_before != ""){
+                    $bb = Carbon::createFromFormat('Y-m-d', $scnItem[0]->best_before)->format('d-m-Y');
+                }else{
+                    $bb = "00-00-0000";
+                }
             }
             $products[] = ['label'=>$scnItem[0]->label,'best_before'=>$bb,'plu'=>$plu,'name'=>$name,'desc'=>$dsc,'rcvd'=>$rcvd,'gtin'=>$gtin,'weight'=>$weight];
         }
