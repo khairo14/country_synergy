@@ -2670,6 +2670,8 @@ $(document).ready(function () {
           'label': pl
         },
         success: function success(result) {
+          console.log(result);
+
           if (result.status == 1) {
             var p_id = result.message['pallet'];
             var cx = result.message['customer'];
@@ -2689,6 +2691,9 @@ $(document).ready(function () {
               $(".addtopallet_message").text('');
             }, 5000);
           }
+        },
+        error: function error(request, status, _error7) {
+          alert(request.responseText);
         }
       });
     }
@@ -2728,6 +2733,8 @@ $(document).ready(function () {
           'cust': cx
         },
         success: function success(result) {
+          console.log(result);
+
           if (result.status == 1) {
             var gtin = result.message[0].gtin;
             var pname = result.message[0].product_name;
@@ -2739,11 +2746,11 @@ $(document).ready(function () {
           } else if (result.status == 2) {
             $("#prodtopallet").val('');
             $("#prodtopallet").focus();
-            $(".addtopallet_message").text(result.message);
+            $(".addtopallet_message").text(result.message['message1']);
             setTimeout(function () {
               $(".addtopallet_message").text('');
             }, 5000);
-            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-12 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-12 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + result.message['message2'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
             $("#scprodtopallet_body").append(prod);
           } else {
             $("#prodtopallet").val('');
@@ -2811,7 +2818,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error7) {
+        error: function error(request, status, _error8) {
           alert(request.responseText);
         }
       });
@@ -2878,7 +2885,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error8) {
+        error: function error(request, status, _error9) {
           alert(request.responseText);
         }
       });
@@ -2934,7 +2941,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error9) {
+        error: function error(request, status, _error10) {
           alert(request.responseText);
         }
       });
@@ -2986,7 +2993,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error10) {
+        error: function error(request, status, _error11) {
           alert(request.responseText);
         }
       });
@@ -3033,7 +3040,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error11) {
+        error: function error(request, status, _error12) {
           alert(request.responseText);
         }
       });
@@ -3117,7 +3124,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error12) {
+        error: function error(request, status, _error13) {
           alert(request.responseText);
         }
       });
@@ -3195,7 +3202,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error13) {
+        error: function error(request, status, _error14) {
           alert(request.responseText);
         }
       });
@@ -3259,7 +3266,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error14) {
+        error: function error(request, status, _error15) {
           alert(request.responseText);
         }
       });
@@ -3513,7 +3520,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error15) {
+        error: function error(request, status, _error16) {
           alert(request.responseText);
         }
       });
@@ -3585,7 +3592,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error16) {
+        error: function error(request, status, _error17) {
           alert(request.responseText);
         }
       });
@@ -3765,7 +3772,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error17) {
+        error: function error(request, status, _error18) {
           alert(request.responseText);
         }
       });
@@ -3967,7 +3974,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error18) {
+        error: function error(request, status, _error19) {
           alert(request.responseText);
         }
       });
@@ -4144,7 +4151,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error19) {
+        error: function error(request, status, _error20) {
           alert(request.responseText);
         }
       });
@@ -4208,7 +4215,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error20) {
+        error: function error(request, status, _error21) {
           alert(request.responseText);
         }
       });
@@ -4249,7 +4256,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error21) {
+      error: function error(request, status, _error22) {
         alert(request.responseText);
       }
     });
@@ -4295,7 +4302,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error22) {
+      error: function error(request, status, _error23) {
         alert(request.responseText);
       }
     });
@@ -4337,7 +4344,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error23) {
+        error: function error(request, status, _error24) {
           alert(request.responseText);
         }
       });
@@ -4384,7 +4391,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error24) {
+        error: function error(request, status, _error25) {
           alert(request.responseText);
         }
       });
@@ -4667,7 +4674,7 @@ $(document).on("click", ".stock_print", function () {
       $(".print_table").append(result);
       $(".scan_page").hide();
     },
-    error: function error(request, status, _error25) {
+    error: function error(request, status, _error26) {
       alert(request.responseText);
     }
   });
@@ -4770,7 +4777,7 @@ function searchStocks(cx, date, plu) {
         }, 5000);
       }
     },
-    error: function error(request, status, _error26) {
+    error: function error(request, status, _error27) {
       alert(request.responseText);
     }
   });
@@ -4946,7 +4953,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error27) {
+        error: function error(request, status, _error28) {
           alert(request.responseText);
         }
       });
