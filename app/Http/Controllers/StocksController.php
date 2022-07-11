@@ -102,16 +102,25 @@ class StocksController extends Controller
                             $gtin = substr($plabel,$gtin_start,$gtin_end);
                             if($cust[0]->id == 1){
                                 $prod_bstdate = substr($plabel,18,6);
-                                $year = '20'.substr($prod_bstdate,0,2);
-                                $month = substr($prod_bstdate,2,2);
-                                $day = substr($prod_bstdate,4,2);
-                                $prod_bst_before = $year.'-'.$month.'-'.$day;
-                            }else{
+                                if(strlen($prod_bstdate) == 6){
+                                    $year = '20'.substr($prod_bstdate,0,2);
+                                    $month = substr($prod_bstdate,2,2);
+                                    $day = substr($prod_bstdate,4,2);
+                                    $prod_bst_before = $year.'-'.$month.'-'.$day;
+                                }else{
+                                    $prod_bst_before = null;
+                                }
+
+                            }else if($cust[0]->id == 2){
                                 $prod_bstdate = substr($plabel,28,6);
-                                $year = '20'.substr($prod_bstdate,0,2);
-                                $month = substr($prod_bstdate,2,2);
-                                $day = substr($prod_bstdate,4,2);
-                                $prod_bst_before = $year.'-'.$month.'-'.$day;
+                                if(strlen($prod_bstdate) == 6){
+                                    $year = '20'.substr($prod_bstdate,0,2);
+                                    $month = substr($prod_bstdate,2,2);
+                                    $day = substr($prod_bstdate,4,2);
+                                    $prod_bst_before = $year.'-'.$month.'-'.$day;
+                                }else{
+                                    $prod_bst_before = null;
+                                }
                             }
                         }
 
@@ -298,16 +307,25 @@ class StocksController extends Controller
 
                     if($cust[0]->id == 1){
                         $prod_bstdate = substr($$product['label'],18,6);
-                        $year = '20'.substr($prod_bstdate,0,2);
-                        $month = substr($prod_bstdate,2,2);
-                        $day = substr($prod_bstdate,4,2);
-                        $prod_bst_before = $year.'-'.$month.'-'.$day;
-                    }else{
+                        if(strlen($prod_bstdate) == 6){
+                            $year = '20'.substr($prod_bstdate,0,2);
+                            $month = substr($prod_bstdate,2,2);
+                            $day = substr($prod_bstdate,4,2);
+                            $prod_bst_before = $year.'-'.$month.'-'.$day;
+                        }else{
+                            $prod_bst_before = null;
+                        }
+
+                    }else if($cust[0]->id == 2){
                         $prod_bstdate = substr($product['label'],28,6);
-                        $year = '20'.substr($prod_bstdate,0,2);
-                        $month = substr($prod_bstdate,2,2);
-                        $day = substr($prod_bstdate,4,2);
-                        $prod_bst_before = $year.'-'.$month.'-'.$day;
+                        if(strlen($prod_bstdate) == 6){
+                            $year = '20'.substr($prod_bstdate,0,2);
+                            $month = substr($prod_bstdate,2,2);
+                            $day = substr($prod_bstdate,4,2);
+                            $prod_bst_before = $year.'-'.$month.'-'.$day;
+                        }else{
+                            $prod_bst_before = null;
+                        }
                     }
                 }
 
