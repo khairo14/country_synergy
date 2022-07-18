@@ -40,15 +40,16 @@ class StocksController extends Controller
             $message = 'Product Already Stored - Use Product Tracking';
         }else{
             $exist = Products::where('gtin',$gtin)->get();
-            if($exist->isEmpty()){
-                $status = 2;
-                $message = ['message1'=>'Product not registered - please add later','message2'=>$gtin];
-            }else{
+            if($exist->isNotEmpty()){
                 $status = 1;
                 $message = $exist;
+            }else{
+                $status = 2;
+                $message = ['message1'=>'Product not registered - please add later','message2'=>$gtin];
             }
         }
-        return response()->json(['status'=>$status,'message'=>$message]);
+        // return response()->json(['status'=>$status,'message'=>$message]);
+        return response()->json([$exist]);
     }
 
     public function addProducts(Request $request){

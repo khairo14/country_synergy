@@ -34,60 +34,61 @@ $(document).ready(function(){
                 method: 'post',
                 data: { "label": pcode,'cust':cx},
                 success: function (result) {
-                    if(result.status == 1){
-                        var gtin = result.message[0].gtin;
-                        var pname = result.message[0].product_name;
-                        var plu = result.message[0].product_code;
-                        $("#scan_pcode").val('');
-                        $("#scan_pcode").focus();
-                        var prod = "<tr>"
-                                +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
-                                +"<p class='w-20 truncate overflow-clip'>"+pcode+"</p>"
-                                +"</td>"
-                                +"<td class='hidden px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+gtin+"</td>"
-                                +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'>"+plu+"</td>"
-                                +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-12 truncate overflow-clip'>"+pname+"</p></td>"
-                                +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
-                                    +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
-                                        +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
-                                            +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
-                                        +"</svg>"
-                                    +"</a>"
-                                +"</td>"
-                                +"</tr>";
-                        $("#scnproducts_body").append(prod);
-                    }else if(result.status == 2){
-                        var gtin = result.message['message2'];
-                        $("#scan_pcode").val('');
-                        $("#scan_pcode").focus();
-                        $(".scan_pcode_message").text(result.message['message1']);
-                            setTimeout(function(){
-                                $(".scan_pcode_message").text('');
-                            },5000);
-                        var prod = "<tr>"
-                                +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
-                                +"<p class='w-20 truncate overflow-clip'>"+pcode+"</p>"
-                                +"</td>"
-                                +"<td class='hidden px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+gtin+"</td>"
-                                +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
-                                +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
-                                +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
-                                    +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
-                                        +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
-                                            +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
-                                        +"</svg>"
-                                    +"</a>"
-                                +"</td>"
-                                +"</tr>";
-                        $("#scnproducts_body").append(prod);
-                    }else{
-                        $("#scan_pcode").val('');
-                        $("#scan_pcode").focus();
-                        $(".scan_pcode_message").text(result.message);
-                            setTimeout(function(){
-                                $(".scan_pcode_message").text('');
-                            },5000);
-                    }
+                    console.log(result);
+                    // if(result.status == 1){
+                    //     var gtin = result.message[0].gtin;
+                    //     var pname = result.message[0].product_name;
+                    //     var plu = result.message[0].product_code;
+                    //     $("#scan_pcode").val('');
+                    //     $("#scan_pcode").focus();
+                    //     var prod = "<tr>"
+                    //             +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
+                    //             +"<p class='w-20 truncate overflow-clip'>"+pcode+"</p>"
+                    //             +"</td>"
+                    //             +"<td class='hidden px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+gtin+"</td>"
+                    //             +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'>"+plu+"</td>"
+                    //             +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-12 truncate overflow-clip'>"+pname+"</p></td>"
+                    //             +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
+                    //                 +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
+                    //                     +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                    //                         +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                    //                     +"</svg>"
+                    //                 +"</a>"
+                    //             +"</td>"
+                    //             +"</tr>";
+                    //     $("#scnproducts_body").append(prod);
+                    // }else if(result.status == 2){
+                    //     var gtin = result.message['message2'];
+                    //     $("#scan_pcode").val('');
+                    //     $("#scan_pcode").focus();
+                    //     $(".scan_pcode_message").text(result.message['message1']);
+                    //         setTimeout(function(){
+                    //             $(".scan_pcode_message").text('');
+                    //         },5000);
+                    //     var prod = "<tr>"
+                    //             +"<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>"
+                    //             +"<p class='w-20 truncate overflow-clip'>"+pcode+"</p>"
+                    //             +"</td>"
+                    //             +"<td class='hidden px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+gtin+"</td>"
+                    //             +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                    //             +"<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'></td>"
+                    //             +"<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>"
+                    //                 +"<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>"
+                    //                     +"<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+                    //                         +"<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />"
+                    //                     +"</svg>"
+                    //                 +"</a>"
+                    //             +"</td>"
+                    //             +"</tr>";
+                    //     $("#scnproducts_body").append(prod);
+                    // }else{
+                    //     $("#scan_pcode").val('');
+                    //     $("#scan_pcode").focus();
+                    //     $(".scan_pcode_message").text(result.message);
+                    //         setTimeout(function(){
+                    //             $(".scan_pcode_message").text('');
+                    //         },5000);
+                    // }
                 }, error: function (request, status, error) {
                     alert(request.responseText);
                 }
