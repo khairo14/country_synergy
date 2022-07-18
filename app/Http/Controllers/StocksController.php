@@ -307,7 +307,7 @@ class StocksController extends Controller
                     $gtin = substr($product['label'],$cust[0]->gtin_start,$cust[0]->gtin_end);
 
                     if($cust[0]->id == 1){
-                        $prod_bstdate = substr($$product['label'],18,6);
+                        $prod_bstdate = substr($product['label'],18,6);
                         if(strlen($prod_bstdate) == 6){
                             $year = '20'.substr($prod_bstdate,0,2);
                             $month = substr($prod_bstdate,2,2);
