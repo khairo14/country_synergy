@@ -48,8 +48,7 @@ class StocksController extends Controller
                 $message = ['message1'=>'Product not registered - please add later','message2'=>$gtin];
             }
         }
-        // return response()->json(['status'=>$status,'message'=>$message]);
-        return response()->json([$exist]);
+        return response()->json(['status'=>$status,'message'=>$message]);
     }
 
     public function addProducts(Request $request){
