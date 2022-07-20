@@ -2756,6 +2756,9 @@ $(document).ready(function () {
               $(".addtopallet_message").text('');
             }, 5000);
           }
+        },
+        error: function error(request, status, _error8) {
+          alert(request.responseText);
         }
       });
     }
@@ -2814,7 +2817,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error8) {
+        error: function error(request, status, _error9) {
           alert(request.responseText);
         }
       });
@@ -2881,7 +2884,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error9) {
+        error: function error(request, status, _error10) {
           alert(request.responseText);
         }
       });
@@ -2937,7 +2940,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error10) {
+        error: function error(request, status, _error11) {
           alert(request.responseText);
         }
       });
@@ -2989,7 +2992,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error11) {
+        error: function error(request, status, _error12) {
           alert(request.responseText);
         }
       });
@@ -3036,7 +3039,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error12) {
+        error: function error(request, status, _error13) {
           alert(request.responseText);
         }
       });
@@ -3120,7 +3123,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error13) {
+        error: function error(request, status, _error14) {
           alert(request.responseText);
         }
       });
@@ -3198,7 +3201,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error14) {
+        error: function error(request, status, _error15) {
           alert(request.responseText);
         }
       });
@@ -3262,7 +3265,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error15) {
+        error: function error(request, status, _error16) {
           alert(request.responseText);
         }
       });
@@ -3516,7 +3519,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error16) {
+        error: function error(request, status, _error17) {
           alert(request.responseText);
         }
       });
@@ -3588,7 +3591,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error17) {
+        error: function error(request, status, _error18) {
           alert(request.responseText);
         }
       });
@@ -3768,7 +3771,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error18) {
+        error: function error(request, status, _error19) {
           alert(request.responseText);
         }
       });
@@ -3970,7 +3973,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error19) {
+        error: function error(request, status, _error20) {
           alert(request.responseText);
         }
       });
@@ -4123,7 +4126,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error20) {
+        error: function error(request, status, _error21) {
           alert(request.responseText);
         }
       });
@@ -4187,7 +4190,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error21) {
+        error: function error(request, status, _error22) {
           alert(request.responseText);
         }
       });
@@ -4228,7 +4231,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error22) {
+      error: function error(request, status, _error23) {
         alert(request.responseText);
       }
     });
@@ -4274,7 +4277,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error23) {
+      error: function error(request, status, _error24) {
         alert(request.responseText);
       }
     });
@@ -4316,7 +4319,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error24) {
+        error: function error(request, status, _error25) {
           alert(request.responseText);
         }
       });
@@ -4363,7 +4366,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error25) {
+        error: function error(request, status, _error26) {
           alert(request.responseText);
         }
       });
@@ -4645,7 +4648,7 @@ $(document).on("click", ".stock_print", function () {
       $(".print_table").append(result);
       $(".scan_page").hide();
     },
-    error: function error(request, status, _error26) {
+    error: function error(request, status, _error27) {
       alert(request.responseText);
     }
   });
@@ -4748,7 +4751,7 @@ function searchStocks(cx, date, plu) {
         }, 5000);
       }
     },
-    error: function error(request, status, _error27) {
+    error: function error(request, status, _error28) {
       alert(request.responseText);
     }
   });
@@ -4916,7 +4919,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error28) {
+        error: function error(request, status, _error29) {
           alert(request.responseText);
         }
       });

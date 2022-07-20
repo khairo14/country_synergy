@@ -723,6 +723,8 @@ $(document).ready(function(){
                                 $(".addtopallet_message").text('');
                             },5000);
                     }
+                }, error: function (request, status, error) {
+                    alert(request.responseText);
                 }
             });
         }
