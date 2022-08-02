@@ -827,7 +827,7 @@ class StocksController extends Controller
         if($pallet->isNotEmpty()){
             $stock = Stocks::where('pallet_id',$pallet[0]->id)->get();
 
-            $ph = ProductHistory::where('new_pallet_id',$pallet[0]->id)->where('actions','=','In')->get();
+            $ph = ProductHistory::where('new_pallet_id',$pallet[0]->id)->where('actions','In')->get();
             $pr_qty = collect([]);
             if($ph->isNotEmpty()){
                 foreach($ph as $p){
@@ -1171,7 +1171,7 @@ class StocksController extends Controller
                 $stored = $stock->created_at;
                 $stored = $stored->format('d-m-Y');
 
-                $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->where('actions','=','In')->get();
+                $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->where('actions','In')->get();
                 if($ph->isNotEmpty()){
                     foreach($ph as $p){
                         $sp = ScanProducts::where('id',$p->scanned_id)->get();
@@ -1194,9 +1194,6 @@ class StocksController extends Controller
                         return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'gtin'=>$prs[0]['gtin'],'count'=>$prs->count()];
                     });
 
-                    $items[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
-                }else{
-                    $or_lines[] = ['plu'=>'0000','name'=>'','gtin'=>'','count'=>'0'];
                     $items[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
                 }
             }
@@ -1252,7 +1249,7 @@ class StocksController extends Controller
                     $stored = $stock->created_at;
                     $stored = $stored->format('d-m-Y');
 
-                    $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->where('actions','=','In')->get();
+                    $ph = ProductHistory::where('new_pallet_id',$stock->pallet_id)->where('actions','In')->get();
                     if($ph->isNotEmpty()){
                         foreach($ph as $p){
                             $sp = ScanProducts::where('id',$p->scanned_id)->get();
@@ -1275,9 +1272,6 @@ class StocksController extends Controller
                             return ['plu'=>$prs[0]['plu'],'name'=>$prs[0]['name'],'gtin'=>$prs[0]['gtin'],'count'=>$prs->count()];
                         });
 
-                        $stk_lines[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
-                    }else{
-                        $or_lines[] = ['plu'=>'0000','name'=>'','gtin'=>'','count'=>'0'];
                         $stk_lines[] = ['pallet'=>$pallet[0]['name'],'location'=>$location[0]->name,'stored'=>$stored,'stockid'=>$stock->id,'palletid'=>$stock->pallet_id,'sc_line'=>$or_lines];
                     }
                 }
