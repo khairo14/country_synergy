@@ -15,13 +15,8 @@ class EditScannedProd extends Migration
     {
         //
         Schema::table('scan_products',function(Blueprint $table){
-            if (Schema::hasColumn('scan_products', 'qty')) {
-                $table->dropColumn('qty');
-            }
-        });
-        Schema::table('scan_products',function(Blueprint $table){
-            if (Schema::hasColumn('scan_products', 'best_before')) {
-                $table->dropColumn('best_before');
+            if (Schema::hasColumn('scan_products', 'gtin')) {
+                $table->dropColumn('gtin');
             }
         });
     }
@@ -35,8 +30,7 @@ class EditScannedProd extends Migration
     {
         //
         Schema::create('scan_products', function (Blueprint $table) {
-            $table->string('qty')->nullable();
-            $table->date('best_before')->nullable();
+            $table->string('gtin')->nullable();
         });
     }
 }
