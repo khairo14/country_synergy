@@ -19,6 +19,11 @@ class EditScannedProd extends Migration
                 $table->dropColumn('gtin');
             }
         });
+        Schema::table('scan_products',function(Blueprint $table){
+            if (Schema::hasColumn('scan_products', 'best_before')) {
+                $table->dropColumn('best_before');
+            }
+        });
     }
 
     /**
@@ -31,6 +36,7 @@ class EditScannedProd extends Migration
         //
         Schema::create('scan_products', function (Blueprint $table) {
             $table->string('gtin')->nullable();
+            $table->date('best_before')->nullable();
         });
     }
 }
