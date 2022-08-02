@@ -19,10 +19,10 @@
     </div>
 
     <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
-        <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+        <div class="px-2 py-2 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
             <div class="flex flex-col mt-1">
                 <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
-                    <div class="px-2 py-1 mt-1 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
+                    <div class="px-1 py-1 sm:px-5 sm:mx-auto sm:w-full sm:max-w-lg">
                     <div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-300 trnsfer_pallet">
                         <thead class="bg-gray-50">
@@ -34,9 +34,9 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200" id="trnsfer_pallet_body">
                             <tr>
-                                <td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6' data-id=""></td>
-                                <td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap' data-id=""></td>
-                                <td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap' data-id=""></td>
+                                <td class='py-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6' data-id=""></td>
+                                <td class='px-3 py-2 text-sm text-gray-500 whitespace-nowrap' data-id=""></td>
+                                <td class='px-3 py-2 text-sm text-gray-500 whitespace-nowrap' data-id=""></td>
                             </tr>
                         </tbody>
                         </table>

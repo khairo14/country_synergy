@@ -6,7 +6,7 @@
     <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
         <div class="border border-gray-400 rounded-md">
             <label for="prod_out" class="sr-only">Label</label>
-            <input type="text" name="prod_out" id="prod_out" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Products" autofocus >
+            <input type="text" name="prod_out" id="prod_out" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Products" maxlength="60" autofocus >
         </div>
         <div class="mt-1 text-center bg-red-300 rounded-md p2">
             <span class="p_out_message"></span>
@@ -18,10 +18,10 @@
                 <table class="min-w-full divide-y divide-gray-300 prod_out">
                     <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Label</th>
-                        <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU</th>
-                        <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th>
-                        <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6">
+                        <th scope="col" class="py-2 pl- pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Label</th>
+                        <th scope="col" class="px-3 py-2 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU</th>
+                        <th scope="col" class="px-3 py-2 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th>
+                        <th scope="col" class="relative py-2 pl-3 pr-4 sm:pr-6">
                         <span class="sr-only">Edit</span>
                         </th>
                     </tr>

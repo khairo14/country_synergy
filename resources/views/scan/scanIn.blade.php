@@ -17,13 +17,13 @@
                 </span>
             </a>
         </div>
-        <div class="px-4">
+        {{-- <div class="px-4">
             <a href="{{url('/home/scan-in/pallets')}}" class="inline-flex items-center px-5 py-8 text-2xl font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md sm:px-7 sm:py-12 stockOut hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span class="items-center mx-5">
                     &nbsp; Scan Pallet &nbsp;
                 </span>
             </a>
-        </div>
+        </div> --}}
 
     </div>
 </div>

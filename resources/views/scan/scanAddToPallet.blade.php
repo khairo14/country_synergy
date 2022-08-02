@@ -2,14 +2,14 @@
 
 @section('content')
 <div x-data="{addtopallet:true,prodtopallet:false,bbtn:false}" class="atp_card mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
-    <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
-        <div x-show="addtopallet" class="_addtopallet">
+    <div class="px-4 py-1 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+        <div x-show="addtopallet" class="_addtopallet mt-2">
             <label for="addtopallet" class="sr-only">Pallet</label>
             <input type="text" name="addtopallet" id="addtopallet" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Pallet" autofocus />
         </div>
-        <div x-show="prodtopallet" class="_prodtopallet" style="display: none">
-            <label for="addtopallet" class="sr-only">Products</label>
-            <input type="text" name="prodtopallet" id="prodtopallet" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Product" autofocus />
+        <div x-show="prodtopallet" class="_prodtopallet mt-2" style="display: none">
+            <label for="prodtopallet" class="sr-only">Products</label>
+            <input type="text" name="prodtopallet" id="prodtopallet" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Product" maxlength="60" autofocus />
         </div>
 
         <div class="mt-2 text-center bg-red-300 rounded-md">
@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="px-4 py-4 mt-2 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
+    <div class="px-4 py-1 mt-1 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
         <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle md:px-8 lg:px-8">
                 <div class="inline-flex w-full bg-white my-1 rounded-md shadow ring-1 ring-black ring-opacity-5 md:rounded-md">
@@ -29,9 +29,9 @@
                     <thead class="bg-gray-50">
                     <tr>
                         <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Product Label</th>
-                        <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">GTIN</th>
+                        {{-- <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">GTIN</th>
                         <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU</th>
-                        <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th>
+                        <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th> --}}
                         <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6">
                         <span class="sr-only">Edit</span>
                         </th>

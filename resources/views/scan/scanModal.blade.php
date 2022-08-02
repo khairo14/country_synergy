@@ -26,7 +26,7 @@
        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
        x-description="Modal panel, show/hide based on modal state."
-        class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-gray-100 rounded-lg shadow-xl ul_modal_body sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-gray-100 rounded-lg shadow-xl ul_modal_body sm:my-2 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
 
           <div class="sm:flex sm:items-start">
             <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-blue-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">

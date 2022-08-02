@@ -257,5 +257,33 @@
     $(document).ready(function(){
         $("#exist_cust1").select2();
     });
+
+    $(document).ready(function(){
+        $("#bst_before").val($.datepicker.formatDate('dd/mm/yy', new Date()));
+        var cur_date = new Date();
+        $( "#bst_before" ).datepicker({
+            language: 'en',
+            startDate: cur_date,
+            setDate: cur_date,
+            dateFormat: "dd/mm/yy",
+            autoClose: true,
+            changeMonth: true,
+            changeYear: true,
+        });
+    });
+
+    $(document).ready(function(){
+        $("#bst_before2").val($.datepicker.formatDate('dd/mm/yy', new Date()));
+        var cur_date = new Date();
+        $( "#bst_before2" ).datepicker({
+            language: 'en',
+            startDate: cur_date,
+            setDate: cur_date,
+            dateFormat: "dd/mm/yy",
+            autoClose: true,
+            changeMonth: true,
+            changeYear: true,
+        });
+    });
 </script>
 @endsection

@@ -5,7 +5,7 @@
     <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
         <div class="rounded-md card_1">
             <label for="trnsfr_prod" class="block ml-2 text-xs font-medium text-gray-700">Scan Products</label>
-            <input type="text" name="trnsfr_prod" id="trnsfr_prod" class="inline-flex w-full p-2 text-center border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Scan Products" autofocus >
+            <input type="text" name="trnsfr_prod" id="trnsfr_prod" class="inline-flex w-full p-2 text-center border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Scan Products" maxlength="60" autofocus >
         </div>
 
         <div class="rounded-md card_2" style="display:none">
@@ -14,13 +14,18 @@
         </div>
 
         <div class="rounded-md card_3" style="display:none">
-            <label for="trnsfr_dd" class="block ml-2 text-xs font-medium text-gray-700">Best Before Date</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
-                </div>
-                <input type="text" id="trnsfr_dd" class="block w-full py-1 pl-10 text-center text-gray-900 border border-gray-300 rounded-md bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Select Date">
-            </div>
+            <label for="trnsfr_cust1" class="block text-xs font-medium text-gray-700">Select Customer</label>
+                <select id="trnsfr_cust1" name="trnsfr_cust1" class="block w-64 py-2 pl-3 pr-10 mt-1 text-xs border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs">
+                    <option value="0">Select Customer</option>
+                    @if($customers->isNotEmpty())
+                        @foreach ($customers as $cust)
+                            <option value="{{$cust->id}}">{{$cust->name}}</option>
+                        @endforeach
+                    @else
+                        <option selected value="0">No Customer Available</option>
+                    @endif
+                </select>
+                <span class="trnsfr_cust1" data-id=""></span>
         </div>
 
         <div class="rounded-md card_4" style="display:none">
@@ -36,7 +41,6 @@
             <div class="overflow-hidden sm:-mx-6 lg:-mx-8">
               <div class="inline-block min-w-full py-2 align-middle md:px-8 lg:px-8">
                 <div class="card_5" style="display: none">
-                    <b>Best before:</b><span class="mx-2 bb_date"></span>
                     <b>Location:</b><span class="mx-2 loc_name" data-id=""></span>
                 </div>
                 <div class="card_6" style="display: none">
@@ -46,8 +50,7 @@
                   <table class="min-w-full divide-y divide-gray-300 trsnfr_tbl">
                     <thead class="bg-gray-50">
                       <tr>
-                        <th scope="col" class="py-2 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Label</th>
-                        <th scope="col" class="px-2 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU</th>
+                        <th scope="col" class="py-2 pl-4 pr-3 text-xs font-medium tracking-wide text-center text-gray-500 uppercase sm:pl-6">Product Label</th>
                         <th scope="col" class="relative py-3 pl-3 pr-4 sm:pr-6">
                           <span class="sr-only">Edit</span>
                         </th>
@@ -92,4 +95,9 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function(){
+        $("#trnsfr_cust1").select2();
+    });
+</script>
 @endsection
