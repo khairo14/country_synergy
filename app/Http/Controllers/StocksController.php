@@ -133,15 +133,40 @@ class StocksController extends Controller
             }
         }else if($cs == 2){
             switch($lngth){
-                case($lngth==54):
+                case($lngth>=54):
                     $gtin = substr($str,2,14);
                     $weight = $this->weightConvert((float)substr($str,20,6));
                     $date = $this->dateConvert(substr($str,28,6));
                 break;
                 case($lngth==44):
                     $gtin = substr($str,2,14);
-                    $weight = $this->weightConvert((float)substr($str,28,6));
-                    $date = $this->dateConvert(substr($str,18,6));
+                    $weight = $this->weightConvert((float)substr($str,20,6));
+                    $date = $this->dateConvert(substr($str,28,6));
+                break;
+                case($lngth==42):
+                    $gtin = substr($str,2,14);
+                    $weight = $this->weightConvert((float)substr($str,20,6));
+                    $date = $this->dateConvert(substr($str,28,6));
+                break;
+                case($lngth==48):
+                    $gtin = substr($str,2,14);
+                    $weight = $this->weightConvert((float)substr($str,20,6));
+                    $date = $this->dateConvert(substr($str,28,6));
+                break;
+                case($lngth==20):
+                    $gtin = substr($str,1,14);
+                    $weight = $this->weightConvert((float)substr($str,10,4));
+                    $date = "";
+                break;
+                case($lngth==22):
+                    $gtin = substr($str,1,14);
+                    $weight = $this->weightConvert((float)substr($str,8,4));
+                    $date = "";
+                break;
+                case($lngth==30):
+                    $gtin = substr($str,1,14);
+                    $weight = "";
+                    $date = "";
                 break;
                 case($lngth==34):
                     $gtin = substr($str,2,14);
@@ -349,7 +374,7 @@ class StocksController extends Controller
                                         if($codes != ""){
                                             $prod_dtls = Products::where('gtin',$codes['gtin'])->get();
                                             if($prod_dtls->isNotEmpty()){
-                                                $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->product_name]);
+                                                $pr_qty->push(['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->gtin]);
                                             }else{
                                                 $pr_qty->push(['plu'=>'0000','name'=>'','gtin'=>'']);
                                             }
@@ -1420,44 +1445,44 @@ class StocksController extends Controller
     }
 
     public function ProdfrmPallet($id){
-        $prods = ProductHistory::where('new_pallet_id',$id)->where('actions','!=','Out')->get();
-
-        foreach($prods as $prop){
-            $scnItem = ScanProducts::where('id',$prop->scanned_id)->get();
-            if($scnItem->isNotEmpty()){
-                $gtin = $scnItem[0]->gtin;
-                $rcvd = $scnItem[0]->created_at->format('d-m-Y');
-                if($gtin != "" || $gtin != null){
-                    $prodDtls = Products::where('gtin',$gtin)->get();
-                    if($prodDtls->isNotEmpty()){
-                        $plu = $prodDtls[0]->product_code;
-                        $name = $prodDtls[0]->product_name;
-                        $dsc = $prodDtls[0]->description;
-                        $gtin = $prodDtls[0]->gtin;
-                    }else{
-                        $plu = '0000';
-                        $name = '';
-                        $dsc = '';
-                        $gtin ='';
+        $prods = ProductHistory::where('new_pallet_id',$id)->where('actions','In')->get();
+            foreach($prods as $prop){
+                $scnItem = ScanProducts::where('id',$prop->scanned_id)->get();
+                if($scnItem->isNotEmpty()){
+                    $stks = Stocks::where(['pallet_id'=>$id,'status'=>'In'])->get();
+                    if($stks->isNotEmpty()){
+                        $codes = $this->barcodeChecker($stks[0]->customer_id,$scnItem[0]->label);
+                        if($codes != ""){
+                            $prod_dtls = Products::where('gtin',$codes['gtin'])->get();
+                            if($prod_dtls->isNotEmpty()){
+                                $plu = $prod_dtls[0]->product_code;
+                                $name = $prod_dtls[0]->product_name;
+                                $gtin = $prod_dtls[0]->gtin;
+                                $rcvd = $scnItem[0]->created_at;
+                                $weight = $codes['weight'];
+                                $date = $codes['date'];
+                            }else{
+                                $plu = "";
+                                $name = "";
+                                $gtin = $codes['gtin'];
+                                $rcvd = $scnItem[0]->created_at;
+                                $weight = $codes['weight'];
+                                $date = $codes['date'];
+                            }
+                        }else{
+                            $plu = "";
+                            $name = "";
+                            $gtin = "";
+                            $rcvd = "";
+                            $weight = "";
+                            $date = "";
+                        }
                     }
-                }else{
-                        $plu = '0000';
-                        $name = '';
-                        $dsc = '';
-                        $gtin ='';
                 }
-                $w1 = 28;
-                $w2 = 6;
-                $w_val = substr($scnItem[0]->label,$w1,$w2);
-                $weight = $w_val / 1000;
-                if($scnItem[0]->best_before != ""){
-                    $bb = Carbon::createFromFormat('Y-m-d', $scnItem[0]->best_before)->format('d-m-Y');
-                }else{
-                    $bb = "00-00-0000";
-                }
+                $products[] = ['label'=>$scnItem[0]->label,'plu'=>$plu,'date'=>$date,'name'=>$name,'rcvd'=>$rcvd,'gtin'=>$gtin,'weight'=>$weight];
             }
-            $products[] = ['label'=>$scnItem[0]->label,'best_before'=>$bb,'plu'=>$plu,'name'=>$name,'desc'=>$dsc,'rcvd'=>$rcvd,'gtin'=>$gtin,'weight'=>$weight];
-        }
+
+
         return $products;
     }
 
