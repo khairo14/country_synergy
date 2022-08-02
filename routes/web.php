@@ -32,23 +32,23 @@ Route::view('/home/scan-out','/scan/scanOut')->middleware('auth');
 Route::view('/home/transfer', '/scan/scanTransfer')->middleware('auth');
 // scanIn products
 Route::get('/home/scan-in/products',[StocksController::class,'scanProducts'])->middleware('auth');
-Route::post('/home/scan-in/check-product',[StocksController::class,'checkProduct'])->middleware('auth');
-Route::post('/home/scan-in/scan-products',[StocksController::class,'addProducts'])->middleware('auth');
+Route::post('/home/scan-in/check-product',[StocksController::class,'productChecker'])->middleware('auth');
+Route::post('/home/scan-in/check-pallet',[StocksController::class,'palletChecker'])->middleware('auth');
+Route::post('/home/scan-in/save-products',[StocksController::class,'addProducts'])->middleware('auth');
 // scanIn pallets
-Route::get('/home/scan-in/pallets',[StocksController::class,'scanPallets'])->middleware('auth');
-Route::post('/home/scan-in/check-pallet',[StocksController::class,'checkPallet'])->middleware('auth');
-Route::post('/home/scan-in/add-pallet',[StocksController::class,'addPallet'])->middleware('auth');
-Route::post('/home/scan-in/check-location',[StocksController::class,'checkLocation'])->middleware('auth');
+// Route::get('/home/scan-in/pallets',[StocksController::class,'scanPallets'])->middleware('auth');
+// Route::post('/home/scan-in/check-pallet',[StocksController::class,'palletChecker'])->middleware('auth');
+// Route::post('/home/scan-in/add-pallet',[StocksController::class,'addPallet'])->middleware('auth');
+Route::post('/home/scan-in/check-location',[StocksController::class,'locationChecker'])->middleware('auth');
 // scanIn AddtoPallet
 Route::get('/home/scan-in/addtopallet',[StocksController::class,'viewAdd2pallet'])->middleware('auth');
-Route::post('/home/scan-in/checkStockPallet',[StocksController::class,'getPallet'])->middleware('auth');
-Route::post('/home/scan-in/prodtopallet',[StocksController::class,'prodToPallet'])->middleware('auth');
+Route::post('/home/scan-in/save-prodtopallet',[StocksController::class,'saveProdToPallet'])->middleware('auth');
 // scanOut
 Route::get('/home/scan-out/pallets',[StocksController::class,'viewPalletOut'])->middleware('auth');
 Route::get('/home/scan-out/products',[StocksController::class,'viewProductOut'])->middleware('auth');
 Route::get('/home/scan-out/orders',[StocksController::class,'viewOrderOut'])->middleware('auth');
 // scanOut Pallet
-Route::post('/home/scan-out/getPallet',[StocksController::class,'getPallet'])->middleware('auth');
+Route::post('/home/scan-out/getPallet',[StocksController::class,'palletOutCheck'])->middleware('auth');
 Route::post('/home/scan-out/palletOut',[StocksController::class,'palletOut'])->middleware('auth');
 // scanOut Product
 Route::post('/home/scan-out/checkStock',[StocksController::class,'checkStockProduct'])->middleware('auth');
@@ -60,7 +60,7 @@ Route::post('/home/scan-out/orderProd',[StocksController::class,'addProdToOrder'
 Route::get('/home/transfer/products',[StocksController::class,'findProduct'])->middleware('auth');
 Route::get('/home/transfer/pallets',[StocksController::class,'findPallet'])->middleware('auth');
 Route::get('/home/transfer/merge',[StocksController::class,'viewMerge'])->middleware('auth');
-Route::post('/home/transfer/product-check',[StocksController::class,'trnsfrProdChck'])->middleware('auth');
+Route::post('/home/transfer/product-check',[StocksController::class,'productChecker'])->middleware('auth');
 Route::post('/home/transfer/save-toNewPallet',[StocksController::class,'trnsfrProdNewPallet'])->middleware('auth');
 Route::post('/home/transfer/save-toExistPallet',[StocksController::class,'trsnfrProdExistPallet'])->middleware('auth');
 Route::post('/home/transfer/pallet-check',[StocksController::class,'trnsfrPalltChck'])->middleware('auth');
@@ -118,3 +118,4 @@ Route::post('/orders/add-order',[OrdersController::class,'addOrder'])->middlewar
 
 // reports
 Route::get('/reports/stock-summary',[ReportsController::class,'stockSummary'])->middleware('auth');
+Route::get('/reports/stock-detailed',[ReportsController::class,'detailedReport'])->middleware('auth');

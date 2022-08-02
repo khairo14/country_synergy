@@ -27,12 +27,12 @@
         <table class="min-w-full divide-y divide-gray-300 rounded-md" id="prod-tbl">
             <thead class="rounded-md bg-gray-50">
                 <tr class="rounded-md">
-                <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Plu</th>
-                <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Label</th>
+                <th scope="col" class="py-3 pl-4 pr-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:pl-6">Product Code</th>
+                <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">BarCode</th>
                 <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Name</th>
                 <th scope="col" class="hidden px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">GTIN</th>
                 <th scope="col" class="px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Weight</th>
-                <th scope="col" class="invisible px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Best Before</th>
+                <th scope="col" class="invisible px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Best Before/Production</th>
                 <th scope="col" class="invisible px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Received Date</th>
                 <th scope="col" class="invisible px-1 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">
                     <span class="">Move / Delete</span>
@@ -49,7 +49,7 @@
                             <td class="px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['name']}}</td>
                             <td class="hidden px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['gtin']}} </td>
                             <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['weight']}} Kg</td>
-                            <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['best_before']}}</td>
+                            <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['date']}}</td>
                             <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['rcvd']}}</td>
                             <td class="relative flex flex-row invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6">
                                 <a href="#" id="" class="px-2 text-green-600 hover:text-green-900">

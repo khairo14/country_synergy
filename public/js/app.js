@@ -2060,9 +2060,6 @@ module.exports = {
   \*****************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-var _require = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"),
-    each = _require.each;
-
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
@@ -2071,7 +2068,10 @@ __webpack_require__(/*! ./components */ "./resources/js/components.js"); // scan
 
 
 $(document).ready(function () {
-  $("#scan_pcode").change(function () {
+  $("#scan_pcode").on("input", function () {
+    $(this).val($(this).val().replace(/ /g, ""));
+  });
+  $("#scan_pcode").on("change", function () {
     var pcode = $(this).val().trim();
     var row_data1 = [];
     $("#scnproducts_body tr").each(function () {
@@ -2081,18 +2081,29 @@ $(document).ready(function () {
 
     if (pcode == " " || pcode == "") {
       $(".scan_pcode_message").text('Please Scan Product');
+      $("#scan_pcode").val('');
+      $("#scan_pcode").focus();
+      setTimeout(function () {
+        $(".scan_pcode_message").text('');
+      }, 5000);
+    } else if (pcode.length <= 4) {
+      $("#scan_pcode").val('');
+      $("#scan_pcode").focus();
+      $(".scan_pcode_message").text('Barcode Characters Not reach minimum required');
       setTimeout(function () {
         $(".scan_pcode_message").text('');
       }, 5000);
     } else if ($.inArray(pcode, row_data1) != -1) {
       $(".scan_pcode_message").text('Product Already Scanned');
+      $("#scan_pcode").val('');
+      $("#scan_pcode").focus();
       setTimeout(function () {
         $(".scan_pcode_message").text('');
-        $("#scan_pcode").val('');
-        $("#scan_pcode").focus();
       }, 5000);
     } else {
       var cx = $("#exist_cust1 option:selected").val();
+      $("#scan_pcode").val('');
+      $("#scan_pcode").focus();
       $.ajax({
         url: "/home/scan-in/check-product",
         headers: {
@@ -2105,27 +2116,17 @@ $(document).ready(function () {
         },
         success: function success(result) {
           if (result.status == 1) {
-            var gtin = result.message[0].gtin;
-            var pname = result.message[0].product_name;
-            var plu = result.message[0].product_code;
-            $("#scan_pcode").val('');
-            $("#scan_pcode").focus();
-            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-20 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='hidden px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + gtin + "</td>" + "<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'>" + plu + "</td>" + "<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-12 truncate overflow-clip'>" + pname + "</p></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            var prod = "<tr>" + "<td class='py-1 pl-2 text-xs font-medium text-gray-900 whitespace-nowrap'>" + pcode + "</td>" + "<td class='relative py-1 text-xs font-medium text-right whitespace-nowrap'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
             $("#scnproducts_body").append(prod);
           } else if (result.status == 2) {
-            var gtin = result.message['message2'];
-            $("#scan_pcode").val('');
-            $("#scan_pcode").focus();
+            var prod = "<tr>" + "<td class='py-1 pl-2 text-xs font-medium text-gray-900 whitespace-nowrap'>" + pcode + "</td>" + "<td class='relative py-1 text-xs font-medium text-right whitespace-nowrap'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            $("#scnproducts_body").append(prod);
             $(".scan_pcode_message").text(result.message['message1']);
             setTimeout(function () {
               $(".scan_pcode_message").text('');
             }, 5000);
-            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-20 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='hidden px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + gtin + "</td>" + "<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='px-1 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
-            $("#scnproducts_body").append(prod);
           } else {
-            $("#scan_pcode").val('');
-            $("#scan_pcode").focus();
-            $(".scan_pcode_message").text(result.message);
+            $(".scan_pcode_message").text(result.message['message1']);
             setTimeout(function () {
               $(".scan_pcode_message").text('');
             }, 5000);
@@ -2141,6 +2142,14 @@ $(document).ready(function () {
 $(document).on("click", ".rm_prod", function () {
   $(this).closest("tr").remove();
 });
+
+function labelRandomizer() {
+  var min = 1;
+  var max = 999999999;
+  var random = Math.floor(Math.random() * (max - min + 1)) + min;
+  return random;
+}
+
 $(document).ready(function () {
   $(".gen_label").on("click", function () {
     var prod_count = $(".scnproducts tr").length;
@@ -2155,18 +2164,40 @@ $(document).ready(function () {
         $(".scan_pcode_message").text('');
       }, 5000);
     } else {
-      var min = 10000000;
-      var max = 99999900;
-      var random = Math.floor(Math.random() * (max - min + 1)) + min;
       var cx = $("#exist_cust1 option:selected").val();
-      var label = cx.toString().padStart(2, '0') + random;
+      var label = cx.toString().padStart(2, '0') + labelRandomizer();
       var qty = $("#scnproducts_body tr").length;
-      $("#pallet_card_no").show();
-      $("#labelModal").hide();
-      $("#scnproducts").hide();
-      $("#prod_loc").focus();
-      $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text(label);
-      $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(qty);
+      $.ajax({
+        url: "/home/scan-in/check-pallet",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        data: {
+          "pallet": label
+        },
+        success: function success(result) {
+          if (result.status == 1) {
+            $("#pallet_card_no").show();
+            $("#labelModal").hide();
+            $("#scnproducts").hide();
+            $("#prod_loc").focus();
+            $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text(label);
+            $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(qty);
+          } else {
+            var label = cx.toString().padStart(2, '0') + labelRandomizer();
+            $("#pallet_card_no").show();
+            $("#labelModal").hide();
+            $("#scnproducts").hide();
+            $("#prod_loc").focus();
+            $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text(label);
+            $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(qty);
+          }
+        },
+        error: function error(request, status, _error2) {
+          alert(request.responseText);
+        }
+      });
     }
   });
 });
@@ -2182,6 +2213,8 @@ $(document).ready(function () {
         $(".scan_loc_message2").text('');
       }, 5000);
     } else {
+      $("#prod_loc").focus();
+      $("#prod_loc").val("");
       $.ajax({
         url: "/home/scan-in/check-location",
         headers: {
@@ -2192,139 +2225,16 @@ $(document).ready(function () {
           "loc": loc
         },
         success: function success(result) {
-          if (result.status == 0) {
-            $("#location2").attr("data", result.message[0].id);
-            $("#location2").val(result.message[0].name);
+          if (result.status == 1) {
+            $("#location2").attr("data", result.exist[0]['id']);
+            $("#location2").val(result.exist[0]['name']);
           } else {
             $("#location2").attr("data", "0");
             $("#location2").val(loc);
-            $(".scan_loc_message2").text(result.message);
-            $("#prod_loc").focus();
-            $("#prod_loc").val("");
+            $(".scan_loc_message2").text(result.exist);
             setTimeout(function () {
               $(".scan_loc_message2").text('');
             }, 5000);
-          }
-        }
-      });
-    }
-  });
-});
-$(document).ready(function () {
-  $("#bst_before3").val($.datepicker.formatDate('dd/mm/yy', new Date()));
-  var cur_date = new Date();
-  $("#bst_before3").datepicker({
-    language: 'en',
-    startDate: cur_date,
-    setDate: cur_date,
-    dateFormat: "dd/mm/yy",
-    autoClose: true,
-    changeMonth: true,
-    changeYear: true
-  });
-});
-$(document).ready(function () {
-  $("#bst_before3").on("change", function () {
-    $bst_date = $(this).val();
-    $("#bbefore3").val($bst_date);
-    $("._bst_before3").toggle();
-    $("._prod_loc").toggle();
-    $("#prod_loc").focus();
-  });
-});
-$(document).ready(function () {
-  $(".save-pallet3").on("click", function () {
-    var prod_data = [];
-    $("#scnproducts_body tr").each(function () {
-      var data1 = $(this).find('td p').eq(0).text();
-      var data2 = $(this).find('td').eq(1).text();
-      var item = {};
-      item.label = data1;
-      item.gtin = data2;
-      prod_data.push(item);
-    });
-    var label = $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text();
-    var qty = $("#scnpallet_tbl_body2 tr").find('td').eq(1).text();
-    var bst_date = $("#bbefore3").val();
-    var loc = $("#location2").val().trim();
-    var cx = $("#exist_cust1 option:selected").val();
-
-    if (bst_date == "") {
-      $(".scan_loc_message2").text('Please Select Date');
-      $("#bst_before3").focus();
-      setTimeout(function () {
-        $(".scan_pallet_message").text('');
-      }, 5000);
-    } else if (loc == "" || loc == " ") {
-      $(".scan_loc_message2").text('Please Scan Location');
-      $("#location2").focus();
-      setTimeout(function () {
-        $(".scan_pallet_message").text('');
-      }, 5000);
-    } else {
-      $.ajax({
-        url: "/home/scan-in/scan-products",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'post',
-        data: {
-          'cx': cx,
-          'products': prod_data,
-          'label': label,
-          'qty': qty,
-          'loc': loc,
-          'best_date': bst_date
-        },
-        success: function success(result) {
-          // console.log(result);
-          $(".print_card").show();
-          $("#pallet_card_no").hide();
-          $("#print_label").append(result);
-        },
-        error: function error(request, status, _error2) {
-          alert(request.responseText);
-        }
-      });
-    }
-  });
-}); // end scan product in
-// scan pallet in option yes
-
-$(document).ready(function () {
-  $("#scnpallet").on("change", function () {
-    var p_name = $(this).val().trim();
-
-    if (p_name == "" || p_name == " ") {
-      $(".scan_pallet_message").text('Pallet label cannot empty');
-      setTimeout(function () {
-        $(".scan_pallet_message").text('');
-      }, 5000);
-    } else {
-      $.ajax({
-        url: "/home/scan-in/check-pallet",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'post',
-        data: {
-          "p_label": p_name
-        },
-        success: function success(result) {
-          if (result.status == 1) {
-            $("#scnpallet_tbl_body tr").find('td p').eq(0).text(p_name);
-            $("._scnpallet").toggle();
-            $("._box_qty").toggle();
-            $("#box_qty").focus();
-          } else {
-            $(".scan_pallet_message").text(result.message);
-            setTimeout(function () {
-              $(".scan_pallet_message").text('');
-            }, 5000);
-            setTimeout(function () {
-              $("#scnpallet").val("");
-              $("#scnpallet").focus();
-            }, 500);
           }
         },
         error: function error(request, status, _error3) {
@@ -2335,127 +2245,40 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function () {
-  $("#box_qty").on("change", function () {
-    var qty = $("#box_qty").val().trim();
-
-    if (qty == "" || qty == " ") {
-      $(".scan_pallet_message").text('Please Enter Quantity');
-      setTimeout(function () {
-        $(".scan_pallet_message").text('');
-      }, 5000);
-    } else {
-      $("#scnpallet_tbl_body tr").find('td').eq(1).text(qty);
-      $("._box_qty").toggle();
-      $("._bst_before").toggle();
-      $("#bst_before").focus();
-    }
-  });
-});
-$(document).ready(function () {
-  $("#bst_before").val($.datepicker.formatDate('dd/mm/yy', new Date()));
-  var cur_date = new Date();
-  $("#bst_before").datepicker({
-    language: 'en',
-    startDate: cur_date,
-    setDate: cur_date,
-    dateFormat: "dd/mm/yy",
-    autoClose: true,
-    changeMonth: true,
-    changeYear: true
-  });
-});
-$(document).ready(function () {
-  $("#bst_before").on("change", function () {
-    $bst_date = $(this).val();
-    $("#bbefore").val($bst_date);
-    $("._bst_before").toggle();
-    $("._loc").toggle();
-    $("#loc").focus();
-  });
-});
-$(document).ready(function () {
-  $("#loc").on("change", function () {
-    var loc = $("#loc").val().trim();
-
-    if (loc == "" || loc == " ") {
-      $(".scan_pallet_message").text('Please Scan Location');
-      $("#loc").focus();
-      $("#loc").val("");
-      setTimeout(function () {
-        $(".scan_pallet_message").text('');
-      }, 5000);
-    } else {
-      $.ajax({
-        url: "/home/scan-in/check-location",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'post',
-        data: {
-          "loc": loc
-        },
-        success: function success(result) {
-          if (result.status == 0) {
-            $("#location").attr("data", result.message[0].id);
-            $("#location").val(result.message[0].name);
-          } else {
-            $("#location").attr("data", "0");
-            $("#location").val(loc);
-            $(".scan_pallet_message").text(result.message);
-            $("#loc").focus();
-            $("#loc").val("");
-            setTimeout(function () {
-              $(".scan_pallet_message").text('');
-            }, 5000);
-          }
-        }
-      });
-    }
-  });
-});
-$(document).ready(function () {
-  $(".save-pallet").on("click", function () {
-    var td_qty = $("#scnpallet_tbl_body tr").find('td').eq(1).text();
-    var td_lbl = $("#scnpallet_tbl_body tr").find('td p').eq(0).text();
-    var bst_date = $("#bbefore").val();
-    var loc = $("#location").val();
+  $(".save-pallet3").on("click", function () {
+    var prod_data = [];
+    $("#scnproducts_body tr").each(function () {
+      var data1 = $(this).find('td').eq(0).text();
+      var item = {};
+      item.label = data1;
+      prod_data.push(item);
+    });
+    var palletlabel = $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text();
+    var loc = $("#location2").val().trim();
     var cx = $("#exist_cust1 option:selected").val();
 
-    if (td_lbl == "") {
-      $(".scan_pallet_message").text('Pallet Label Cannot Be Empty');
-      $("#scnpallet").focus();
-      setTimeout(function () {
-        $(".scan_pallet_message").text('');
-      }, 5000);
-    } else if (td_qty == "") {
-      $(".scan_pallet_message").text('Please Enter Quantity');
-      $("#scnpallet").focus();
-      setTimeout(function () {
-        $(".scan_pallet_message").text('');
-      }, 5000);
-    } else if (loc == "") {
-      $(".scan_pallet_message").text('Please Enter Location');
-      $("#scnpallet").focus();
+    if (loc == "" || loc == " ") {
+      $(".scan_loc_message2").text('Please Scan Location');
+      $("#location2").focus();
       setTimeout(function () {
         $(".scan_pallet_message").text('');
       }, 5000);
     } else {
       $.ajax({
-        url: "/home/scan-in/add-pallet",
+        url: "/home/scan-in/save-products",
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         method: 'post',
         data: {
-          "cx": cx,
-          'plabel': td_lbl,
-          'qty': td_qty,
-          'loc': loc,
-          'best_date': bst_date
+          'cx': cx,
+          'products': prod_data,
+          'pallet': palletlabel,
+          'loc': loc
         },
         success: function success(result) {
+          $("#pallet_card_no").hide();
           $(".print_card").show();
-          $("#pallet_card_yes").hide();
           $("#print_label").append(result);
         },
         error: function error(request, status, _error4) {
@@ -2464,130 +2287,8 @@ $(document).ready(function () {
       });
     }
   });
-});
-$(document).on("click", ".rm_pallet", function () {
-  $("#scnpallet_tbl_body tr").find('td p').eq(0).text("");
-  $("#scnpallet_tbl_body tr").find('td').eq(1).text("");
-  $("._scnpallet").show();
-  $("._box_qty").hide();
-  $("._loc").hide();
-  $("#scnpallet").val("");
-  $("#box_qty").val("");
-  $("#loc").val("");
-  $("#location").val("");
-  $("#scnpallet").focus();
-}); // scan pallet in option no
+}); // end scan product in
 
-$(document).on("click", ".option_no", function () {
-  var min = 10000000;
-  var max = 99999900;
-  var random = Math.floor(Math.random() * (max - min + 1)) + min;
-  var cx = $("#exist_cust1 option:selected").val();
-  var label = cx.toString().padStart(2, '0') + random;
-  $.ajax({
-    url: "/home/scan-in/check-pallet",
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
-    method: 'post',
-    data: {
-      "p_label": label
-    },
-    success: function success(result) {
-      if (result.status == 1) {
-        $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text(label);
-        $("#box_qty2").focus();
-      } else {
-        var random1 = Math.floor(Math.random() * (max - min + 1)) + min;
-        var label1 = cx.toString().padStart(2, '0') + random1;
-        $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text(label1);
-        $("#box_qty2").focus();
-      }
-    },
-    error: function error(request, status, _error5) {
-      alert(request.responseText);
-    }
-  });
-});
-$(document).ready(function () {
-  $("#bst_before2").val($.datepicker.formatDate('dd/mm/yy', new Date()));
-  var cur_date = new Date();
-  $("#bst_before2").datepicker({
-    language: 'en',
-    startDate: cur_date,
-    setDate: cur_date,
-    dateFormat: "dd/mm/yy",
-    autoClose: true,
-    changeMonth: true,
-    changeYear: true
-  });
-});
-$(document).ready(function () {
-  $("#loc2").on("change", function () {
-    var loc = $("#loc2").val().trim();
-
-    if (loc == "" || loc == " ") {
-      $(".scan_pallet_message2").text('Please Scan Location');
-      $("#loc2").focus();
-      $("#loc2").val("");
-      setTimeout(function () {
-        $(".scan_pallet_message2").text('');
-      }, 5000);
-    } else {
-      $.ajax({
-        url: "/home/scan-in/check-location",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'post',
-        data: {
-          "loc": loc
-        },
-        success: function success(result) {
-          if (result.status == 0) {
-            $("#location2").attr("data", result.message[0].id);
-            $("#location2").val(result.message[0].name);
-          } else {
-            $("#location2").attr("data", "0");
-            $("#location2").val(loc);
-            $(".scan_pallet_message2").text(result.message);
-            $("#loc2").focus();
-            $("#loc2").val("");
-            setTimeout(function () {
-              $(".scan_pallet_message2").text('');
-            }, 5000);
-          }
-        }
-      });
-    }
-  });
-});
-$(document).ready(function () {
-  $("#box_qty2").on("change", function () {
-    var qty = $("#box_qty2").val().trim();
-
-    if (qty == "" || qty == " ") {
-      $(".scan_pallet_message2").text('Please Enter Quantity');
-      setTimeout(function () {
-        $(".scan_pallet_message2").text('');
-      }, 5000);
-    } else {
-      $("#scnpallet_tbl_body2 tr").find('td').eq(1).text(qty);
-      $("._box_qty2").toggle();
-      $("._bst_before2").toggle();
-      $("#bst_before2").focus();
-    }
-  });
-});
-$(document).ready(function () {
-  $("#bst_before2").on("change", function () {
-    var bst_date = $(this).val();
-    $("#_bbefore").val(bst_date);
-    $("._bst_before2").toggle();
-    $("._loc2").toggle();
-    $("#loc2").focus();
-  });
-});
 $(document).on("click", ".print", function () {
   var tbl = $("#print_table");
   var style = "<style type='text/css'>" + "#print_table{width:100%; height:100%; border-collapse:collapse;}" + "#print_table_body tr{text-align:center;padding:5px;}" + ".clnt,.act_purpose,.rcvd_date,.lbl{border:1px solid #000; border-collapse:collapse; text-align:center;}" + "</style>";
@@ -2598,57 +2299,14 @@ $(document).on("click", ".print", function () {
   wme.focus();
   wme.print(); // wme.close();
 });
-$(document).ready(function () {
-  $(".save-pallet2").on("click", function () {
-    var td_qty = $("#scnpallet_tbl_body2 tr").find('td').eq(1).text();
-    var td_lbl = $("#scnpallet_tbl_body2 tr").find('td p').eq(0).text();
-    var loc = $("#location2").val();
-    var bst_before = $("#_bbefore").val();
-    var cx = $("#exist_cust1 option:selected").val();
-
-    if (td_qty == "") {
-      $(".scan_pallet_message2").text('Please Enter Quantity');
-      $("#scnpallet2").focus();
-      setTimeout(function () {
-        $(".scan_pallet_message2").text('');
-      }, 5000);
-    } else if (loc == "") {
-      $(".scan_pallet_message2").text('Please Enter Location');
-      $("#scnpallet2").focus();
-      setTimeout(function () {
-        $(".scan_pallet_message2").text('');
-      }, 5000);
-    } else {
-      $.ajax({
-        url: "/home/scan-in/add-pallet",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'post',
-        data: {
-          "cx": cx,
-          'plabel': td_lbl,
-          'qty': td_qty,
-          'loc': loc,
-          'best_date': bst_before
-        },
-        success: function success(result) {
-          $(".print_card").show();
-          $("#pallet_card_no").hide();
-          $("#print_label").append(result);
-        },
-        error: function error(request, status, _error6) {
-          alert(request.responseText);
-        }
-      });
-    }
-  });
-});
 $(document).on("click", ".scan_page", function () {
   window.location.reload();
 }); // Scan In Addtopallet
 
 $(document).ready(function () {
+  $("#addtopallet").on("input", function () {
+    $(this).val($(this).val().replace(/ /g, ""));
+  });
   $("#addtopallet").on("change", function () {
     var pl = $(this).val().trim();
 
@@ -2660,37 +2318,33 @@ $(document).ready(function () {
         $(".addtopallet_message").text('');
       }, 5000);
     } else {
+      $("#addtopallet").val('');
       $.ajax({
-        url: "/home/scan-in/checkStockPallet",
+        url: "/home/scan-in/check-pallet",
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         method: 'post',
         data: {
-          'label': pl
+          'pallet': pl
         },
         success: function success(result) {
           if (result.status == 1) {
-            var p_id = result.message['pallet'];
-            var cx = result.message['customer'];
-            $(".pallet_lbl").text(pl);
-            $(".pallet_lbl").attr('data-id', p_id['0']['id']);
-            $("#cx").val(cx['0']['id']);
+            var p_id = result.exist[0];
+            $(".pallet_lbl").text(p_id['name']);
+            $(".pallet_lbl").attr('data-id', p_id['id']);
             $("._prodtopallet").show();
+            $("._addtopallet").hide();
             $("#prodtopallet").focus();
             $(".b_btn").show();
-            $("#addtopallet").val('');
-            $("._addtopallet").hide();
           } else {
-            $(".addtopallet_message").text(result.message);
-            $("#addtopallet").val('');
-            $("#addtopallet").focus();
+            $(".addtopallet_message").text('Pallet not found - Please scan again.');
             setTimeout(function () {
               $(".addtopallet_message").text('');
             }, 5000);
           }
         },
-        error: function error(request, status, _error7) {
+        error: function error(request, status, _error5) {
           alert(request.responseText);
         }
       });
@@ -2698,6 +2352,9 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function () {
+  $("#prodtopallet").on("input", function () {
+    $(this).val($(this).val().replace(/ /g, ""));
+  });
   $("#prodtopallet").on("change", function () {
     var pcode = $(this).val().trim();
     var row_data1 = [];
@@ -2707,19 +2364,29 @@ $(document).ready(function () {
     });
 
     if (pcode == " " || pcode == "") {
+      $("#prodtopallet").val('');
+      $("#prodtopallet").focus();
       $(".addtopallet_message").text('Please Scan Product');
       setTimeout(function () {
         $(".addtopallet_message").text('');
       }, 5000);
+    } else if (pcode.length <= 4) {
+      $("#prodtopallet").val('');
+      $("#prodtopallet").focus();
+      $(".addtopallet_message").text('Barcode Characters Not reach minimum required');
+      setTimeout(function () {
+        $(".addtopallet_message").text('');
+      }, 5000);
     } else if ($.inArray(pcode, row_data1) != -1) {
+      $("#prodtopallet").val('');
+      $("#prodtopallet").focus();
       $(".addtopallet_message").text('Product Already Scanned');
       setTimeout(function () {
         $(".addtopallet_message").text('');
-        $("#prodtopallet").val('');
-        $("#prodtopallet").focus();
       }, 5000);
     } else {
-      var cx = $("#cx").val();
+      $("#prodtopallet").val('');
+      $("#prodtopallet").focus();
       $.ajax({
         url: "/home/scan-in/check-product",
         headers: {
@@ -2727,37 +2394,23 @@ $(document).ready(function () {
         },
         method: 'post',
         data: {
-          "label": pcode,
-          'cust': cx
+          "label": pcode
         },
         success: function success(result) {
           if (result.status == 1) {
-            var gtin = result.message[0].gtin;
-            var pname = result.message[0].product_name;
-            var plu = result.message[0].product_code;
-            $("#prodtopallet").val('');
-            $("#prodtopallet").focus();
-            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-12 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + gtin + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + plu + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-20 truncate overflow-clip'>" + pname + "</p></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            var prod = "<tr>" + "<td class='py-2 pl-2 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-72 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='relative py-2 pl-1 pr-4 text-sm font-medium text-left whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
             $("#scprodtopallet_body").append(prod);
           } else if (result.status == 2) {
-            $("#prodtopallet").val('');
-            $("#prodtopallet").focus();
-            $(".addtopallet_message").text(result.message['message1']);
-            setTimeout(function () {
-              $(".addtopallet_message").text('');
-            }, 5000);
-            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-12 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + result.message['message2'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            var prod = "<tr>" + "<td class='py-2 pl-2 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-72 truncate overflow-clip'>" + pcode + "</p>" + "</td>" + "<td class='relative py-2 pl-1 pr-4 text-sm font-medium text-left whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
             $("#scprodtopallet_body").append(prod);
           } else {
-            $("#prodtopallet").val('');
-            $("#prodtopallet").focus();
-            $(".addtopallet_message").text(result.message);
+            $(".addtopallet_message").text(result.message['message1']);
             setTimeout(function () {
               $(".addtopallet_message").text('');
             }, 5000);
           }
         },
-        error: function error(request, status, _error8) {
+        error: function error(request, status, _error6) {
           alert(request.responseText);
         }
       });
@@ -2770,10 +2423,8 @@ $(document).ready(function () {
     var prod_data = [];
     $("#scprodtopallet_body tr").each(function () {
       var data1 = $(this).find('td p').eq(0).text();
-      var data2 = $(this).find('td').eq(1).text();
       var item = {};
       item.label = data1;
-      item.gtin = data2;
       prod_data.push(item);
     });
 
@@ -2785,18 +2436,16 @@ $(document).ready(function () {
         $(".addtopallet_message").text('');
       }, 5000);
     } else {
-      var cx = $("#cx").val();
       var pallet = $(".pallet_lbl").attr('data-id');
       $.ajax({
-        url: "/home/scan-in/prodtopallet",
+        url: "/home/scan-in/save-prodtopallet",
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         method: 'post',
         data: {
           'products': prod_data,
-          'cx': cx,
-          'pallet_id': pallet
+          'pallet': pallet
         },
         success: function success(result) {
           if (result.status == 1) {
@@ -2817,7 +2466,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error9) {
+        error: function error(request, status, _error7) {
           alert(request.responseText);
         }
       });
@@ -2826,6 +2475,9 @@ $(document).ready(function () {
 }); // Product Out
 
 $(document).ready(function () {
+  $("#prod_out").on("input", function () {
+    $(this).val($(this).val().replace(/ /g, ""));
+  });
   $("#prod_out").on("change", function () {
     var plabel = $("#prod_out").val().trim();
     var row_data1 = [];
@@ -2841,6 +2493,13 @@ $(document).ready(function () {
       setTimeout(function () {
         $(".p_out_message").text("");
       }, 5000);
+    } else if (plabel.length <= 4) {
+      $("#prod_out").val('');
+      $("#prod_out").focus();
+      $(".p_out_message").text('Barcode Characters Not reach minimum required');
+      setTimeout(function () {
+        $(".p_out_message").text('');
+      }, 5000);
     } else if ($.inArray(plabel, row_data1) != -1) {
       $(".p_out_message").text("Product Already Scanned");
       $("#prod_out").val('');
@@ -2849,6 +2508,8 @@ $(document).ready(function () {
         $(".p_out_message").text("");
       }, 5000);
     } else {
+      $("#prod_out").val('');
+      $("#prod_out").focus();
       $.ajax({
         url: "/home/scan-out/checkStock",
         headers: {
@@ -2859,32 +2520,24 @@ $(document).ready(function () {
           'label': plabel
         },
         success: function success(result) {
-          // console.log(result.message['label']);
           if (result.status == 1) {
             var lbl = result.message['label'];
-            var gtin = result.message['gtin'];
             var pname = result.message['name'];
             var plu = result.message['plu'];
-            $("#prod_out").val('');
-            $("#prod_out").focus();
-            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-12 truncate overflow-clip'>" + lbl + "</p>" + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + plu + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'><p class='w-20 truncate overflow-clip'>" + pname + "</p></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            var prod = "<tr>" + "<td class='py-2 pl-2 pr-3 text-xs font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-24 truncate overflow-clip'>" + lbl + "</p>" + "</td>" + "<td class='px-3 py-2 text-xs text-gray-500 whitespace-nowrap'>" + plu + "</td>" + "<td class='px-3 py-2 text-xs text-gray-500 whitespace-nowrap'><p class='w-20 truncate overflow-clip'>" + pname + "</p></td>" + "<td class='relative py-2 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
             $("#prod_out_body").append(prod);
           } else if (result.status == 2) {
             var lbl = result.message['label'];
-            $("#prod_out").val('');
-            $("#prod_out").focus();
-            var prod = "<tr>" + "<td class='py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-12 truncate overflow-clip'>" + lbl + "</p>" + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'></td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            var prod = "<tr>" + "<td class='py-2 pl-2 pr-3 text-xs font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-24 truncate overflow-clip'>" + lbl + "</p>" + "</td>" + "<td class='px-3 py-2 text-xs text-gray-500 whitespace-nowrap'></td>" + "<td class='px-3 py-2 text-xs text-gray-500 whitespace-nowrap'></td>" + "<td class='relative py-2 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
             $("#prod_out_body").append(prod);
           } else {
             $(".p_out_message").text(result.message);
-            $("#prod_out").val('');
-            $("#prod_out").focus();
             setTimeout(function () {
               $(".p_out_message").text("");
             }, 5000);
           }
         },
-        error: function error(request, status, _error10) {
+        error: function error(request, status, _error8) {
           alert(request.responseText);
         }
       });
@@ -2940,7 +2593,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error11) {
+        error: function error(request, status, _error9) {
           alert(request.responseText);
         }
       });
@@ -2956,13 +2609,27 @@ $(document).ready(function () {
 $(document).ready(function () {
   $("#scnpalletout").on("change", function () {
     var pout_name = $(this).val().trim();
+    var row_data1 = [];
+    $("#scnpalletout_tbl_body tr").each(function () {
+      var data1 = $(this).find('td').eq(0).text();
+      row_data1.push(data1);
+    });
 
     if (pout_name == "" || pout_name == " ") {
       $(".scan_pallet_message").text('Please Scan Pallet');
       setTimeout(function () {
         $(".scan_pallet_message").text("");
       }, 5000);
+    } else if ($.inArray(pout_name, row_data1) != -1) {
+      $(".scan_pallet_message").text('Pallet Already Scanned');
+      $("#scnpalletout").val("");
+      $("#scnpalletout").focus();
+      setTimeout(function () {
+        $(".scan_pallet_message").text('');
+      }, 5000);
     } else {
+      $("#scnpalletout").val("");
+      $("#scnpalletout").focus();
       $.ajax({
         url: "/home/scan-out/getPallet",
         headers: {
@@ -2970,29 +2637,26 @@ $(document).ready(function () {
         },
         method: 'post',
         data: {
-          "label": pout_name
+          "pallet": pout_name
         },
         success: function success(result) {
-          // console.log(result);
+          console.log(result);
+
           if (result.status == 1) {
             var qty = result.message.qty;
             var loc = result.message.location;
-            var label = result.message.pallet;
-            $("#scnpalletout").val("");
-            $("#scnpalletout").focus();
-            $("#scnpalletout_tbl_body tr").find('td p').eq(0).text(label[0].name);
-            $("#scnpalletout_tbl_body tr").find('td').eq(1).text(qty);
-            $("#scnpalletout_tbl_body tr").find('td').eq(2).text(loc[0].name);
+            var pallet = result.message.pallet_name;
+            var pallet_id = result.message.pallet_id;
+            var items = "<tr>" + "<td class='py-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6'>" + "<p class='w-36 sm:w-64 truncate overflow-clip' data-id='" + pallet_id + "'>" + pallet + "</p>" + "</td>" + "<td class='px-3 py-2 text-sm text-gray-500 whitespace-nowrap'>" + qty + "</td>" + "<td class='px-3 py-2 text-sm text-gray-500 whitespace-nowrap'>" + loc + "</td>" + "<td class='relative py-2 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' onclick='event.preventDefault()' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+            $("#scnpalletout_tbl_body").append(items);
           } else {
-            $("#scnpalletout").val("");
-            $("#scnpalletout").focus();
             $(".scan_pallet_message").text(result.message);
             setTimeout(function () {
               $(".scan_pallet_message").text("");
             }, 5000);
           }
         },
-        error: function error(request, status, _error12) {
+        error: function error(request, status, _error10) {
           alert(request.responseText);
         }
       });
@@ -3001,9 +2665,16 @@ $(document).ready(function () {
 });
 $(document).ready(function () {
   $(".tk_out").on("click", function () {
-    var lbl = $("#scnpalletout_tbl_body tr").find('td p').eq(0).text();
+    var tbl = $("#scnpalletout_tbl_body tr").length;
+    var prod_data = [];
+    $("#scnpalletout_tbl_body tr").each(function () {
+      var data1 = $(this).find('td p').eq(0).text();
+      var item = {};
+      item.label = data1;
+      prod_data.push(item);
+    });
 
-    if (lbl == "") {
+    if (tbl < 1) {
       $(".scan_pallet_message").text('Please Scan Pallet');
       $("#scnpalletout").val("");
       $("#scnpalletout").focus();
@@ -3018,7 +2689,7 @@ $(document).ready(function () {
         },
         method: 'post',
         data: {
-          "label": lbl
+          "label": prod_data
         },
         success: function success(result) {
           if (result.status == 1) {
@@ -3039,7 +2710,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error13) {
+        error: function error(request, status, _error11) {
           alert(request.responseText);
         }
       });
@@ -3123,7 +2794,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error14) {
+        error: function error(request, status, _error12) {
           alert(request.responseText);
         }
       });
@@ -3201,16 +2872,18 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error15) {
+        error: function error(request, status, _error13) {
           alert(request.responseText);
         }
       });
     }
   });
-});
-$(document).ready(function () {}); // transfer product
+}); // transfer product
 
 $(document).ready(function () {
+  $("#trnsfr_prod").on("input", function () {
+    $(this).val($(this).val().replace(/ /g, ""));
+  });
   $("#trnsfr_prod").on("change", function () {
     var lbl = $(this).val().trim();
     var row_data1 = [];
@@ -3228,6 +2901,15 @@ $(document).ready(function () {
         $(".trnsfr_message").text("");
         $(".trnsfr_message").removeClass('bg-red-300');
       }, 5000);
+    } else if (lbl.length <= 4) {
+      $("#trnsfr_prod").val('');
+      $("#trnsfr_prod").focus();
+      $(".trnsfr_message").addClass('bg-red-300');
+      $(".trnsfr_message").text('Barcode Characters Not reach minimum required');
+      setTimeout(function () {
+        $(".trnsfr_message").text('');
+        $(".trnsfr_message").removeClass('bg-red-300');
+      }, 5000);
     } else if ($.inArray(lbl, row_data1) != -1) {
       $(".trnsfr_message").text("Product Already Scanned");
       $(".trnsfr_message").addClass('bg-red-300');
@@ -3238,6 +2920,8 @@ $(document).ready(function () {
         $(".trnsfr_message").removeClass('bg-red-300');
       }, 5000);
     } else {
+      $("#trnsfr_prod").val("");
+      $("#trnsfr_prod").focus();
       $.ajax({
         url: "/home/transfer/product-check",
         headers: {
@@ -3245,44 +2929,27 @@ $(document).ready(function () {
         },
         method: 'post',
         data: {
-          "lbl": lbl
+          "label": lbl
         },
         success: function success(result) {
-          if (result.status == 1) {
-            var prd = result.message;
-            var data = "<tr>" + "<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>" + "<p class='w-24 sm:w-24 truncate overflow-clip' data-id='" + prd.ph_id + "'>" + prd.label + "</p>" + "</td>" + "<td class='whitespace-nowrap px-2 py-4 text-sm text-gray-500'>" + prd.plu + "</td>" + "<td class='relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
+          if (result.status == 0) {
+            var prd = result.message['message2'][0];
+            var data = "<tr>" + "<td class='whitespace-nowrap py-2 pl-2 pr-3 text-xs font-medium text-gray-900'>" + "<p class='w-64 sm:w-24 truncate overflow-clip' data-id='" + prd.id + "'>" + prd.label + "</p>" + "</td>" + "<td class='relative py-2 pl-1 pr-4 text-xs font-medium text-left whitespace-nowrap sm:pr-6'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
             $("#trnsfr_tbl_body").append(data);
-            $("#trnsfr_prod").val("");
-            $("#trnsfr_prod").focus();
           } else {
-            $(".trnsfr_message").text(result.message);
+            $(".trnsfr_message").text(['Product Not Exist In Stock - Please Use Scan In']);
             $(".trnsfr_message").addClass('bg-red-300');
-            $("#trnsfr_prod").val("");
-            $("#trnsfr_prod").focus();
             setTimeout(function () {
               $(".trnsfr_message").text("");
               $(".trnsfr_message").removeClass('bg-red-300');
             }, 5000);
           }
         },
-        error: function error(request, status, _error16) {
+        error: function error(request, status, _error14) {
           alert(request.responseText);
         }
       });
     }
-  });
-});
-$(document).ready(function () {
-  $("#trnsfr_dd").val($.datepicker.formatDate('dd/mm/yy', new Date()));
-  var cur_date = new Date();
-  $("#trnsfr_dd").datepicker({
-    language: 'en',
-    startDate: cur_date,
-    setDate: cur_date,
-    dateFormat: "dd/mm/yy",
-    autoClose: true,
-    changeMonth: true,
-    changeYear: true
   });
 });
 $(document).ready(function () {
@@ -3304,6 +2971,18 @@ $(document).ready(function () {
       $(".trnsfr_exist_pallet").hide();
       $(".bck").show();
       $(".complete1").show();
+    }
+  });
+});
+$(document).ready(function () {
+  $('#trnsfr_cust1').on('change', function () {
+    var cx = $("#trnsfr_cust1 option:selected").val();
+    $('.trnsfr_cust1').attr('data-id', cx);
+
+    if (cx != 0) {
+      $(".card_3").hide();
+      $(".card_4").show();
+      $("#trnsfr_loc").focus();
     }
   });
 });
@@ -3349,15 +3028,6 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function () {
-  $("#trnsfr_dd").on("change", function () {
-    var dd = $(this).val();
-    $(".bb_date").text(dd);
-    $(".card_3").hide();
-    $(".card_4").show();
-    $("#trnsfr_loc").focus();
-  });
-});
-$(document).ready(function () {
   $("#trnsfr_loc").on("change", function () {
     var loc_name = $(this).val().trim();
 
@@ -3379,9 +3049,9 @@ $(document).ready(function () {
           "loc": loc_name
         },
         success: function success(result) {
-          if (result.status == 0) {
-            $(".loc_name").text(result.message[0]['name']);
-            $(".loc_name").attr('data-id', result.message[0]['id']);
+          if (result.status == 1) {
+            $(".loc_name").text(result.exist[0]['name']);
+            $(".loc_name").attr('data-id', result.exist[0]['id']);
             $("#trnsfr_loc").val("");
           } else {
             $(".loc_name").text(loc_name);
@@ -3394,12 +3064,18 @@ $(document).ready(function () {
               $(".trnsfr_message").removeClass('bg-green-300');
             }, 3000);
           }
+        },
+        error: function error(request, status, _error15) {
+          alert(request.responseText);
         }
       });
     }
   });
 });
 $(document).ready(function () {
+  $("#trnsfr_pp").on("input", function () {
+    $(this).val($(this).val().replace(/ /g, ""));
+  });
   $("#trnsfr_pp").on("change", function () {
     var p_name = $(this).val().trim();
 
@@ -3418,7 +3094,7 @@ $(document).ready(function () {
         },
         method: 'post',
         data: {
-          "pname": p_name
+          "pallet": p_name
         },
         success: function success(result) {
           if (result.status == 1) {
@@ -3451,20 +3127,17 @@ $(document).ready(function () {
   $(".complete1").on("click", function () {
     var loc_id = $(".loc_name").attr('data-id');
     var loc_name = $(".loc_name").text();
-    var bb_date = $(".bb_date").text();
     var prod_data = [];
     $("#trnsfr_tbl_body tr").each(function () {
       var data1 = $(this).find('td p').eq(0).text();
       var data2 = $(this).find('td p').eq(0).attr('data-id');
       var item = {};
       item.label = data1;
-      item.ph_id = data2;
+      item.p_id = data2;
       prod_data.push(item);
     });
-    var min = 10000000;
-    var max = 99999900;
-    var random = Math.floor(Math.random() * (max - min + 1)) + min;
-    var pallet = '99' + random;
+    var cx = $('.trnsfr_cust1').attr('data-id');
+    var pallet = cx.toString().padStart(2, '0') + labelRandomizer();
 
     if (loc_name == "") {
       $(".trnsfr_message").text("please Scan location");
@@ -3483,13 +3156,13 @@ $(document).ready(function () {
         data: {
           "loc": loc_name,
           'loc_id': loc_id,
-          'bb_date': bb_date,
-          'prod': prod_data,
-          'pallet': pallet
+          'products': prod_data,
+          'pallet': pallet,
+          'cx': cx
         },
         success: function success(result) {
           if (result.status == 1) {
-            $(".trnsfr_message").text("Successfully Save please see Pallet" + result.message['pallet']);
+            $(".trnsfr_message").text("Successfully Save please see Pallet" + " " + result.message);
             $(".trnsfr_message").addClass('bg-green-300');
             $("#trnsfr_tbl_body").empty();
             $(".card_1").show();
@@ -3519,7 +3192,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error17) {
+        error: function error(request, status, _error16) {
           alert(request.responseText);
         }
       });
@@ -3591,7 +3264,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error18) {
+        error: function error(request, status, _error17) {
           alert(request.responseText);
         }
       });
@@ -3601,9 +3274,9 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $("#trnsfrPallet").on("change", function () {
-    var p_name = $(this).val().trim();
+    var label = $(this).val().trim();
 
-    if (p_name == "" || p_name == " ") {
+    if (label == "" || label == " ") {
       $(".trnsfrPallet_message").text("Please Scan Pallet");
       $(".trnsfrPallet_message").addClass('bg-red-300');
       $("#trnsfrPallet").val("");
@@ -3613,6 +3286,8 @@ $(document).ready(function () {
         $(".trnsfrPallet_message").removeClass('bg-red-300');
       }, 5000);
     } else {
+      $("#trnsfrPallet").val("");
+      $("#trnsfrPallet").focus();
       $.ajax({
         url: "/home/transfer/pallet-check",
         headers: {
@@ -3620,7 +3295,7 @@ $(document).ready(function () {
         },
         method: 'post',
         data: {
-          "pname": p_name
+          "pallet": label
         },
         success: function success(result) {
           if (result.status == 1) {
@@ -3640,13 +3315,14 @@ $(document).ready(function () {
           } else {
             $(".trnsfrPallet_message").text(result.message);
             $(".trnsfrPallet_message").addClass('bg-red-300');
-            $("#trnsfrPallet").val("");
-            $("#trnsfrPallet").focus();
             setTimeout(function () {
               $(".trnsfrPallet_message").text("");
               $(".trnsfrPallet_message").removeClass('bg-red-300');
             }, 5000);
           }
+        },
+        error: function error(request, status, _error18) {
+          alert(request.responseText);
         }
       });
     }
@@ -3826,6 +3502,9 @@ $(document).ready(function () {
               $(".merge_message").removeClass("bg-red-300");
             }, 5000);
           }
+        },
+        error: function error(request, status, _error20) {
+          alert(request.responseText);
         }
       });
     }
@@ -3886,6 +3565,9 @@ $(document).ready(function () {
               $(".merge_message").removeClass("bg-red-300");
             }, 5000);
           }
+        },
+        error: function error(request, status, _error21) {
+          alert(request.responseText);
         }
       });
     }
@@ -3973,7 +3655,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error20) {
+        error: function error(request, status, _error22) {
           alert(request.responseText);
         }
       });
@@ -4063,6 +3745,9 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function () {
+  $("#stkProduct").on("input", function () {
+    $(this).val($(this).val().replace(/ /g, ""));
+  });
   $("#stkProduct").on("change", function () {
     var lbl = $(this).val().trim();
     var pallet = $(".p_name").text().trim();
@@ -4081,6 +3766,15 @@ $(document).ready(function () {
         $(".stk_take_message").text("");
         $(".stk_take_message").removeClass('bg-red-300');
       }, 5000);
+    } else if (lbl.length <= 4) {
+      $("#stkProduct").val('');
+      $("#stkProduct").focus();
+      $(".stk_take_message").addClass('bg-red-300');
+      $(".stk_take_message").text('Barcode Characters Not reach minimum required');
+      setTimeout(function () {
+        $(".stk_take_message").text('');
+        $(".stk_take_message").removeClass('bg-red-300');
+      }, 5000);
     } else if ($.inArray(lbl, row_data1) != -1) {
       $(".stk_take_message").text('Product Already Scanned');
       $(".stk_take_message").addClass('bg-red-300');
@@ -4092,6 +3786,8 @@ $(document).ready(function () {
         $(".stk_take_message").removeClass('bg-red-300');
       }, 5000);
     } else {
+      $("#stkProduct").val("");
+      $("#stkProduct").focus();
       $.ajax({
         url: "/home/stock-take/checkProduct",
         headers: {
@@ -4109,8 +3805,6 @@ $(document).ready(function () {
             $(".new_stock_body").append(prod);
             $(".stk_take_message").text(result.message);
             $(".stk_take_message").addClass('bg-green-300');
-            $("#stkProduct").val("");
-            $("#stkProduct").focus();
             setTimeout(function () {
               $(".stk_take_message").text("");
               $(".stk_take_message").removeClass('bg-green-300');
@@ -4118,15 +3812,13 @@ $(document).ready(function () {
           } else {
             $(".stk_take_message").text('Please Scan Product');
             $(".stk_take_message").addClass('bg-red-300');
-            $("#stkProduct").val("");
-            $("#stkProduct").focus();
             setTimeout(function () {
               $(".stk_take_message").text("");
               $(".stk_take_message").removeClass('bg-red-300');
             }, 5000);
           }
         },
-        error: function error(request, status, _error21) {
+        error: function error(request, status, _error23) {
           alert(request.responseText);
         }
       });
@@ -4190,7 +3882,7 @@ $(document).ready(function () {
             $(".co_message").text(result.message);
           }
         },
-        error: function error(request, status, _error22) {
+        error: function error(request, status, _error24) {
           alert(request.responseText);
         }
       });
@@ -4231,7 +3923,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error23) {
+      error: function error(request, status, _error25) {
         alert(request.responseText);
       }
     });
@@ -4277,7 +3969,7 @@ $(document).ready(function () {
           }, 3000);
         }
       },
-      error: function error(request, status, _error24) {
+      error: function error(request, status, _error26) {
         alert(request.responseText);
       }
     });
@@ -4319,7 +4011,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error25) {
+        error: function error(request, status, _error27) {
           alert(request.responseText);
         }
       });
@@ -4366,7 +4058,7 @@ $(document).ready(function () {
             }, 3000);
           }
         },
-        error: function error(request, status, _error26) {
+        error: function error(request, status, _error28) {
           alert(request.responseText);
         }
       });
@@ -4568,6 +4260,8 @@ $(document).ready(function () {
       $("#rcvd_dte_fltr").show();
     } else {
       if (fltr == 1) {
+        $("#fltr_plu").empty();
+        $("#plu_fltr").show();
         $.ajax({
           url: "/stocks/get-plu",
           headers: {
@@ -4580,17 +4274,16 @@ $(document).ready(function () {
           success: function success(result) {
             if (result.status == 1) {
               var plu = result.plu;
-              var pl_arr = [];
               $.map(plu, function (val, i) {
-                pl_arr.push(val);
-              });
-              var plu = pl_arr.sort();
-              plu.forEach(function (pl) {
-                var option = "<option value='" + pl + "'>" + pl + "</option>";
+                var option = "<option value='" + val[0]['plu'] + "'>" + val[0]['plu'] + "</option>";
                 $("#fltr_plu").append(option);
               });
-              $("#plu_fltr").show();
+            } else {
+              alert('ads');
             }
+          },
+          error: function error(request, status, _error29) {
+            alert(request.responseText);
           }
         });
       } else {
@@ -4621,13 +4314,15 @@ $(document).on("click", ".srch_stcks", function () {
     }
 
     if ($("#rcvd_dte_fltr").css("display") != "none") {
-      var date = $("#srch_date").val();
+      var date1 = $("#srch_date").val();
+      var date2 = $("#srch_date2").val();
     } else {
-      date = "";
+      date1 = "";
+      date2 = "";
     }
 
     $("#stcks_tbl_body").empty();
-    searchStocks(cx, date, plu);
+    searchStocks(cx, date1, date2, plu);
   }
 });
 $(document).on("click", ".stock_print", function () {
@@ -4648,7 +4343,7 @@ $(document).on("click", ".stock_print", function () {
       $(".print_table").append(result);
       $(".scan_page").hide();
     },
-    error: function error(request, status, _error27) {
+    error: function error(request, status, _error30) {
       alert(request.responseText);
     }
   });
@@ -4681,7 +4376,7 @@ $(document).ready(function () {
   });
 });
 
-function searchStocks(cx, date, plu) {
+function searchStocks(cx, date1, date2, plu) {
   $.ajax({
     url: "/stocks/search-stocks",
     headers: {
@@ -4690,7 +4385,8 @@ function searchStocks(cx, date, plu) {
     method: 'post',
     data: {
       "cx": cx,
-      'date': date,
+      'date1': date1,
+      'date2': date2,
       'plu': plu
     },
     success: function success(result) {
@@ -4751,7 +4447,7 @@ function searchStocks(cx, date, plu) {
         }, 5000);
       }
     },
-    error: function error(request, status, _error28) {
+    error: function error(request, status, _error31) {
       alert(request.responseText);
     }
   });
@@ -4760,6 +4456,22 @@ function searchStocks(cx, date, plu) {
 $(document).on("click", ".print_stock", function () {
   var c_date = moment().format('DD-MM-YYYY');
   var pname = "cs_" + c_date + "Stock";
+  $("#stcks_tbl").tableExport({
+    type: 'csv',
+    mso: {
+      fileFormat: 'xlsx',
+      worksheetName: pname
+    },
+    headings: true,
+    fileName: pname,
+    bootstrap: true,
+    exportHiddenCells: false // ignoreColumn: ["GTIN","MOVE / DELETE"],
+
+  });
+});
+$(document).on("click", ".print_detailed", function () {
+  var c_date = moment().format('DD-MM-YYYY');
+  var pname = "CampBell_detailed_stock_report-" + c_date;
   $("#stcks_tbl").tableExport({
     type: 'csv',
     mso: {
@@ -4919,7 +4631,7 @@ $(document).ready(function () {
             }, 5000);
           }
         },
-        error: function error(request, status, _error29) {
+        error: function error(request, status, _error32) {
           alert(request.responseText);
         }
       });

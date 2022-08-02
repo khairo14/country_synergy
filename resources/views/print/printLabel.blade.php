@@ -3,15 +3,11 @@
     <table class="w-full" id="print_table">
         <tbody id="print_table_body" class="w-full">
             <tr class="w-full flex font-medium font-sm text-center">
-                <td class="lbl w-full border border-collapse border-black">Best Before:</td>
-                <td class="rcvd_date w-full border border-collapse border-black">{{$bestbefore}}</td>
-            </tr>
-            <tr class="w-full flex font-medium font-sm text-center">
                 <td class="lbl w-full border border-collapse border-black">Recieved Date:</td>
                 <td class="rcvd_date w-full border border-collapse border-black">{{$storedate}}</td>
             </tr>
             <tr class="w-full flex font-medium font-md text-center">
-                <td colspan="2" class="act_purpose w-full border border-collapse border-black">Arrived From:</td>
+                <td colspan="2" class="act_purpose w-full border border-collapse border-black">From:</td>
             </tr>
             <tr class="w-full flex font-medium font-md text-center">
                 <td colspan="2" class="clnt w-full border border-collapse border-black">{{$cust[0]->name}}</td>
@@ -22,7 +18,7 @@
             </tr> --}}
 
             <tr class="flex justify-center font-medium font-md text-center">
-                <td colspan="2" class="flex justify-center w-full"><img src="data:image/png;base64,{{DNS1D::getBarcodePNG($label, 'C39',1.5,150,array(0,0,0), true)}}" alt="barcode" /></td>
+                <td colspan="2" class="flex justify-center w-full mt-2"><img src="data:image/png;base64,{{DNS1D::getBarcodePNG($label, 'C39',1.5,150,array(0,0,0), true)}}" alt="barcode" /></td>
             </tr>
         </tbody>
     </table>

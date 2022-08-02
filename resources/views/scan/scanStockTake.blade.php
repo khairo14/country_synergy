@@ -11,7 +11,7 @@
 
         <div class="_stkProducts" style="display: none">
             <label for="stkPallet" class="sr-only">Products</label>
-            <input type="text" name="stkProduct" id="stkProduct" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Product" autofocus />
+            <input type="text" name="stkProduct" id="stkProduct" class="p-2 inline-flex text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:text-sm border-gray-300 rounded-md" placeholder="Scan Product" maxlength="60" autofocus />
         </div>
 
         <div class="mt-2 text-center rounded-md">
