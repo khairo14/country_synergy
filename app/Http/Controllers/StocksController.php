@@ -154,18 +154,18 @@ class StocksController extends Controller
                     $date = $this->dateConvert(substr($str,28,6));
                 break;
                 case($lngth==20):
-                    $gtin = substr($str,1,14);
-                    $weight = $this->weightConvert((float)substr($str,10,4));
+                    $gtin = substr($str,0,6);
+                    $weight = $this->weightConvert((float)substr($str,6,4));
                     $date = "";
                 break;
                 case($lngth==22):
-                    $gtin = substr($str,1,14);
-                    $weight = $this->weightConvert((float)substr($str,8,4));
+                    $gtin = substr($str,0,6);
+                    $weight = $this->weightConvert((float)substr($str,6,4));
                     $date = "";
                 break;
                 case($lngth==30):
-                    $gtin = substr($str,1,14);
-                    $weight = "";
+                    $gtin = substr($str,25,5);
+                    $weight = $this->weightConvert((float)substr($str,8,4));
                     $date = "";
                 break;
                 case($lngth==34):

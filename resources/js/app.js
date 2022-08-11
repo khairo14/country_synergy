@@ -2404,7 +2404,7 @@ function searchStocks(cx,date1,date2,plu){
                             data += val['count']+"</br>";
                         });
                         data +="</td>"
-                                +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
+                                // +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
                                 +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.stored+"</td>"
                                 +"<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>"
                                 +   "<a href='#' data-id='"+stock.stockid+"' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>"
@@ -2428,7 +2428,7 @@ function searchStocks(cx,date1,date2,plu){
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['plu']+"</td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['name']+"</td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['count']+"</td>"
-                                +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['best_before']+"</td>"
+                                // +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['best_before']+"</td>"
                                 +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['received_date']+"</td>"
                                 +"<td class='relative invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6'>"
                                 +"</td>"
@@ -2462,7 +2462,7 @@ function searchStocks(cx,date1,date2,plu){
                             data += val['count']+"</br>";
                         });
                         data +="</td>"
-                                +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
+                                // +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
                                 +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.stored+"</td>"
                                 +"<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>"
                                 +   "<a href='#' data-id='"+stock.stockid+"' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>"
