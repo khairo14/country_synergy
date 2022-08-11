@@ -4408,14 +4408,16 @@ function searchStocks(cx, date1, date2, plu) {
           $.map(sc, function (val, i) {
             data += val['count'] + "</br>";
           });
-          data += "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.best_before + "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.stored + "</td>" + "<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' data-id='" + stock.stockid + "' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>" + "</td>";
+          data += "</td>" // +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
+          + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.stored + "</td>" + "<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' data-id='" + stock.stockid + "' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>" + "</td>";
           data += "</tr>";
           $("#stcks_tbl_body").append(data);
         });
       } else if (result.status == 2) {
         stocks = result.stocks[0];
         $.map(stocks, function (val, i) {
-          var prods = "<tr>" + "<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>" + "<a href='/stocks/viewProduct/" + val['palletid'] + "' data-id='" + val['palletid'] + "' class='prod_view text-indigo-600 hover:text-indigo-900'>" + "<p class='w-24 sm:w-24 truncate overflow-clip'>" + val['pallet'] + "</p>" + "</a>" + "</td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + "<a href='#' class='hover:text-red-800 text-red-500'>" + val['location'] + "</a></td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['plu'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['name'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['count'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['best_before'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['received_date'] + "</td>" + "<td class='relative invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6'>" + "</td>" + "</tr>";
+          var prods = "<tr>" + "<td class='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>" + "<a href='/stocks/viewProduct/" + val['palletid'] + "' data-id='" + val['palletid'] + "' class='prod_view text-indigo-600 hover:text-indigo-900'>" + "<p class='w-24 sm:w-24 truncate overflow-clip'>" + val['pallet'] + "</p>" + "</a>" + "</td>" + "<td class='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>" + "<a href='#' class='hover:text-red-800 text-red-500'>" + val['location'] + "</a></td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['plu'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['name'] + "</td>" + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['count'] + "</td>" // +"<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>"+val['best_before']+"</td>"
+          + "<td class='px-3 py-4 text-sm text-gray-500 whitespace-nowrap'>" + val['received_date'] + "</td>" + "<td class='relative invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6'>" + "</td>" + "</tr>";
           $("#stcks_tbl_body").append(prods);
         });
       } else if (result.status == 3) {
@@ -4436,7 +4438,8 @@ function searchStocks(cx, date1, date2, plu) {
           $.map(sc, function (val, i) {
             data += val['count'] + "</br>";
           });
-          data += "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.best_before + "</td>" + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.stored + "</td>" + "<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' data-id='" + stock.stockid + "' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>" + "</td>";
+          data += "</td>" // +"<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>"+stock.best_before+"</td>"
+          + "<td class='whitespace-nowrap px-3 py-4 invisible sm:visible text-sm text-gray-500'>" + stock.stored + "</td>" + "<td class='relative whitespace-nowrap invisible sm:visible py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6'>" + "<a href='#' data-id='" + stock.stockid + "' class='stock_print text-indigo-600 hover:text-indigo-900'>Print Label</a>" + "</td>";
           data += "</tr>";
           $("#stcks_tbl_body").append(data);
         });

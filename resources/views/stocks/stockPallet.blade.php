@@ -15,7 +15,7 @@
             @endif
         </select>
         {{-- <div class="flex justify-end mt-4"> --}}
-            <button type="button" class="print_palletProds inline-flex items-center px-1 py-1 text-sm font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-1 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            <button type="button" class="inline-flex items-center px-1 py-1 text-sm font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md print_palletProds text-md sm:px-2 sm:py-1 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 <span class="items-center mx-2">
                     &nbsp; Print &nbsp;
                 </span>
@@ -48,7 +48,7 @@
                             <td class="px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['label']}} </td>
                             <td class="px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['name']}}</td>
                             <td class="hidden px-1 py-4 text-sm text-gray-500 whitespace-nowrap">{{$product['gtin']}} </td>
-                            <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['weight']}} Kg</td>
+                            <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['weight']}}</td>
                             <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['date']}}</td>
                             <td class='invisible px-1 py-4 text-sm text-gray-500 whitespace-nowrap sm:visible'>{{$product['rcvd']}}</td>
                             <td class="relative flex flex-row invisible py-4 pl-3 pr-4 text-sm font-medium text-left whitespace-nowrap sm:visible sm:pr-6">

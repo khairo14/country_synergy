@@ -85,7 +85,7 @@
                     <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">PLU</th>
                     <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Product Name</th>
                     <th scope="col" class="px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase">Qty</th>
-                    {{-- <th scope="col" class="invisible px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Best Before</th> --}}
+                    {{-- <th scope="col" class="invisible px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Best Before/Production</th> --}}
                     <th scope="col" class="invisible px-3 py-3 text-xs font-medium tracking-wide text-left text-gray-500 uppercase sm:visible">Received Date</th>
                     <th scope="col" class="relative invisible py-3 pl-3 pr-4 sm:pr-6 sm:visible">
                         <span class="sr-only">Edit</span>

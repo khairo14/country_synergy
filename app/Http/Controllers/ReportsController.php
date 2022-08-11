@@ -63,15 +63,40 @@ class ReportsController extends Controller
             }
         }else if($cs == 2){
             switch($lngth){
-                case($lngth==54):
+                case($lngth>=54):
                     $gtin = substr($str,2,14);
                     $weight = $this->weightConvert((float)substr($str,20,6));
                     $date = $this->dateConvert(substr($str,28,6));
                 break;
                 case($lngth==44):
                     $gtin = substr($str,2,14);
-                    $weight = $this->weightConvert((float)substr($str,28,6));
-                    $date = $this->dateConvert(substr($str,18,6));
+                    $weight = $this->weightConvert((float)substr($str,20,6));
+                    $date = $this->dateConvert(substr($str,28,6));
+                break;
+                case($lngth==42):
+                    $gtin = substr($str,2,14);
+                    $weight = $this->weightConvert((float)substr($str,20,6));
+                    $date = $this->dateConvert(substr($str,28,6));
+                break;
+                case($lngth==48):
+                    $gtin = substr($str,2,14);
+                    $weight = $this->weightConvert((float)substr($str,20,6));
+                    $date = $this->dateConvert(substr($str,28,6));
+                break;
+                case($lngth==20):
+                    $gtin = substr($str,0,6);
+                    $weight = $this->weightConvert((float)substr($str,6,4));
+                    $date = "";
+                break;
+                case($lngth==22):
+                    $gtin = substr($str,0,6);
+                    $weight = $this->weightConvert((float)substr($str,6,4));
+                    $date = "";
+                break;
+                case($lngth==30):
+                    $gtin = substr($str,25,5);
+                    $weight = $this->weightConvert((float)substr($str,8,4));
+                    $date = "";
                 break;
                 case($lngth==34):
                     $gtin = substr($str,2,14);
@@ -177,7 +202,7 @@ class ReportsController extends Controller
                     $items[] = ['pallet_name'=>$pallet[0]->name,'products'=>$product,'pallet_count'=>$pr_count];
                 }
             }
-            $products = $this->paginate($items,5);
+            $products = $this->paginate($items,100);
             $products->withPath('/reports/stock-detailed/');
         }
 
