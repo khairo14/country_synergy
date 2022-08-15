@@ -229,7 +229,7 @@ class StocksController extends Controller
         $pallet = $request->pallet;
         $loc = $request->loc;
         $cust = Customers::where('id',$cx_id)->get();
-
+        $count = count($request->products);
 
         if($cx_id != "" || $pallet != "" || $products !=""){
             $addPallet = new Pallets();
@@ -244,9 +244,11 @@ class StocksController extends Controller
                     $newLoc->save();
                     if(isset($newLoc->id)){
                         $loc_id = $newLoc->id;
+                        $loc_name = $loc;
                     }
                 }else{
                     $loc_id = $location['exist'][0]['id'];
+                    $loc_name = $location['exist'][0]['name'];
                 }
 
                 $addStock = new Stocks();
@@ -288,7 +290,7 @@ class StocksController extends Controller
         }else{
 
         }
-        return view('print.printLabel')->with(['cust'=>$cust,'label'=>$pallet,'storedate'=>$date]);
+        return view('print.printLabel')->with(['cust'=>$cust,'label'=>$pallet,'storedate'=>$date,'location'=>$loc_name,'count'=>$count]);
 
     }
 
@@ -1257,7 +1259,8 @@ class StocksController extends Controller
             $date1 = "";
         }
         if($date2 != ""){
-            $date2 = Carbon::createFromFormat('d/m/Y', $date2)->format('Y-m-d');
+            $date2 = Carbon::createFromFormat('d/m/Y', $date2);
+            $date2 = $date2->addDay()->format('Y-m-d');
         }else{
             $date1 = "";
         }
@@ -1265,7 +1268,13 @@ class StocksController extends Controller
         $plu = $request->plu;
 
         if($date1 != "" && $date2 !="" && $plu == ""){
-            $stocks = Stocks::where('customer_id',$cx)->wherebetween('created_at',[$date1,$date2])->get();
+            if($date1 == $date2){
+                $stocks = Stocks::where('customer_id',$cx)->where('created_at','LIKE',"%{$date1}%")->get();
+            }else{
+                // $stocks = Stocks::where('customer_id',$cx)->wherebetween('created_at',[$date1,$date2])->get();
+                $stocks = Stocks::where('customer_id',$cx)->where('created_at','>=',$date1)->where('created_at','<=',$date2)->get();
+            }
+
             if($stocks->isNotEmpty()){
                 foreach($stocks as $stock){
                     $pr_qty = collect([]);
@@ -1494,12 +1503,21 @@ class StocksController extends Controller
         if($stocks->isNotEmpty()){
             $cx = Customers::where('id',$stocks[0]->customer_id)->get();
             $pallet = Pallets::where('id',$stocks[0]->pallet_id)->get();
-            // $location = Locations::where('id',$stocks[0]->location_id)->get();
+            $location = Locations::where('id',$stocks[0]->location_id)->get();
+            if($location->isNotEmpty()){
+                $loc_name = $location[0]->name;
+            }else{
+                $loc_name = "Not Found";
+            }
+            if($pallet->isNotEmpty()){
+                $ph = ProductHistory::where('new_pallet_id',$pallet[0]->id)->where('actions','In')->get();
+            }
+            $count = count($ph);
             $stored = $stocks[0]->created_at;
             $stored = $stored->format('d-m-Y');
         }
 
-        return view('print.printLabel')->with(['cust'=>$cx,'label'=>$pallet[0]->name,'storedate'=>$stored]);
+        return view('print.printLabel')->with(['cust'=>$cx,'label'=>$pallet[0]->name,'storedate'=>$stored,'location'=>$loc_name,'count'=>$count]);
     }
 
     public function printDocket(){
