@@ -202,7 +202,7 @@ class ReportsController extends Controller
                     $items[] = ['pallet_name'=>$pallet[0]->name,'products'=>$product,'pallet_count'=>$pr_count];
                 }
             }
-            $products = $this->paginate($items,100);
+            $products = $this->paginate($items,2);
             $products->withPath('/reports/stock-detailed/');
         }
 

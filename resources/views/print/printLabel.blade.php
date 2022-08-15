@@ -3,14 +3,23 @@
     <table class="w-full" id="print_table">
         <tbody id="print_table_body" class="w-full">
             <tr class="w-full flex font-medium font-sm text-center">
+                <td colspan="2" class="location flex w-full justify-center mt-0"><h1>Loc: {{$location}}</h1></td>
+            </tr>
+            <tr class="w-full flex font-medium font-sm text-center">
                 <td class="lbl w-full border border-collapse border-black">Recieved Date:</td>
                 <td class="rcvd_date w-full border border-collapse border-black">{{$storedate}}</td>
             </tr>
             <tr class="w-full flex font-medium font-md text-center">
-                <td colspan="2" class="act_purpose w-full border border-collapse border-black">From:</td>
+                <td class="act_purpose w-full border border-collapse border-black">From:</td>
+                <td class="clnt w-full border border-collapse border-black">{{$cust[0]->name}}</td>
             </tr>
-            <tr class="w-full flex font-medium font-md text-center">
-                <td colspan="2" class="clnt w-full border border-collapse border-black">{{$cust[0]->name}}</td>
+            {{-- <tr class="w-full flex font-medium font-sm text-center">
+                <td class="lbl w-full border border-collapse border-black">Recieved Date:</td>
+                <td class="rcvd_date w-full border border-collapse border-black">{{$storedate}}</td>
+            </tr> --}}
+            <tr class="w-full flex font-medium font-sm text-center">
+                <td class="lbl w-full border border-collapse border-black">Quantity</td>
+                <td class="rcvd_date w-full border border-collapse border-black">{{$count}}</td>
             </tr>
             {{-- <tr class="flex w-full font-medium font-md text-center">
                 <td class="w-full border border-collapse border-black">Qty</td>
@@ -18,7 +27,10 @@
             </tr> --}}
 
             <tr class="flex justify-center font-medium font-md text-center">
-                <td colspan="2" class="flex justify-center w-full mt-2"><img src="data:image/png;base64,{{DNS1D::getBarcodePNG($label, 'C39',1.5,150,array(0,0,0), true)}}" alt="barcode" /></td>
+                <td colspan="2" class="flex justify-center w-full mt-2"><img src="data:image/png;base64,{{DNS1D::getBarcodePNG($label, 'C39',1.5,150,array(0,0,0))}}" alt="barcode" /></td>
+            </tr>
+            <tr class="flex justify-center font-medium font-md text-center">
+                <td colspan="2" class="pallet flex justify-center w-full mt-0" ><h1 class="text-2xl">{{$label}}</h1></td>
             </tr>
         </tbody>
     </table>

@@ -234,6 +234,7 @@ $(document).on("click",".print",function(){
             +"#print_table{width:100%; height:100%; border-collapse:collapse;}"
             +"#print_table_body tr{text-align:center;padding:5px;}"
             +".clnt,.act_purpose,.rcvd_date,.lbl{border:1px solid #000; border-collapse:collapse; text-align:center;}"
+            +".pallet h1,.location h1{font-size:3.75rem;margin:-50px;}"
             +"</style>";
 
     style += tbl.prop('outerHTML');
