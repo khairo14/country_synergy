@@ -1005,22 +1005,25 @@ class StocksController extends Controller
         if($lbl != ""){
             $sc_id = ScanProducts::where('label',$lbl)->get();
             if($sc_id->isNotEmpty()){
-                $gtin = $sc_id[0]->gtin;
                 $pallet = Pallets::where('name',$p_name)->get();
                 if($pallet->isNotEmpty()){
                     $ph = ProductHistory::where('scanned_id',$sc_id[0]->id)->get();
                     $cur_pallet = $ph[0]->new_pallet_id;
                     $sc_pallet = $pallet[0]->id;
 
-                    if($gtin != ""){
-                        $prd = Products::where('gtin',$gtin)->get();
-                        if($prd->isNotEmpty()){
-                            $prod_details = ['plu'=>$prd[0]->product_code,'name'=>$prd[0]->product_name];
+                    $stks = Stocks::where(['pallet_id'=>$pallet[0]->id,'status'=>'In'])->get();
+                    if($stks->isNotEmpty()){
+                        $codes = $this->barcodeChecker($stks[0]->customer_id,$lbl);
+                        if($codes != ""){
+                            $prod_dtls = Products::where('gtin',$codes['gtin'])->get();
+                            if($prod_dtls->isNotEmpty()){
+                                $prod_details = ['plu'=>$prod_dtls[0]->product_code,'name'=>$prod_dtls[0]->product_name,'gtin'=>$prod_dtls[0]->gtin];
+                            }else{
+                                $prod_details = ['plu'=>'0000','name'=>'','gtin'=>''];
+                            }
                         }else{
-                            $prod_details = ['plu'=>'0000','name'=>''];
+                            $prod_details = ['plu'=>'0000','name'=>'','gtin'=>''];
                         }
-                    }else{
-                        $prod_details = ['plu'=>'0000','name'=>''];
                     }
 
                     if($sc_pallet == $cur_pallet){
@@ -1064,7 +1067,6 @@ class StocksController extends Controller
                 $p = Pallets::where('name','Dump')->get();
                 if($p->isNotEmpty()){
                     $trash_pallet = $p[0]->id;
-
                 }else{
                     $new_p = new Pallets();
                     $new_p->name = "Dump";
@@ -1098,31 +1100,13 @@ class StocksController extends Controller
                 }
 
                 $stk = Stocks::where('pallet_id',$trash_pallet)->get();
-                $old_qty = Stocks::where('pallet_id',$p_id[0]->id)->pluck('qty');
-                if($stk->isNotEmpty()){
-                    $stk_qty = $stk[0]->qty;
-                    $new_qty = ($old_qty[0] - $cur_qty) + $stk_qty;
-                    $now = Carbon::now();
-
-                    $new_stk = Stocks::find($stk[0]->id);
-                    $new_stk->customer_id = $stk[0]->customer_id;
-                    $new_stk->pallet_id = $trash_pallet;
-                    $new_stk->location_id = $new_loc;
-                    $new_stk->qty = $new_qty;
-                    $new_stk->best_before = $now;
-                    $new_stk->status = "Dump";
-                    $new_stk->save();
-                }else{
+                if($stk->isEmpty()){
                     $cs_id = Stocks::where('pallet_id',$p_id[0]->id)->pluck('customer_id');
-                    $new_qty = $old_qty[0] - $cur_qty;
-                    $now = Carbon::now();
 
                     $new_stk = new Stocks();
                     $new_stk->customer_id = $cs_id[0];
                     $new_stk->pallet_id = $trash_pallet;
                     $new_stk->location_id = $new_loc;
-                    $new_stk->qty = $new_qty;
-                    $new_stk->best_before = $now;
                     $new_stk->status = "Dump";
                     $new_stk->save();
                 }
@@ -1131,26 +1115,13 @@ class StocksController extends Controller
             foreach($products as $product){
                 $sc = ScanProducts::where('label',$product['label'])->get();
                 $stks = Stocks::where('pallet_id',$p_id[0]->id)->get();
-                $cs = Customers::where('id',$stks[0]->customer_id)->get();
 
                 if($stks->isNotEmpty()){
-                    $new_stks = Stocks::find($stks[0]->id);
-                    $new_stks->qty = $cur_qty;
-                    $new_stks->save();
+                    $cs = Customers::where('id',$stks[0]->customer_id)->get();
                 }
-
-                if($cs->isNotEmpty()){
-                    $gtin_start = $cs[0]->gtin_start;
-                    $gtin_end = $cs[0]->gtin_end;
-                    $gtin = substr($product['label'],$gtin_start,$gtin_end);
-                }else{
-                    $gtin = null;
-                }
-
 
                 if($sc->isNotEmpty()){
-                    $sc_id = $sc[0]->id;
-                    $ph_id = ProductHistory::where('scanned_id',$sc_id)->pluck('id');
+                    $ph_id = ProductHistory::where('scanned_id',$sc[0]->id)->pluck('id');
                     if($ph_id->isNotEmpty()){
                         $new_ph = ProductHistory::find($ph_id[0]);
                         $new_ph->new_pallet_id = $p_id[0]->id;
@@ -1160,9 +1131,7 @@ class StocksController extends Controller
                 }else{
                     $new_sc = new ScanProducts();
                     $new_sc->label = $product['label'];
-                    $new_sc->gtin = $gtin;
                     $new_sc->save();
-
                     if(isset($new_sc->id)){
                         $new_ph = new ProductHistory();
                         $new_ph->scanned_id = $new_sc->id;
@@ -1203,7 +1172,7 @@ class StocksController extends Controller
                     foreach($ph as $p){
                         $sp = ScanProducts::where('id',$p->scanned_id)->get();
                         if($sp->isNotEmpty()){
-                            $codes = $this->barcodeChecker(1,$sp[0]->label);
+                            $codes = $this->barcodeChecker(2,$sp[0]->label);
                             if($codes != ""){
                                 $prod_dtls = Products::where('gtin',$codes['gtin'])->get();
                                 if($prod_dtls->isNotEmpty()){
