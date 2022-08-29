@@ -11,7 +11,6 @@ $(document).ready(function(){
 
     $("#scan_pcode").on("change",function(){
         var pcode = ($(this).val()).trim();
-
         var row_data1 = [];
         $("#scnproducts_body tr").each(function(){
             var data1 = $(this).find('td').eq(0).text();
@@ -60,7 +59,9 @@ $(document).ready(function(){
                                     +"</a>"
                                 +"</td>"
                                 +"</tr>";
-                        $("#scnproducts_body").append(prod);
+                        $("#scnproducts_body").prepend(prod);
+                        var pr_count = $("#scnproducts_body tr").length;
+                        $(".pr_count").text(pr_count);
                     }else if(result.status == 2){
                         var prod = "<tr>"
                                 +"<td class='py-1 pl-2 text-xs font-medium text-gray-900 whitespace-nowrap'>"+pcode+"</td>"
@@ -72,8 +73,11 @@ $(document).ready(function(){
                                     +"</a>"
                                 +"</td>"
                                 +"</tr>";
-                        $("#scnproducts_body").append(prod);
+                        $("#scnproducts_body").prepend(prod);
                         $(".scan_pcode_message").text(result.message['message1']);
+
+                        var pr_count = $("#scnproducts_body tr").length;
+                        $(".pr_count").text(pr_count);
                         setTimeout(function(){
                             $(".scan_pcode_message").text('');
                         },5000);
@@ -93,6 +97,9 @@ $(document).ready(function(){
 
 $(document).on("click",".rm_prod",function(){
     $(this).closest("tr").remove();
+    var pr = $(".pr_count").text();
+    var lft_val = pr - 1;
+    $(".pr_count").text(lft_val);
 });
 
 function labelRandomizer(){

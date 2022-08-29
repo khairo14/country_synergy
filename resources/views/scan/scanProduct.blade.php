@@ -30,10 +30,18 @@
     </div>
 
     <div x-show="scnproducts" id="scnproducts" class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg" style="display:none">
-        <div class="px-4 py-2 w-full bg-gray-200 rounded-lg shadow sm:rounded-lg overflow-x-auto">
+        <div class="w-full px-4 py-2 bg-gray-200 rounded-lg shadow sm:rounded-lg">
             <div class="border border-gray-400 rounded-md">
                 <label for="scan_pcode" class="sr-only">Label</label>
                 <input type="text" name="scan_pcode" id="scan_pcode" class="inline-flex w-full p-2 text-center border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Scan Products" maxlength="60" autofocus >
+            </div>
+            <div class="flex border border-gray-400 rounded-md my-0.5 grid grid-cols-2 justify-between">
+                <div class="flex items-center justify-start ml-4">
+                    <p>Scanned Items # </p><p class="ml-2 font-bold pr_count text-medium">0</p>
+                </div>
+                <div class="flex items-center justify-end mr-5">
+                    <p class="">P.O # </p><p class="ml-2 font-bold prchse_or text-medium">0</p>
+                </div>
             </div>
             <div class="mt-1 text-center bg-red-300 rounded-md p2">
                 <span class="scan_pcode_message"></span>
@@ -66,7 +74,7 @@
                         &nbsp; back &nbsp;
                     </span>
                 </button>
-                <button type="button" class="gen_label inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-blue-600 border border-gray-300 rounded-md shadow-md gen_label text-md sm:px-2 sm:py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <span class="items-center mx-2">
                         &nbsp; Generate Pallet &nbsp;
                     </span>

@@ -2117,11 +2117,15 @@ $(document).ready(function () {
         success: function success(result) {
           if (result.status == 1) {
             var prod = "<tr>" + "<td class='py-1 pl-2 text-xs font-medium text-gray-900 whitespace-nowrap'>" + pcode + "</td>" + "<td class='relative py-1 text-xs font-medium text-right whitespace-nowrap'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
-            $("#scnproducts_body").append(prod);
+            $("#scnproducts_body").prepend(prod);
+            var pr_count = $("#scnproducts_body tr").length;
+            $(".pr_count").text(pr_count);
           } else if (result.status == 2) {
             var prod = "<tr>" + "<td class='py-1 pl-2 text-xs font-medium text-gray-900 whitespace-nowrap'>" + pcode + "</td>" + "<td class='relative py-1 text-xs font-medium text-right whitespace-nowrap'>" + "<a href='#' class='rm_prod text-indigo-600 hover:text-indigo-900'>" + "<svg xmlns='http://www.w3.org/2000/svg' class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>" + "<path stroke-linecap='round' stroke-linejoin='round' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />" + "</svg>" + "</a>" + "</td>" + "</tr>";
-            $("#scnproducts_body").append(prod);
+            $("#scnproducts_body").prepend(prod);
             $(".scan_pcode_message").text(result.message['message1']);
+            var pr_count = $("#scnproducts_body tr").length;
+            $(".pr_count").text(pr_count);
             setTimeout(function () {
               $(".scan_pcode_message").text('');
             }, 5000);
@@ -2141,6 +2145,9 @@ $(document).ready(function () {
 });
 $(document).on("click", ".rm_prod", function () {
   $(this).closest("tr").remove();
+  var pr = $(".pr_count").text();
+  var lft_val = pr - 1;
+  $(".pr_count").text(lft_val);
 });
 
 function labelRandomizer() {
