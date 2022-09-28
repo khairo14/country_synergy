@@ -35,7 +35,7 @@
                 <label for="scan_pcode" class="sr-only">Label</label>
                 <input type="text" name="scan_pcode" id="scan_pcode" class="inline-flex w-full p-2 text-center border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Scan Products" maxlength="60" autofocus >
             </div>
-            <div class="flex border border-gray-400 rounded-md my-0.5 grid grid-cols-2 justify-between">
+            <div class="flex border border-gray-400 rounded-md my-0.5 grid-cols-2 justify-between">
                 <div class="flex items-center justify-start ml-4">
                     <p>Scanned Items # </p><p class="ml-2 font-bold pr_count text-medium">0</p>
                 </div>
@@ -82,7 +82,6 @@
             </div>
         </div>
     </div>
-
     <div style="display:none" id="pallet_card_no">
         <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
             <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
@@ -96,7 +95,6 @@
                 </div>
             </div>
         </div>
-
         <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-lg">
             <div class="px-4 py-4 bg-gray-200 rounded-lg shadow sm:rounded-lg sm:px-5">
                 <div class="flex flex-col mt-2">
@@ -128,7 +126,6 @@
                         </div>
                         </div>
                     </div>
-
                     <div class="flex justify-end mt-4">
                         <button type="button" class="inline-flex items-center px-1 py-2 font-medium text-white bg-green-600 border border-gray-300 rounded-md shadow-md save-pallet3 text-md sm:px-2 sm:py-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             <span class="items-center mx-2">

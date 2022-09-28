@@ -13,7 +13,7 @@ class LocationsController extends Controller
     public function fLocation(){
 
         $num_loc = Locations::count();
-        $loc = Locations::all();
+        $loc = Locations::orderBy('name')->get();
 
         return view('locations.freezer')->with(['num_loc'=>$num_loc,'loc'=>$loc]);
     }
@@ -83,4 +83,5 @@ class LocationsController extends Controller
             return response()->json(['message' => "No file was uploaded","status"=>'0']);
         }
     }
+
 }
